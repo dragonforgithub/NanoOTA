@@ -1,164 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    android:layout_height="match_parent"
     android:orientation="vertical">
 
-   <FrameLayout
+   <RelativeLayout
        android:layout_width="match_parent"
-       android:layout_height="wrap_content">
-       <LinearLayout
-           android:layout_width="match_parent"
-           android:orientation="vertical"
-           android:layout_height="wrap_content">
-           <RelativeLayout
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:layout_marginTop="15dp"
-               android:gravity="center_vertical">
+       android:layout_height="300dp"
+       android:gravity="center_vertical">
 
-               <ImageButton
-                   android:id="@+id/ib_back"
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:layout_centerVertical="true"
-                   android:layout_marginLeft="10dp"
-                   android:background="@android:color/transparent"
-                   android:src="@drawable/left_black"
-                   android:visibility="gone"/>
-
-               <TextView
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:layout_centerInParent="true"
-                   android:text="账号登录"
-                   android:textColor="@android:color/black"
-                   android:textSize="20sp"/>
-
-               <ImageButton
-                   android:id="@+id/btn_close"
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:layout_alignParentRight="true"
-                   android:layout_centerVertical="true"
-                   android:layout_marginRight="10dp"
-                   android:background="@drawable/ic_close_black"
-                   android:padding="10dp"/>
-
-           </RelativeLayout>
-
-           <LinearLayout
-               android:id="@+id/ll_name"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:layout_marginLeft="20dp"
-               android:layout_marginRight="20dp"
-               android:layout_marginTop="30dp"
-               android:orientation="vertical"
-               android:visibility="visible">
-
-               <EditText
-                   android:id="@+id/et_phone"
-                   android:layout_width="match_parent"
-                   android:layout_height="wrap_content"
-                   android:background="@null"
-                   android:hint="请输入手机号"
-                   android:inputType="phone"
-                   android:paddingBottom="5dp"
-                   android:paddingTop="5dp"
-                   android:textColor="#2fa881"
-                   android:textCursorDrawable="@drawable/cursor"
-                   android:textSize="16sp"/>
-
-               <TextView
-                   android:layout_width="match_parent"
-                   android:layout_height="1dp"
-                   android:background="?attr/colorPrimary"/>
-
-           </LinearLayout>
-
-           <RelativeLayout
-               android:layout_marginLeft="20dp"
-               android:layout_marginRight="20dp"
-               android:layout_marginTop="30dp"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content">
-               <LinearLayout
-                   android:layout_centerVertical="true"
-                   android:layout_width="match_parent"
-                   android:layout_height="wrap_content"
-                   android:orientation="vertical">
-
-                   <EditText
-                       android:id="@+id/et_pwd"
-                       android:layout_width="match_parent"
-                       android:layout_height="wrap_content"
-                       android:background="@null"
-                       android:hint="请输入密码"
-                       android:inputType="textPassword"
-                       android:paddingBottom="5dp"
-                       android:paddingTop="5dp"
-                       android:textColor="#2fa881"
-                       android:textCursorDrawable="@drawable/cursor"
-                       android:textSize="18sp"/>
-
-                   <TextView
-                       android:layout_width="match_parent"
-                       android:layout_height="1dp"
-                       android:background="?attr/colorPrimary"/>
-
-               </LinearLayout>
-               <CheckBox
-                   android:layout_alignParentRight="true"
-                   android:id="@+id/iv_display"
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:layout_centerVertical="true"
-                   android:background="@drawable/pwd_select"
-                   android:button="@null" />
-           </RelativeLayout>
-
-
-           <Button
-               android:id="@+id/btn_login"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:layout_marginBottom="5dp"
-               android:layout_marginLeft="20dp"
-               android:layout_marginRight="20dp"
-               android:layout_marginTop="30dp"
-               android:background="@drawable/btn_login"
-               android:enabled="false"
-               android:gravity="center"
-               android:padding="10dp"
-               android:text="登录"
-               android:textColor="@color/white"
-               android:textSize="18sp"/>
-
-           <TextView
-               android:id="@+id/tv_login"
-               android:layout_width="wrap_content"
-               android:padding="5dp"
-               android:text="忘记密码"
-               android:textColor="@color/trans"
-               android:layout_marginBottom="5dp"
-               android:layout_marginLeft="15dp"
-               android:layout_height="wrap_content" />
-       </LinearLayout>
-
-       <ProgressBar
-           xmlns:android="http://schemas.android.com/apk/res/android"
-           android:id="@+id/loading"
-           android:layout_width="match_parent"
+       <ImageButton
+           android:id="@+id/Close_Frame"
+           android:layout_width="wrap_content"
            android:layout_height="wrap_content"
-           android:layout_margin="64dp"
-           android:layout_gravity="center"
-           android:indeterminate="true"
-           android:indeterminateTint="@color/common_h2"
-           android:indeterminateTintMode="src_in" />
-   </FrameLayout>
+           android:layout_alignParentTop="true"
+           android:layout_alignParentEnd="true"
+           android:layout_marginEnd="10dp"
+           android:background="@drawable/ic_close_black"
+           android:padding="10dp"/>
 
-</LinearLayout>
+       <TextView
+           android:id="@+id/title"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_alignParentTop="true"
+           android:layout_centerHorizontal="true"
+           android:text="请选择升级版本："
+           android:textColor="@android:color/black"
+           android:textSize="20sp"/>
+
+       <Spinner
+           android:id="@+id/UpgradeSpinner"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_below="@+id/title"
+           android:layout_centerHorizontal="true"
+           android:layout_marginTop="15dp"
+           android:text="升级文件" />
+
+       <EditText
+           android:id="@+id/Project_ID"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:background="@null"
+           android:hint=":可输入项目编号筛选列表,如：RC1888"
+           android:inputType="text"
+           android:layout_below="@+id/UpgradeSpinner"
+           android:layout_centerHorizontal="true"
+           android:visibility="gone"
+           android:paddingBottom="5dp"
+           android:paddingTop="5dp"
+           android:textColor="#2fa881"
+           android:textCursorDrawable="@drawable/cursor"
+           android:textSize="13sp"/>
+
+       <Button
+           android:id="@+id/Start_Upgrade"
+           android:layout_width="125dp"
+           android:layout_height="wrap_content"
+           android:layout_alignParentBottom="true"
+           android:layout_centerHorizontal="true"
+           android:background="@drawable/btn_login"
+           android:text="开始"
+           android:textColor="@color/white"
+           android:textSize="18sp" />
+
+       <Button
+           android:id="@+id/Delete_File"
+           android:layout_width="68dp"
+           android:layout_height="38dp"
+           android:layout_alignParentRight="true"
+           android:layout_alignParentBottom="true"
+           android:background="@drawable/btn_delete"
+           android:text="删除"
+           android:visibility="gone"
+           android:textColor="@color/white"
+           android:textSize="18sp" />
+   </RelativeLayout>
+
+    <ProgressBar
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/DownLoading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="64dp"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/common_h2"
+        android:indeterminateTintMode="src_in" />
+
+</FrameLayout>

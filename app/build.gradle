@@ -3,10 +3,23 @@ apply plugin: 'com.android.application'
 android {
     signingConfigs {
         release {
-            keyAlias 'SignA5'
-            keyPassword '123456'
-            storeFile file('E:/project/androidStudio/signAPK/SignA5.jks')
-            storePassword '123456'
+            //加载资源
+            Properties properties = new Properties()
+            InputStream inputStream = project.rootProject.file('local.properties').newDataInputStream()
+            properties.load(inputStream)
+
+            //读取文件
+            def sdkDir = properties.getProperty('keystore.path')
+            storeFile file(sdkDir)
+
+            //读取字段
+            def key_keyAlias = properties.getProperty('keystore.alias')
+            def key_keyPassword = properties.getProperty('keystore.password')
+            def key_storePassword = properties.getProperty('keystore.alias_password')
+
+            keyAlias key_keyAlias
+            keyPassword key_keyPassword
+            storePassword key_storePassword
         }
     }
     lintOptions {
@@ -15,11 +28,13 @@ android {
         // but continue the build even when errors are found:
         abortOnError false
     }
-    compileSdkVersion 27
+
+    compileSdkVersion 26
+    buildToolsVersion '28.0.3'
     defaultConfig {
-        applicationId "com.lxl.login.demo"
+        applicationId "com.lxl.nanosic.app"
         minSdkVersion 19
-        targetSdkVersion 27
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -32,31 +47,63 @@ android {
             }
         }
     }
+    
     // 配置CMakeLists.txt路径
+    /*
     externalNativeBuild {
         cmake {
             path "CMakeLists.txt"
         }
-    }
+    }*/
+
     buildTypes {
+
         release {
-            minifyEnabled true
+            zipAlignEnabled true //4字节对齐，减少运行内存消耗　
+            minifyEnabled true   //false = 关闭混淆
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
         }
+
+        debug {
+            zipAlignEnabled true //4字节对齐，减少运行内存消耗　
+            minifyEnabled false  //false = 关闭混淆
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
     }
+
     sourceSets {
         main {
             jni.srcDirs = []
             jniLibs.srcDirs = ["src/main/jni/jniLibs"]
         }
     }
+
     packagingOptions { //For Error: More than one file was found with OS independent path
         pickFirst 'lib/armeabi-v7a/libappJNI.so'
     }
+
     android {
         useLibrary 'org.apache.http.legacy'
     }
+
+    //自定义apk名称含版本号信息
+    android.applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            def fileName = "Nanosic_OTA_${defaultConfig.versionCode}-${defaultConfig.versionName}-${releaseTime()}.apk"
+            //def fileName = outputFile.name.replace("app", "${rootProject.ext.appName}-${releaseTime()}-${defaultConfig.versionCode}-${defaultConfig.versionName}")
+            def outputFile = output.outputFile
+            if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                //这里修改apk文件名
+                outputFileName = fileName
+            }
+        }
+    }
+}
+
+//获取编译时间
+def releaseTime() {
+    return new Date().format("yyyy-MM-dd", TimeZone.getTimeZone("UTC"))
 }
 
 dependencies {
@@ -64,14 +111,14 @@ dependencies {
     androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    implementation 'com.android.support:appcompat-v7:27.1.1'
     androidTestImplementation 'junit:junit:4.12'
-    implementation 'com.jakewharton:butterknife:8.4.0'
-    //annotationProcessor 'com.google.dagger:dagger-compiler:2.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
+    //annotationProcessor 'com.google.dagger:dagger-compiler:2.12'
 
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.jakewharton:butterknife:8.4.0'
     implementation 'com.squareup.okhttp3:okhttp:3.4.1'
     implementation 'com.squareup.okio:okio:1.9.0'
     implementation "com.google.code.gson:gson:2.8.2"
-
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
 }

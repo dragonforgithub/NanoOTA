@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:background="@drawable/frame"
+    android:paddingBottom="60dp"
+    tools:context="com.lxl.nanosic.app.UpgradeActivity">
+
+    <TextView
+        android:id="@+id/textView_Info_Display"
+        android:layout_width="600dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="60dp"
+        android:gravity="center"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView_Guide_Info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center_horizontal"
+        android:text="......"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView_Info_Display" />
+
+    <ImageView
+        android:id="@+id/imageView_failed"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="40dp"
+        android:src="@drawable/fail"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView_Guide_Info" />
+
+    <ImageView
+        android:id="@+id/imageView_success"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="40dp"
+        android:src="@drawable/success"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView_Guide_Info" />
+
+    <com.lxl.nanosic.app.ble.MultipleProgressBar
+        android:id="@+id/circleBar"
+        style="@android:style/Widget.ProgressBar.Horizontal"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        android:layout_marginTop="35dp"
+        android:progress="1"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView_Guide_Info"
+        app:pb_isCapRounded="true"
+        app:pb_mode="circle"
+        app:pb_radius="24dp"
+        app:pb_reachedColor="#FF530D"
+        app:pb_reachedHeight="8dp"
+        app:pb_textColor="#FF530D"
+        app:pb_textSize="30sp"
+        app:pb_unReachedColor="#ECF0F1"
+        app:pb_unReachedHeight="8dp" />
+
+</android.support.constraint.ConstraintLayout>

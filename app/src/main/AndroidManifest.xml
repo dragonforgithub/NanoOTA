@@ -1,9 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.lxl.login.demo"
-    >
+    package="com.lxl.nanosic.app" >
     <!-- android:sharedUserId="android.uid.system" -->
+
+    <!-- ======================================================================================= -->
+    <!-- 蓝牙权限： -->
+    <!-- 允许程序连接到已配对的蓝牙设备, 请求连接/接收连接/传输数据需要改权限, -->
+    <!-- 主要用于对配对后进行操作; -->
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+
+    <!-- 允许程序发现和配对蓝牙设备, 该权限用来管理蓝牙设备, 有了这个权限, -->
+    <!-- 应用才能使用本机的蓝牙设备, 主要用于对配对前的操作; -->
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+
+    <!--允许应用程序配对蓝牙设备，而无需用户交互-->
+    <!--第三方应用程序一般拿不到-->
+    <uses-permission android:name="android.permission.BLUETOOTH_PRIVILEGED" />
+
+    <uses-feature
+        android:name="android.hardware.bluetooth_le"
+        android:required="true" />
+
+    <!--<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>-->
+    <!--<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>-->
+    <!-- ======================================================================================= -->
+    <!-- 允许挂载和反挂载文件系统可移动存储 -->
+    <uses-permission android:name="android.permission.INTERACT_ACROSS_USERS" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <!-- 对SD卡的写权限 -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <!-- 对SD卡的读权限 -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <!-- ======================================================================================= -->
+    <!-- 允许一个程序接收到 ACTION_BOOT_COMPLETED广播在系统完成启动 -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"></uses-permission>
+
 
     <!-- 对SD卡的写权限 -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -14,20 +47,60 @@
     <!-- 访问网络 -->
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <!-- 安装未知应用来源的权限  -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
+
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ota_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/FullscreenTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name="com.lxl.login.demo.MainActivity">
+        <activity android:name="com.lxl.nanosic.app.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name="com.lxl.nanosic.app.UpgradeActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|navigation|mcc|mnc|locale|touchscreen|screenLayout|fontScale|uiMode|smallestScreenSize|layoutDirection"
+            android:launchMode="singleTop"
+            android:theme="@style/FloatActivity">
+        </activity>
+
+        <service
+            android:name="com.lxl.nanosic.app.ble.BluetoothLeService"
+            android:enabled="true"
+            android:exported="true"
+            android:launchMode="singleInstance">
+        </service>
+
+        <receiver android:name="com.lxl.nanosic.app.ble.BootBroadcastReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="rtk.ota.broadcast"/>
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+                <!--<category android:name="android.intent.category.HOME"/>-->
+            </intent-filter>
+        </receiver>
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.lxl.nanosic.app.provider"
+            android:grantUriPermissions="true"
+            android:exported="false">
+            <!--元数据-->
+            <meta-data
+            android:name="android.support.FILE_PROVIDER_PATHS"
+            android:resource="@xml/provider_paths" />
+        </provider>
+
     </application>
 
 </manifest>

@@ -1,0 +1,201 @@
+package com.lxl.nanosic.app.ui;
+
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.content.Context;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.text.Editable;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ProgressBar;
+import android.widget.Toast;
+
+import com.lxl.nanosic.app.L;
+import com.lxl.nanosic.app.R;
+import com.lxl.nanosic.app.Utils;
+import com.lxl.nanosic.app.okhttp.CallBackUtil;
+import com.lxl.nanosic.app.okhttp.OkhttpUtil;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import okhttp3.Call;
+
+public class UpgradeOnlineFragment extends DialogFragment implements View.OnClickListener {
+    @BindView(R.id.et_phone)
+    EditText mEtPhone;
+    @BindView(R.id.btn_next)
+    Button mBtnNext;
+    @BindView(R.id.btn_close)
+    ImageButton btn_close;
+    @BindView(R.id.loading)
+    ProgressBar loading;
+
+    private Context mContext;
+    private String mProjectId;
+
+    /**handler消息类型定义*/
+    public final int SSL_SENDMSG_GET_LIST = 1;      //获取下载地址
+    public final int SSL_SENDMSG_DOWNLOAD_FILE = 2; //下载文件
+
+    @Override
+    public void onAttach(Activity activity) {
+        mContext = activity;
+        super.onAttach(activity);
+    }
+
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        View view = inflater.inflate(R.layout.phone_dialog, null);
+        ButterKnife.bind(this, view);
+        initView();
+        builder.setView(view);
+        return builder.create();
+    }
+
+    private void initView() {
+        mEtPhone.addTextChangedListener(adapter);
+        mBtnNext.setOnClickListener(this);
+        btn_close.setOnClickListener(this);
+    }
+
+    private TextWatcherAdapter adapter = new TextWatcherAdapter() {
+        @Override
+        public void afterTextChanged(Editable s) {
+            if (s.length() == 6 && s.toString().matches("^[a-z]{2}[0-9]{4}$")) {
+                mBtnNext.setEnabled(true);
+                mProjectId = s.toString();
+            } else {
+                mBtnNext.setEnabled(false);
+            }
+        }
+    };
+
+    private void showLoading(boolean state) {
+        loading.setVisibility(state ? View.VISIBLE : View.INVISIBLE);
+    }
+
+    private void CheckPhoneSuccess(String msg) {
+        //已经注册
+        loading.setVisibility(View.GONE);
+    }
+
+    private void CheckPhoneFail(String msg) {
+        //没有注册
+        loading.setVisibility(View.GONE);
+    }
+
+    private void onNetworkError(String msg) {
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.btn_next:
+                // 显示进度图标
+                showLoading(true);
+
+                // 检测到合理项目名则发送服务器访问消息，获取下载路径
+                sendHttpsMessage(SSL_SENDMSG_GET_LIST, mProjectId);
+
+                break;
+            case R.id.btn_close:
+                dismiss();
+                break;
+        }
+    }
+
+    // 处理https消息更新UI
+    private Handler mHttpsHandler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+            //msg传递过来的参数类型
+            int msgType = msg.what;
+            //msg传递过来的参数内容
+            String str1 = msg.getData().getString("text1");
+            //String str2 = msg.getData().getString("text2");
+            final String msgInte = str1;// + str2;
+
+            try {
+                switch (msgType) {
+                    case SSL_SENDMSG_GET_LIST:
+                        // 服务器地址
+                        String serverURL = "https://47.98.206.54/app/LookUpVersList.ashx";
+
+                        // 发送json格式数据，获取下载路径
+                        JSONObject jsonObject = new JSONObject();
+                        jsonObject.put("Mark", msgInte);
+                        L.i( "Update Project ID : " + msgInte);
+
+                        // 回调获取执行结果
+                        OkhttpUtil.okHttpPostJson(serverURL, jsonObject.toString(1), new CallBackUtil.CallBackString() {
+                            @Override
+                            public void onFailure(Call call, Exception e) {
+                                L.e( "error:" + e.getMessage());
+                                showLoading(false);// 关闭进度图标
+                                Utils.ToastShow(mContext, Toast.LENGTH_SHORT, Gravity.CENTER_HORIZONTAL,"错误:","请检查网络!");
+                            }
+
+                            @Override
+                            public void onResponse(String response) {
+                                L.d("Post ---> " + response);
+                                try {
+                                    JSONObject jsObj = new JSONObject(response); //转换成json对象
+                                    JSONArray jsArray = jsObj.getJSONArray("list"); //取出版本列表
+
+                                    showLoading(false); // 关闭进度图标
+                                    dismiss(); // 关闭项目编号输入界面
+
+                                    // 显示列表选择界面
+                                    UpgradeLocalFragment fragment_Download = UpgradeLocalFragment.newInstance("Server", msgInte, jsArray);
+                                    fragment_Download.show(getFragmentManager(), "DownLoad");
+
+                                } catch (JSONException e) {
+                                    L.e("Get list error: " + e.getMessage());
+                                    showLoading(false); // 显示列表选择界面
+                                    Utils.ToastShow(mContext , Toast.LENGTH_SHORT, Gravity.CENTER_HORIZONTAL,"错误:","未立项编号!");
+                                }
+                            }
+                        });
+                        break;
+
+                    case SSL_SENDMSG_DOWNLOAD_FILE:
+
+                        break;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return false;
+        }
+    });
+
+    /**发送消息*/
+    private void sendHttpsMessage(int msgType, String message)
+    {
+        Message VendorMessage = new Message();
+        //消息类型
+        VendorMessage.what = msgType;
+        //消息内容
+        Bundle bundle = new Bundle();
+        bundle.putString("text1",message);  //往Bundle中存放数据
+        //bundle.putString("text2"," - by client");  //后面可增加参数
+        VendorMessage.setData(bundle);  //mes利用Bundle传递数据
+        //发送消息
+        mHttpsHandler.sendMessage(VendorMessage);
+    }
+}
