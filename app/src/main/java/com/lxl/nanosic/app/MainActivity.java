@@ -9,19 +9,20 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 
 import com.lxl.nanosic.app.ble.BluetoothLeService;
 import com.lxl.nanosic.app.ble.BroadcastAction;
@@ -30,7 +31,11 @@ import com.lxl.nanosic.app.ui.UpgradeLocalFragment;
 import com.lxl.nanosic.app.ui.UpgradeOnlineFragment;
 
 
-public class MainActivity extends AppCompatActivity {
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+
+    private Button mBtnLocal;
+    private Button mBtnOnline;
 
     private final int OTA_PERMISSION_REQUEST_CODE = 10000;
     private final String[] strPermissions  = new String[] {
@@ -99,52 +104,18 @@ public class MainActivity extends AppCompatActivity {
         /** 创建和服务器的SSL连接 */
         //sslClient = new SSLClient(getApplicationContext());
 
-        /**
-         * 登录按钮
-         */
-        findViewById(R.id.btn_curInfo).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                fragment_Local.show(getFragmentManager(), "local"); //本地升级界面
-
-                //TODO : SSL调试部分可移除
-                /*
-                try {
-                    // c层测试服务器接口，可移除
-                    byte[] testData = "[sheldon]:test server!".getBytes();
-                    //JniApiCall.jni_NanoLogin(testData,testData.length);
-
-                    // 创建json数据包
-                    JSONObject jsonObject = new JSONObject();
-                    jsonObject.put("Model", "KK309");
-                    jsonObject.put("Vid", "0x1234");
-                    jsonObject.put("Pid", "0x5678");
-                    jsonObject.put("Version", 99);
-
-                    // 发送数据
-                    //sslClient.sendMessageToServer(jsonObject.toString(1));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                */
-            }
-        });
-
-        /**
-         * 注册按钮
-         */
-        findViewById(R.id.otaOnline).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                fragment_Online.show(getFragmentManager(), "online"); //在线升级界面
-            }
-        });
-
         /** 绑定服务 */
         BinderService();
 
         /** 注册广播 */
         RegisterBroadcastReceiver();
+
+        /** 添加按键监听 */
+        mBtnLocal = findViewById(R.id.otaLocal);
+        mBtnLocal.setOnClickListener(this);
+
+        mBtnOnline = findViewById(R.id.otaOnline);
+        mBtnOnline.setOnClickListener(this);
     }
 
     @Override
@@ -216,6 +187,48 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // 按键监听
+    @Override
+    public void onClick(View view) {
+
+        switch (view.getId()){
+            case R.id.otaLocal:
+
+                // 显示本地升级界面
+                fragment_Local.show(getFragmentManager(), "local"); //本地升级界面
+
+                //TODO : SSL调试部分可移除
+                /*
+                try {
+                    // c层测试服务器接口，可移除
+                    byte[] testData = "[sheldon]:test server!".getBytes();
+                    //JniApiCall.jni_NanoLogin(testData,testData.length);
+
+                    // 创建json数据包
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("Model", "KK309");
+                    jsonObject.put("Vid", "0x1234");
+                    jsonObject.put("Pid", "0x5678");
+                    jsonObject.put("Version", 99);
+
+                    // 发送数据
+                    //sslClient.sendMessageToServer(jsonObject.toString(1));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                */
+
+                break;
+            case R.id.otaOnline:
+
+                // 显示在线升级界面
+                fragment_Online.show(getFragmentManager(), "online"); //在线升级界面
+
+                break;
+        }
+    }
+
+
 
     //==============================================================================================
     // 启动BLE操作service
@@ -285,7 +298,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private BroadcastReceiver MainActivityReceiver = new BroadcastReceiver() {
-        @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
         public void onReceive(Context context, Intent intent) {
             int ibroad_value = 0x00;

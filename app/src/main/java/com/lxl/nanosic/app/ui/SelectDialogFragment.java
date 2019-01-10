@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,8 +22,7 @@ import butterknife.ButterKnife;
 /**
  * 检测到新版本，提示是否更新
  */
-public class SelectDialogFragment extends DialogFragment implements View.OnFocusChangeListener,
-		View.OnClickListener{
+public class SelectDialogFragment extends DialogFragment implements View.OnClickListener {
 	@BindView(R.id.tv_hint)
 	TextView mTvHint;
 	@BindView(R.id.btn_yes)
@@ -73,12 +73,8 @@ public class SelectDialogFragment extends DialogFragment implements View.OnFocus
 	}
 
 	@Override
-	public void onFocusChange(View view, boolean b) {
-		dismiss();
-	}
-
-	@Override
 	public void onClick(View view) {
+
 		switch (view.getId()){
 			case R.id.btn_yes:
 				String prjName = getArguments().getString("name");

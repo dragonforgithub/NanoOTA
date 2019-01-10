@@ -54,7 +54,7 @@ public class RemoteFileRead {
             int length = -1;
             fileBuf = new byte[fileLen];
 
-            while ((length = in.read(fileBuf)) != -1)
+            while ((length = in.read(fileBuf)) > 0)
             {
                 L.i("Actual reading file length:" + length);
             }

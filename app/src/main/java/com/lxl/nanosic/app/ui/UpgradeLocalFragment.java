@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -14,6 +15,7 @@ import android.text.Editable;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -21,6 +23,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.lxl.nanosic.app.R;
@@ -44,22 +47,22 @@ import butterknife.ButterKnife;
 import okhttp3.Call;
 
 public class UpgradeLocalFragment extends DialogFragment
-		implements View.OnClickListener{
-
-	@BindView(R.id.Start_Upgrade)
-	Button btn_start;
-
-	@BindView(R.id.Delete_File)
-	Button btn_delete;
+		implements View.OnClickListener {
 
 	@BindView(R.id.Close_Frame)
-    ImageButton btn_close;
+	ImageButton btn_close;
 
 	@BindView(R.id.UpgradeSpinner)
 	Spinner spinner_upgrade;
 
 	@BindView(R.id.Project_ID)
 	EditText project_id;
+
+	@BindView(R.id.Start_Upgrade)
+	Button btn_start;
+
+	@BindView(R.id.Delete_File)
+	Button btn_delete;
 
 	@BindView(R.id.DownLoading)
 	ProgressBar downloading;
@@ -108,7 +111,7 @@ public class UpgradeLocalFragment extends DialogFragment
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		LayoutInflater inflater = getActivity().getLayoutInflater();
-		View view = inflater.inflate(R.layout.login_layout, null);
+		View view = inflater.inflate(R.layout.local_upgrade_layout, null);
 		ButterKnife.bind(this, view);
 		initView();
 		builder.setView(view);
@@ -125,14 +128,18 @@ public class UpgradeLocalFragment extends DialogFragment
 			case R.id.Start_Upgrade:
 				if(mUpgradeMode.equals("Local")) {
 
-					dismiss(); //退出选择界面
-					StartUpgradeActivity(); // 启动升级UI
+					if(mUpgradeFile != null){
+						//dismiss(); //退出选择界面
+						StartUpgradeActivity(); // 启动升级UI
 
-					// 发送广播告知路径
-					L.i("===Send file path broadcast");
-					BroadcastAction.sendBroadcast(mContext, BroadcastAction.BROADCAST_SERVICE_REC_ACTION_REMOTE_UPGRADE,
-							BroadcastAction.BROADCAST_CONTENT_UPGRADE_FILE_PATH,
-							mUpgradeFile);
+						// 发送广播告知路径
+						L.i("===Send file path broadcast");
+						BroadcastAction.sendBroadcast(mContext, BroadcastAction.BROADCAST_SERVICE_REC_ACTION_REMOTE_UPGRADE,
+								BroadcastAction.BROADCAST_CONTENT_UPGRADE_FILE_PATH,
+								mUpgradeFile);
+					}else{
+						Utils.ToastShow(mContext, Toast.LENGTH_SHORT, Gravity.CENTER_HORIZONTAL,"未选择文件！",null);
+					}
 
 				}else if(mUpgradeMode.equals("Server")) {
 
@@ -147,6 +154,8 @@ public class UpgradeLocalFragment extends DialogFragment
 					DeleteFile(mUpgradeFile);
 					Utils.ToastShow(mContext, Toast.LENGTH_SHORT, Gravity.CENTER_HORIZONTAL,"删除:",mUpgradeFile);
 					listLocalUpgradeFile(mProjectSelect, mSDCardPath); // 扫描本地文件更新选择列表
+				}else{
+					Utils.ToastShow(mContext, Toast.LENGTH_SHORT, Gravity.CENTER_HORIZONTAL,"未选择文件！",null);
 				}
 				break;
 		}
@@ -160,8 +169,11 @@ public class UpgradeLocalFragment extends DialogFragment
 
 		L.d("Local fragment initView..."+mProjectSelect);
 		mProjectSelect = null;
-		btn_close.setOnClickListener(this); // 添加关闭按键监听
-		btn_start.setOnClickListener(this); // 添加开始按键监听
+
+		// 添加监听
+		btn_close.setOnClickListener(this);
+		btn_start.setOnClickListener(this);
+		btn_delete.setOnClickListener(this);
 
 		mPrjId = getArguments().getString("id"); // 获取项目编号
 		mUpgradeMode = getArguments().getString("mode"); // 根据升级模式更新列表界面
@@ -208,14 +220,13 @@ public class UpgradeLocalFragment extends DialogFragment
 		}
 
 		//设置下拉列表的风格
-		ArrayAdapter<String> adapter_res;
-		adapter_res=new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_dropdown_item, list_bin);
+		ArrayAdapter<String> adapter_res =new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_dropdown_item, list_bin);
 
 		//将adapter 添加到spinner中
 		spinner_upgrade.setAdapter(adapter_res);
 
 		//設置背景顏色
-		//spinner_upgrade.setBackgroundColor(Color.parseColor("#111111"));
+		//spinner_upgrade.setBackgroundColor(getResources().getColor(R.color.featureTitleColor));
 
 		//添加事件Spinner事件监听
 		spinner_upgrade.setOnItemSelectedListener(new SpinnerSelectedListener());
@@ -223,6 +234,9 @@ public class UpgradeLocalFragment extends DialogFragment
 
 	/*扫描本机目录下的升级文件*/
 	private void listLocalUpgradeFile(String ProjectId, String FilePath) {
+
+		// 清除之前选择的文件
+		mUpgradeFile = null;
 
 		// 清空之前列表
 		list_bin.clear();
@@ -251,18 +265,17 @@ public class UpgradeLocalFragment extends DialogFragment
 			L.e(FilePath+":not exist,then mkdirs.");
 		}
 
-		//设置下拉列表的风格
-		ArrayAdapter<String> adapter_res;
-		adapter_res=new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_dropdown_item, list_bin);
+        //设置下拉列表的风格
+        ArrayAdapter<String> adapter_res =new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_dropdown_item, list_bin);
 
-		//将adapter 添加到spinner中
-		spinner_upgrade.setAdapter(adapter_res);
+        //将adapter 添加到spinner中
+        spinner_upgrade.setAdapter(adapter_res);
 
-		//設置背景顏色
-		//spinner_upgrade.setBackgroundColor(Color.parseColor("#111111"));
+        //設置背景顏色
+        //spinner_upgrade.setBackgroundColor(getResources().getColor(R.color.featureTitleColor));
 
-		//添加事件Spinner事件监听
-		spinner_upgrade.setOnItemSelectedListener(new SpinnerSelectedListener());
+        //添加事件Spinner事件监听
+        spinner_upgrade.setOnItemSelectedListener(new SpinnerSelectedListener());
 	}
 
 	//播放列表事件监听---------------------------------------------
@@ -271,15 +284,20 @@ public class UpgradeLocalFragment extends DialogFragment
 		@Override
 		public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 
+			TextView tv = (TextView)arg1;
+			tv.setTextColor(getResources().getColor(R.color.cpb_blue_dark));    //设置颜色
+			tv.setTextSize(16.0f);    //设置字体大小
+			//tv.setGravity(Gravity.CENTER_HORIZONTAL);   //设置居中（异常）
+
 			switch (arg0.getId()) {
 				case R.id.UpgradeSpinner:
 					// 选择的版本号
-					mBinVersion = list_bin.get(arg2); // 注：格式因模式而有差异
+					mBinVersion = list_bin.get(arg2); // 参数含义 ：在线是版本号，本地是路径
 					L.d("mBinVersion = "+mBinVersion);
 					// 判断根据当前模式(在线or本地升级)
 					if(mUpgradeMode.equals("Local")) {
 						// 本地升级文件路径，mBinVersion为rc1661_remote_119.bin
-						mUpgradeFile = mSDCardPath+mBinVersion; //mBinVersion为rc1661_remote_119.bin
+						mUpgradeFile = mSDCardPath+mBinVersion;
 
 					}else if(mUpgradeMode.equals("Server")) {
 						//下载路径，例如："https://47.98.206.54/rc1888/101/remote.bin"，mBinVersion为119

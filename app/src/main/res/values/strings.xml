@@ -1,7 +1,7 @@
 <resources>
     <!-- UI部分定义 -->
     <string name="app_name">遥控器升级</string>
-    <string name="cur_Info">本地升级</string>
+    <string name="ota_Local">本地升级</string>
     <string name="ota_Online">在线升级</string>
     <string name="copyright_notice">版权所有 ©2018 Nanosic Technology Corp\n保留所有权利</string>
 

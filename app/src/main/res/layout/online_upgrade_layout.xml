@@ -23,7 +23,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginStart="10dp"
                     android:background="@android:color/transparent"
                     android:src="@drawable/left_black"
                     android:visibility="gone"/>
@@ -37,12 +37,12 @@
                     android:textSize="20sp"/>
 
                 <ImageButton
-                    android:id="@+id/btn_close"
+                    android:id="@+id/BTN_CLOSE"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginEnd="10dp"
                     android:background="@drawable/ic_close_black"
                     android:padding="10dp"/>
             </RelativeLayout>
@@ -67,7 +67,7 @@
                     android:paddingBottom="5dp"
                     android:paddingTop="5dp"
                     android:textColor="#2fa881"
-                    android:textCursorDrawable="@drawable/cursor"
+                    android:textCursorDrawable="@drawable/btn_focused"
                     android:textSize="18sp"/>
 
                 <TextView
@@ -78,14 +78,14 @@
             </LinearLayout>
 
             <Button
-                android:id="@+id/btn_next"
+                android:id="@+id/BTN_NEXT"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
                 android:layout_marginTop="30dp"
-                android:background="@drawable/btn_login"
+                android:background="@drawable/btn_integrated"
                 android:enabled="false"
                 android:gravity="center"
                 android:padding="10dp"

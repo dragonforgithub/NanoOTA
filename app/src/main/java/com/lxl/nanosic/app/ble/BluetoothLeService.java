@@ -482,6 +482,7 @@ public class BluetoothLeService extends Service {
                     KeyReceivedCallback(characteristic.getValue());
                 } else {  // vendor input
                     if(characteristic.getValue().length <= BleRecBuff.length) {
+                        // 获取遥控器返回的数据
                         System.arraycopy(characteristic.getValue(), 0, BleRecBuff, 0, characteristic.getValue().length);
                         fBleRecVendorPacketOk = true;
                     }else{
@@ -886,7 +887,7 @@ public class BluetoothLeService extends Service {
                     break;
                 }
             }
-            L.e("OK:"+ fBleRecVendorPacketOk + ":" + fBleSendVendorPacketOk);
+            L.i("OK:"+ fBleRecVendorPacketOk + ":" + fBleSendVendorPacketOk);
             if(fBleRecVendorPacketOk) {
                 if (BleRecBuff[0] == (byte) 0x5c){
                     if(BleRecBuff[1] == (byte) 0x70) {
@@ -1088,6 +1089,9 @@ public class BluetoothLeService extends Service {
     private boolean SendAndRecBinPacket(byte [] sendBuf){
         boolean  flag = false;
 
+        // TODO: 多包发送，里面不阻塞，连续发几包再同步一下收包bit map \
+        // sendBuf 可以临时存贮到数组，根据返回的 bit map重发丢的包
+
         for(int i=0;i<3;i++) {
             if ((mBluetoothGatt != null) && (VendorOut_Characteristic != null)) {
                 Arrays.fill(BleRecBuff,(byte)0);
@@ -1164,6 +1168,7 @@ public class BluetoothLeService extends Service {
             */
 
             if(sendBinBuff != null) {
+                // 发送升级包
                 if (SendAndRecBinPacket(sendBinBuff)) {
                     curSendPercent = mUpgradeFile.GetSendPercent(haveSendBinPacketNum);
                     if(curSendPercent > 99){
@@ -1333,11 +1338,8 @@ public class BluetoothLeService extends Service {
                 @Override
                 public void run() {
                     byte[] BleSendBuff ;
-                    byte[] tempBuf;
-                    byte[] BackBleSendBuff=new byte[20];
-
                     boolean flagUpgrade;
-                    int n;
+
                     fRemoteUpgradeThreadIsRun = true;
 
                     //如果是手动开启app则先判断是否已经读取过版本和电量

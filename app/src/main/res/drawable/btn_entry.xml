@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-<item>
-    <shape>
-        <solid android:color="#ee080926"/>
-        <corners android:radius="6dp"/>
-    </shape>
-</item>
+    <item android:drawable="@drawable/btn_focused" android:state_focused="true"/>
+
+    <item>
+        <shape>
+            <solid android:color="#ee080926"/>
+            <corners android:radius="6dp"/>
+        </shape>
+    </item>
 
 </selector>

@@ -35,10 +35,10 @@ import okhttp3.Call;
 public class UpgradeOnlineFragment extends DialogFragment implements View.OnClickListener {
     @BindView(R.id.et_phone)
     EditText mEtPhone;
-    @BindView(R.id.btn_next)
+    @BindView(R.id.BTN_NEXT)
     Button mBtnNext;
-    @BindView(R.id.btn_close)
-    ImageButton btn_close;
+    @BindView(R.id.BTN_CLOSE)
+    ImageButton mBtnClose;
     @BindView(R.id.loading)
     ProgressBar loading;
 
@@ -60,7 +60,7 @@ public class UpgradeOnlineFragment extends DialogFragment implements View.OnClic
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.phone_dialog, null);
+        View view = inflater.inflate(R.layout.online_upgrade_layout, null);
         ButterKnife.bind(this, view);
         initView();
         builder.setView(view);
@@ -70,13 +70,13 @@ public class UpgradeOnlineFragment extends DialogFragment implements View.OnClic
     private void initView() {
         mEtPhone.addTextChangedListener(adapter);
         mBtnNext.setOnClickListener(this);
-        btn_close.setOnClickListener(this);
+        mBtnClose.setOnClickListener(this);
     }
 
     private TextWatcherAdapter adapter = new TextWatcherAdapter() {
         @Override
         public void afterTextChanged(Editable s) {
-            if (s.length() == 6 && s.toString().matches("^[a-z]{2}[0-9]{4}$")) {
+            if (s.length() >= 6 && s.toString().matches("^[a-z]{2}[0-9]*$")) {
                 mBtnNext.setEnabled(true);
                 mProjectId = s.toString();
             } else {
@@ -105,7 +105,7 @@ public class UpgradeOnlineFragment extends DialogFragment implements View.OnClic
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.btn_next:
+            case R.id.BTN_NEXT:
                 // 显示进度图标
                 showLoading(true);
 
@@ -113,7 +113,7 @@ public class UpgradeOnlineFragment extends DialogFragment implements View.OnClic
                 sendHttpsMessage(SSL_SENDMSG_GET_LIST, mProjectId);
 
                 break;
-            case R.id.btn_close:
+            case R.id.BTN_CLOSE:
                 dismiss();
                 break;
         }
@@ -158,7 +158,7 @@ public class UpgradeOnlineFragment extends DialogFragment implements View.OnClic
                                     JSONArray jsArray = jsObj.getJSONArray("list"); //取出版本列表
 
                                     showLoading(false); // 关闭进度图标
-                                    dismiss(); // 关闭项目编号输入界面
+                                    //dismiss(); // 关闭项目编号输入界面
 
                                     // 显示列表选择界面
                                     UpgradeLocalFragment fragment_Download = UpgradeLocalFragment.newInstance("Server", msgInte, jsArray);

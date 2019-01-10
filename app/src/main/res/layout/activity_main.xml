@@ -18,7 +18,7 @@
         android:scaleType="fitXY" />
 
     <Button
-        android:id="@+id/btn_curInfo"
+        android:id="@+id/otaLocal"
         android:layout_width="226dp"
         android:layout_height="wrap_content"
         android:layout_above="@id/otaOnline"
@@ -26,7 +26,7 @@
         android:layout_centerHorizontal="true"
         android:background="@drawable/btn_entry"
         android:enabled="true"
-        android:text="@string/cur_Info"
+        android:text="@string/ota_Local"
         android:textColor="@color/dividerColor"
         android:textSize="22sp" />
 

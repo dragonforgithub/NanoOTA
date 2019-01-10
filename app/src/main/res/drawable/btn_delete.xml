@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item>
+    <item android:drawable="@drawable/btn_focused" android:state_focused="true"/>
+
+    <item android:state_selected="true"><!-- 被选中 -->
+        <shape android:shape="rectangle"><!-- 可选rectangle矩形，oval椭圆，line水平直线，ring环形 -->
+            <solid android:color="#4853a1"/> <!--描边-->
+            <corners android:radius="3dp"/>
+        </shape>
+    </item>
+
+    <item > <!-- 默认状态 -->
         <shape>
-            <solid android:color="#6e0e24"/>
+            <solid android:color="#461526"/>
             <corners android:radius="3dp"/>
         </shape>
     </item>
