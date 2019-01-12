@@ -9,7 +9,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
+
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
@@ -26,16 +26,20 @@ import android.widget.Button;
 
 import com.lxl.nanosic.app.ble.BluetoothLeService;
 import com.lxl.nanosic.app.ble.BroadcastAction;
+import com.lxl.nanosic.app.ble.Config;
+import com.lxl.nanosic.app.ui.DrawableSwitch;
 import com.lxl.nanosic.app.ui.SelectDialogFragment;
+import com.lxl.nanosic.app.ui.ShowOtaInfoDialogFragment;
 import com.lxl.nanosic.app.ui.UpgradeLocalFragment;
 import com.lxl.nanosic.app.ui.UpgradeOnlineFragment;
-
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Button mBtnLocal;
     private Button mBtnOnline;
+    private Button mBtnDevInfo;
+    private DrawableSwitch mDrawableSwitch;
 
     private final int OTA_PERMISSION_REQUEST_CODE = 10000;
     private final String[] strPermissions  = new String[] {
@@ -47,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     
     private UpgradeLocalFragment fragment_Local;
     private UpgradeOnlineFragment fragment_Online;
+    private ShowOtaInfoDialogFragment fragment_ShowOtaInfo;
 
     private boolean isDownloading = false;
 
@@ -87,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         fragment_Local = UpgradeLocalFragment.newInstance("Local", null,null); //本地升级界面
         fragment_Online = new UpgradeOnlineFragment(); //在线升级界面
+        fragment_ShowOtaInfo = ShowOtaInfoDialogFragment.newInstance(); //设备信息界面
 
         // TODO:3s等待,检测是否已经在下载新版的安装包，没有则发送版本检测广播包
         new Handler().postDelayed(new Runnable(){
@@ -116,6 +122,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         mBtnOnline = findViewById(R.id.otaOnline);
         mBtnOnline.setOnClickListener(this);
+
+        mBtnDevInfo = findViewById(R.id.devInfo);
+        mBtnDevInfo.setOnClickListener(this);
+
+        /** 设置加密开关 */
+        mDrawableSwitch = findViewById(R.id.drawableSwitch);
+        mDrawableSwitch.setListener(new DrawableSwitch.MySwitchStateChangeListener() {
+            @Override
+            public void mySwitchStateChanged(boolean isSwitchOn)
+            {
+                Config.SetEncryptState(isSwitchOn);
+            }
+        });
     }
 
     @Override
@@ -220,10 +239,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 break;
             case R.id.otaOnline:
-
                 // 显示在线升级界面
                 fragment_Online.show(getFragmentManager(), "online"); //在线升级界面
+                break;
 
+            case R.id.devInfo:
+                // 显示升级信息
+                fragment_ShowOtaInfo.show(getFragmentManager(), "otaInfo"); // 升级信息界面
                 break;
         }
     }
@@ -264,9 +286,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-
     /**
-     * 主UI广播
+     * 自定义广播接收器
      */
     private MainBroadcastReceiver MainBR = new MainBroadcastReceiver();
     private void RegisterBroadcastReceiver(){
@@ -278,6 +299,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Register the BroadcastReceiver
         IntentFilter activityFilter = new IntentFilter(BroadcastAction.MAIN_UPDATE_APK_SELECT);
         activityFilter.addAction(BroadcastAction.MAIN_UPDATE_APK_DOWNLOADING);
+        activityFilter.addAction(BroadcastAction.MAIN_UPDATE_APK_DOWNLOADFAILED);
         registerReceiver(MainActivityReceiver, activityFilter);
         L.i("Register MainActivityReceiver");
     }
@@ -297,47 +319,53 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    /** 主界面收到的广播 */
     private BroadcastReceiver MainActivityReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            int ibroad_value = 0x00;
-            String sbroad_value = null, sbroad_aux_val = null,stmpdis;
-            final String action = intent.getAction();
-            String value_type = intent.getStringExtra(BroadcastAction.BROADCAST_VALUE_TYPE);
-            if (value_type.equals(BroadcastAction.BROADCAST_VALUE_STRING)) {
-                sbroad_value = intent.getStringExtra(BroadcastAction.BROADCAST_VALUE_CONTENT_STRING);
-            } else if (value_type.equals(BroadcastAction.BROADCAST_VALUE_INT)) {
-                ibroad_value = intent.getIntExtra(BroadcastAction.BROADCAST_VALUE_CONTENT_INT, 0);
-            } else if (value_type.equals(BroadcastAction.BROADCAST_VALUE_STRING_INT)) {
-                sbroad_value = intent.getStringExtra(BroadcastAction.BROADCAST_VALUE_CONTENT_STRING);
-                ibroad_value = intent.getIntExtra(BroadcastAction.BROADCAST_VALUE_CONTENT_INT, 0);
-            } else if (value_type.equals(BroadcastAction.BROADCAST_VALUE_STRING_STRING)) {
-                sbroad_value = intent.getStringExtra(BroadcastAction.BROADCAST_VALUE_CONTENT_STRING);
-                sbroad_aux_val = intent.getStringExtra(BroadcastAction.BROADCAST_VALUE_CONTENT_STRING_AUX);
-            }
+        int ibroad_value = 0x00;
+        String sbroad_value = null, sbroad_aux_val = null;
+        final String action = intent.getAction();
+        String value_type = intent.getStringExtra(BroadcastAction.BROADCAST_VALUE_TYPE);
+        if (value_type.equals(BroadcastAction.BROADCAST_VALUE_STRING)) {
+            sbroad_value = intent.getStringExtra(BroadcastAction.BROADCAST_VALUE_CONTENT_STRING);
+        } else if (value_type.equals(BroadcastAction.BROADCAST_VALUE_INT)) {
+            ibroad_value = intent.getIntExtra(BroadcastAction.BROADCAST_VALUE_CONTENT_INT, 0);
+        } else if (value_type.equals(BroadcastAction.BROADCAST_VALUE_STRING_INT)) {
+            sbroad_value = intent.getStringExtra(BroadcastAction.BROADCAST_VALUE_CONTENT_STRING);
+            ibroad_value = intent.getIntExtra(BroadcastAction.BROADCAST_VALUE_CONTENT_INT, 0);
+        } else if (value_type.equals(BroadcastAction.BROADCAST_VALUE_STRING_STRING)) {
+            sbroad_value = intent.getStringExtra(BroadcastAction.BROADCAST_VALUE_CONTENT_STRING);
+            sbroad_aux_val = intent.getStringExtra(BroadcastAction.BROADCAST_VALUE_CONTENT_STRING_AUX);
+        }
 
-            // 服务器检测到新版本，提示用户升级
-            if(action.equals(BroadcastAction.MAIN_UPDATE_APK_SELECT)){
-                // 获得项目名和版本号参数
-                String projectName = sbroad_value;
-                String versionStr = sbroad_aux_val;
+        // 服务器检测到新版本，提示用户升级
+        if(action.equals(BroadcastAction.MAIN_UPDATE_APK_SELECT)){
+            // 获得项目名和版本号参数
+            String projectName = sbroad_value;
+            String versionStr = sbroad_aux_val;
 
-                // TODO:本来想把升级选择界面放到MainBroadcastReceiver中处理，但是无法getFragmentManager()
-                // 根据服务器版本检测结果，进行下载(网络正常)还是本地扫描(网络异常)
-                SelectDialogFragment fragment_Select = SelectDialogFragment.newInstance(projectName, versionStr);
-                fragment_Select.show(getFragmentManager(),"select");
-            }
-            else if(action.equals(BroadcastAction.MAIN_UPDATE_APK_DOWNLOADING)){
-                String state = sbroad_value;
-                int curProgress = ibroad_value;
-                isDownloading = state.equals("true"); // 正在下载升级文件标志位
+            // TODO:本来想把升级选择界面放到MainBroadcastReceiver中处理，但是无法getFragmentManager()
+            // 根据服务器版本检测结果，进行下载(网络正常)还是本地扫描(网络异常)
+            SelectDialogFragment fragment_Select = SelectDialogFragment.newInstance(projectName, versionStr);
+            fragment_Select.show(getFragmentManager(),"select");
+        }
+        else if(action.equals(BroadcastAction.MAIN_UPDATE_APK_DOWNLOADING)){
+            String state = sbroad_value;
+            int curProgress = ibroad_value;
+            isDownloading = state.equals("true"); // 正在下载升级文件标志位
 
-                // 通知栏显示下载进度,内部已封装兼容低版本
-                if(curProgress > 0){
-                    Utils.showNotification("版本更新","详细信息：",0x3,"0x1",curProgress,100);
-                    L.d("安装包下载进度："+curProgress+"%");
-                }
+            // 通知栏显示下载进度,内部已封装兼容低版本
+            if(curProgress > 0){
+                Utils.showNotification("版本更新","下载进度：",0x3,"0x1",curProgress,100);
+                L.d("安装包下载进度："+curProgress+"%");
             }
+        }
+        else if(action.equals(BroadcastAction.MAIN_UPDATE_APK_DOWNLOADFAILED)){
+            Utils.showNotification("版本更新","下载失败！",0x3,"0x1",-1,100);
+            L.d("安装包下载失败！");
+            isDownloading = false;
+        }
         }
     };
 }

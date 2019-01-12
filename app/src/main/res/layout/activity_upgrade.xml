@@ -56,7 +56,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView_Guide_Info" />
 
-    <com.lxl.nanosic.app.ble.MultipleProgressBar
+    <com.lxl.nanosic.app.ui.MultipleProgressBar
         android:id="@+id/circleBar"
         style="@android:style/Widget.ProgressBar.Horizontal"
         android:layout_width="130dp"

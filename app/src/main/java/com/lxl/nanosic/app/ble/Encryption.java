@@ -2,6 +2,8 @@ package com.lxl.nanosic.app.ble;
 
 import com.lxl.nanosic.app.L;
 
+import java.util.Arrays;
+
 /**
  * Created by Hor on 2018/7/13.
  */
@@ -50,13 +52,10 @@ public class Encryption {
         }
     }
 
-    //TODO:要更新jni库接口的包名，后面需加密方式再更新
-    /*
     public Encryption(){
-
         RandomBuf = new byte[8];
         RandomBuf = getRandom(7);
-        flagEnableEncryption = Config.isEncryptedSendBin;
+        flagEnableEncryption = Config.GetEncryptState();
     }
 
     public boolean setEncryptionEnable(boolean fEnable){
@@ -83,5 +82,5 @@ public class Encryption {
 
         return encryptData(bufPacket);
     }
-    */
+
 }

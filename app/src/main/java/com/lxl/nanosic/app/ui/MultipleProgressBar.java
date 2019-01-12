@@ -1,4 +1,4 @@
-package com.lxl.nanosic.app.ble;
+package com.lxl.nanosic.app.ui;
 
 import android.content.Context;
 import android.content.res.TypedArray;

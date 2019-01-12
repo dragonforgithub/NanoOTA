@@ -16,20 +16,16 @@ import android.widget.Toast;
 import com.lxl.nanosic.app.ble.BroadcastAction;
 import com.lxl.nanosic.app.okhttp.CallBackUtil;
 import com.lxl.nanosic.app.okhttp.OkhttpUtil;
-import com.lxl.nanosic.app.ui.SelectDialogFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.IOException;
-
 import okhttp3.Call;
 
 public class MainBroadcastReceiver extends BroadcastReceiver {
 
-    private String mVersionStr=null;
     private Context mContext;
     private final String nanoOtaPath = Environment.getExternalStorageDirectory().getAbsolutePath()+"/nanosic_ota/";
     private String mNewestApkPath=null;
@@ -91,32 +87,42 @@ public class MainBroadcastReceiver extends BroadcastReceiver {
                     public void onResponse(String response) {
                         L.d("Post ---> " + response);
                         try {
-                            int apkVerCode=0;
+                            int apkVerCur,apkVerCode=0;
+                            String newestversionStr=null;
 
                             JSONObject jsObj = new JSONObject(response); //转换成json对象
                             JSONArray jsArray = jsObj.getJSONArray("list"); //取出版本列表
 
-                            // 按规则最后一项是最新版本号
-                            /*
+                            // 遍历列表获得最高的版本号
                             for (int i = 0; i < jsArray.length(); i++) {
                                 JSONObject verList = (JSONObject) jsArray.get(i);
-                                mVersionStr = verList.getString("version");
-                                L.w("Server mVersionStr : "+mVersionStr);
-                                apkVerCode = Integer.parseInt(mVersionStr);
+                                String versionStr = verList.getString("version");
+                                L.w("Server mVersionStr : "+versionStr);
+                                apkVerCur = Integer.parseInt(versionStr);
+                                if(apkVerCode < apkVerCur){
+                                    apkVerCode = apkVerCur;
+                                    newestversionStr = versionStr;
+                                }
                             }
-                            */
-                            JSONObject verList = (JSONObject) jsArray.get(jsArray.length()-1);
-                            mVersionStr = verList.getString("version");
-                            apkVerCode = Integer.parseInt(mVersionStr);
-                            L.d("Server newest apkVerCode : "+apkVerCode);
 
-                            // 服务器上的版本高于当前安装的应用
+                            // 按规则最后一项是最新版本号，但实际不一样
+                            // Post ---> { "ret": 0, "list": [ { "version": "001" }, { "version": "004" }, { "version": "002" }, { "version": "003" } ] }
+                            /*
+                            JSONObject verList = (JSONObject) jsArray.get(jsArray.length()-1);
+                            String versionStr = verList.getString("version");
+                            apkVerCode = Integer.parseInt(versionStr);
+                            L.d("Server newest apkVerCode : "+apkVerCode);
+                            */
+
+                            L.w("Server newest VerCode:"+apkVerCode+",cur app VerCode:"+curVerCode);
+
+                            // 服务器上最新版本高于当前安装的应用
                             if(apkVerCode > curVerCode){
                                 // 本地没有最新安装包则发送下载广播
                                 if(apkVerCode > GetLocalApkNewestVerCode(mContext, nanoOtaPath)){
                                     L.d( "===Send apk select broadcast");
                                     BroadcastAction.sendBroadcast(mContext, BroadcastAction.MAIN_UPDATE_APK_SELECT,
-                                            projectName, mVersionStr);
+                                            projectName, newestversionStr);
 
                                 }else{ // 本地push更新安装包则直接安装
                                     L.i( "Install newest local apk");
@@ -147,7 +153,7 @@ public class MainBroadcastReceiver extends BroadcastReceiver {
 
     /** 获取本地APK最高版本号 */
     public int GetLocalApkNewestVerCode(Context ctx, String pathStr) {
-        int newestCode=0;
+        int newestCode=1;
         // 扫描apk安装包
         File dirPath = new File(pathStr);
         if(dirPath.exists()){
@@ -171,13 +177,25 @@ public class MainBroadcastReceiver extends BroadcastReceiver {
                             int    apkVerCode = info.versionCode; //得到安装包版本号
 
                             L.d("appName:"+apkName+";packageName:"+apkPktName
-                                    +";version:"+apkVerName+";verCode:"+apkVerCode);
+                                    +";version:"+apkVerName+";verCode:"+apkVerCode
+                                    +";newestCode:"+newestCode);
 
                             // 获取当前应用版本信息，进行比较
-                            String curPktName= Utils.getAppPktName(ctx); //得到当前应用包名
-                            if(apkPktName.equals(curPktName) && newestCode<apkVerCode){
-                                newestCode = apkVerCode;
-                                mNewestApkPath = filePath.toString();
+                            String curPktName = Utils.getAppPktName(ctx); //得到当前应用包名
+                            if(apkPktName.equals(curPktName)){
+                                if(newestCode < apkVerCode){
+                                    // 记录更新版本的安装包路径
+                                    newestCode = apkVerCode;
+                                    mNewestApkPath = filePath.toString();
+                                }else{
+                                    // 删除相同/旧版安装包
+                                    String oldApk = filePath.toString();
+                                    File file = new File(oldApk);
+                                    if(file.isFile()){
+                                        file.delete();
+                                        L.w("Delete : " + oldApk);
+                                    }
+                                }
                             }
                         }else{
                             L.e("Unrecognized apk！");
@@ -211,9 +229,9 @@ public class MainBroadcastReceiver extends BroadcastReceiver {
             @Override
             public void onFailure(Call call, Exception e) {
                 L.e( "DownloadFile error:" + e);
-                Utils.ToastShow(mContext, Toast.LENGTH_SHORT, Gravity.CENTER_HORIZONTAL,"错误:","文件下载失败！");
-                BroadcastAction.sendBroadcast(mContext, BroadcastAction.MAIN_UPDATE_APK_DOWNLOADING,
-                        "false");
+                //Utils.ToastShow(mContext, Toast.LENGTH_SHORT, Gravity.CENTER_HORIZONTAL,"错误:","文件下载失败！");
+                BroadcastAction.sendBroadcast(mContext, BroadcastAction.MAIN_UPDATE_APK_DOWNLOADFAILED,
+                        null);
             }
 
             @Override
@@ -227,15 +245,15 @@ public class MainBroadcastReceiver extends BroadcastReceiver {
             public void onResponse(File response) {
                 L.d("DownloadFile(File) ---> " + response);
                 if(response != null){
-                    //TODO:这里可以扫描本地文件进行安装
                     openApkFile(mContext,response);
-                    //
-                    Utils.ToastShow(mContext, Toast.LENGTH_SHORT, Gravity.TOP,"新版已下载，请立即安装！",null);
+                    //Utils.ToastShow(mContext, Toast.LENGTH_SHORT, Gravity.TOP,"新版已下载，请立即安装！",null);
+                    BroadcastAction.sendBroadcast(mContext, BroadcastAction.MAIN_UPDATE_APK_DOWNLOADING,
+                            "false");
                 } else{
-                    Utils.ToastShow(mContext, Toast.LENGTH_SHORT, Gravity.CENTER_HORIZONTAL,"错误:","文件下载失败！");
+                    //Utils.ToastShow(mContext, Toast.LENGTH_SHORT, Gravity.CENTER_HORIZONTAL,"错误:","文件下载失败！");
+                    BroadcastAction.sendBroadcast(mContext, BroadcastAction.MAIN_UPDATE_APK_DOWNLOADFAILED,
+                            null);
                 }
-                BroadcastAction.sendBroadcast(mContext, BroadcastAction.MAIN_UPDATE_APK_DOWNLOADING,
-                        "false");
             }
         });
     }

@@ -37,4 +37,13 @@
         <attr name="pb_radius" format="dimension"/>
     </declare-styleable>
 
+    <declare-styleable name="drawableSwitch">
+        <attr name="radius" format="dimension" />
+        <attr name="switchOnColor" format="color" />
+        <attr name="switchOffColor" format="color" />
+        <attr name="circleColor" format="color" />
+        <attr name="textColor" format="color" />
+        <attr name="isSwitchOn" format="boolean"/>
+    </declare-styleable>
+
 </resources>

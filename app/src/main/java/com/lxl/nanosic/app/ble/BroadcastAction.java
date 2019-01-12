@@ -157,6 +157,7 @@ public class BroadcastAction {
     public final static String MAIN_UPDATE_APK_SELECT = "nanosic.ota.app.MAIN_UPDATE_APK_SELECT";
     public final static String MAIN_UPDATE_APK_DOWNLOAD = "nanosic.ota.app.MAIN_UPDATE_APK_DOWNLOAD";
     public final static String MAIN_UPDATE_APK_DOWNLOADING = "nanosic.ota.app.MAIN_UPDATE_APK_DOWNLOADING";
+    public final static String MAIN_UPDATE_APK_DOWNLOADFAILED = "nanosic.ota.app.MAIN_UPDATE_APK_DOWNLOADFAILED";
 
 
     public static void enableBroadcast(boolean loggable) {

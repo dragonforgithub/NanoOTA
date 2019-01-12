@@ -139,14 +139,11 @@ public class BluetoothLeService extends Service {
         mSpeedControl = new SpeedControl();
         mEncryption = new Encryption();
 
-        //TODO:jni接口要改包名，后面要加密方式再更新库
-        /*
         if(mEncryption.getEncryptionEnable()){
             L.i("Encrypted data transmission");
         }else{
             L.i("Unencrypted data transmission");
         }
-        */
     }
 
     @Override
@@ -329,9 +326,8 @@ public class BluetoothLeService extends Service {
         @Override
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
             if (status == gatt.GATT_SUCCESS) {
-                //TODO:后面可增加按钮选择目前用什么协议进行升级
-                String curProtocol = null;
 
+                String curProtocol = null;
                 // 判断当前服务的协议类型
                 List<BluetoothGattService> list = gatt.getServices();
                 for (BluetoothGattService bluetoothGattService:list){
@@ -686,8 +682,6 @@ public class BluetoothLeService extends Service {
                     // 收到升级文件的路径
                     L.i("===Received file path : " + sbroad_aux_val);
                     mUpgradeFile = new UpgradeFile(getApplicationContext(), sbroad_aux_val);
-
-                    //TODO:收到地址说明本地文件就绪，可以开启定时器进行升级
                     StartServiceTimer(0, 1000); // 创建定时器，立即启动，每1s执行一次
                 }
                 else if (sbroad_value.equals(BroadcastAction.BROADCAST_CONTENT_UPGRADE_GUIDE_STAR)) {
@@ -865,12 +859,10 @@ public class BluetoothLeService extends Service {
                 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
         byte [] EncRandomBuf = null;
 
-        //TODO : 要更新jni库的接口包名
-        /*
         EncRandomBuf = mEncryption.getRandomData();
         for(int t=0;t<7;t++){
             BufVersion[2 + t] = EncRandomBuf[t];
-        }*/
+        }
 
         for(int i=0;i<3;i++) {
             if ((mBluetoothGatt != null) && (VendorOut_Characteristic != null)) {
@@ -894,14 +886,11 @@ public class BluetoothLeService extends Service {
                         // 收到电池电量数据包
                         boolean flagEncryOk = true;
 
-                        /*//TODO:jni接口要改包名，后面要加密方式再更新库
                         if(mEncryption.getEncryptionEnable()){
-
                             flagEncryOk = mEncryption.RemoteInfoVerify(BleRecBuff);
                         }else{
                             flagEncryOk = true;
                         }
-                        */
 
                         if(flagEncryOk){
                             RemoteVid = BleRecBuff[2];     // 遥控器VID
@@ -958,12 +947,10 @@ public class BluetoothLeService extends Service {
         byte[] BufVersion = {0x5c,(byte)0x82,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
                 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
 
-        //TODO : 要更新jni库的接口包名
-        /*
         byte [] EncRandomBuf = mEncryption.getRandomData();
         for(int t=0;t<7;t++){
             BufVersion[2 + t] = EncRandomBuf[t];
-        }*/
+        }
 
         for(int i=0;i<3;i++) {
             if ((mBluetoothGatt != null) && (VendorOut_Characteristic != null)) {
@@ -972,7 +959,10 @@ public class BluetoothLeService extends Service {
                 fBleSendVendorPacketOk = false;
                 WriteVendorOutCharacter(BufVersion);
                 L.i("Read remote version,S(read ver):" + GetByteString(BufVersion, 5));
+            }else{
+                L.e("mBluetoothGatt or VendorOut_Characteristic is null!");
             }
+
             for(int j=0;j<150;j++) {
                 OperationWait(20);
                 if(fBleRecVendorPacketOk && fBleSendVendorPacketOk) {
@@ -980,6 +970,7 @@ public class BluetoothLeService extends Service {
                     break;
                 }
             }
+
             L.w("OK:"+ fBleRecVendorPacketOk + "," + fBleSendVendorPacketOk);
             if(fBleRecVendorPacketOk) {
                 if (BleRecBuff[0] == (byte) 0x5c){
@@ -1027,7 +1018,7 @@ public class BluetoothLeService extends Service {
                     break;
                 }
             }
-            L.e("OK:"+ fBleRecVendorPacketOk + ":" + fBleSendVendorPacketOk);
+            L.w("OK:"+ fBleRecVendorPacketOk + ":" + fBleSendVendorPacketOk);
             if(fBleRecVendorPacketOk) {
                 if (BleRecBuff[0] == (byte) 0x5c){
                     if(BleRecBuff[1] == (byte) 0xf7) {
@@ -1153,7 +1144,6 @@ public class BluetoothLeService extends Service {
         while(isUpgradeWorking) {
             sendBinBuff = mUpgradeFile.GetDataPacketBuf(haveSendBinPacketNum);
 
-            /* //TODO : 加密方式需要更新jni接口包名
             if((mEncryption.getEncryptionEnable()) &&(sendBinBuff != null)){
                 for (int n = 0; n < 16; n++) {
                     backBuf[2 + n] = sendBinBuff[4 + n];
@@ -1165,7 +1155,6 @@ public class BluetoothLeService extends Service {
                     sendBinBuff[4 + n] = tempBuf[1 + n];
                 }
             }
-            */
 
             if(sendBinBuff != null) {
                 // 发送升级包
@@ -1214,7 +1203,6 @@ public class BluetoothLeService extends Service {
             sendHeaderBuff = mUpgradeFile.GetAllHeadPacketBuf(k);
             L.i("Send all Image header:" + k);
 
-            /* //TODO : 加密方式需要更新jni接口包名
             if((mEncryption.getEncryptionEnable()) &&(sendHeaderBuff != null)){
                 for (int n = 0; n < 16; n++) {
                     backBuf[2 + n] = sendHeaderBuff[4 + n];
@@ -1226,7 +1214,6 @@ public class BluetoothLeService extends Service {
                     sendHeaderBuff[4 + n] = tempBuf[1 + n];
                 }
             }
-            */
 
             if(!SendAndRecPacket(sendHeaderBuff,(byte)0xf8,2000)) {
                 L.e("Three transmission failures.");
@@ -1340,6 +1327,11 @@ public class BluetoothLeService extends Service {
                     byte[] BleSendBuff ;
                     boolean flagUpgrade;
 
+                    byte[] tempBuf;
+                    byte[] BackBleSendBuff=new byte[20];
+                    int n;
+
+                    // 线程正在运行标志
                     fRemoteUpgradeThreadIsRun = true;
 
                     //如果是手动开启app则先判断是否已经读取过版本和电量
@@ -1350,10 +1342,9 @@ public class BluetoothLeService extends Service {
                             ) {
                         OperationWait(20);
 
-                        //TODO : 加密方式需要更新jni接口包名
-                        /*if(mEncryption.getEncryptionEnable()){
+                        if(mEncryption.getEncryptionEnable()){
                             ReadRemoteEncryVersionPower();
-                        }else */{
+                        }else {
                             ReadRemoteSfVersion();
                             OperationWait(20);
                             ReadRemotePower();
@@ -1419,19 +1410,17 @@ public class BluetoothLeService extends Service {
 
                         BleSendBuff = mUpgradeFile.GetHeadPacketBuf();
 
-                    /* //TODO : 加密方式需要更新jni接口包名
-                    if(mEncryption.getEncryptionEnable()) {
-                        for (n = 0; n < 20; n++) {
-                            BackBleSendBuff[n] = BleSendBuff[n];
+                        if(mEncryption.getEncryptionEnable()) {
+                            for (n = 0; n < 20; n++) {
+                                BackBleSendBuff[n] = BleSendBuff[n];
+                            }
+                            BackBleSendBuff[0] = 0x00;
+                            BackBleSendBuff[1] = 0x01;
+                            tempBuf = mEncryption.encryptData(BackBleSendBuff);
+                            for (n = 0; n < 16; n++) {
+                                BleSendBuff[2 + n] = tempBuf[1 + n];
+                            }
                         }
-                        BackBleSendBuff[0] = 0x00;
-                        BackBleSendBuff[1] = 0x01;
-                        tempBuf = mEncryption.encryptData(BackBleSendBuff);
-                        for (n = 0; n < 16; n++) {
-                            BleSendBuff[2 + n] = tempBuf[1 + n];
-                        }
-                    }
-                    */
 
                         // 发送升级Image头
                         L.i("Send Image header");

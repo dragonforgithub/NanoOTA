@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:background="@drawable/ic_close_black"
+            android:background="@drawable/btn_close"
             android:padding="15dp" />
 
         <TextView
@@ -58,14 +58,11 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/UpgradeSpinner"
             android:layout_centerHorizontal="true"
-            android:background="@null"
-            android:hint=":输入项目编号筛选列表"
+            android:hint="输入编号筛选列表,例如：rc1888"
             android:inputType="text"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
+            android:padding="12dp"
             android:textColor="#2fa881"
-            android:textCursorDrawable="@drawable/btn_focused"
-            android:textSize="13sp"
+            android:textSize="16sp"
             android:visibility="gone" />
 
         <Button

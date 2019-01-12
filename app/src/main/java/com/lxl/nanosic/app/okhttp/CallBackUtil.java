@@ -200,12 +200,13 @@ public abstract class CallBackUtil<T> {
 
                     final long finalSum = sum;
 
-                    // TODO:暂时用toast提示下载进度
                     long curProgress = (long) (finalSum * 100.0f / total);
                     if(curProgress > preProgress ){
                         preProgress = curProgress;
-                        BroadcastAction.sendBroadcast(mContext, BroadcastAction.MAIN_UPDATE_APK_DOWNLOADING,
-                                "true",(int)curProgress);
+                        if(total > 1024*100) {  //大于1M则发送广播显示进度条（认为是下载apk）
+                            BroadcastAction.sendBroadcast(mContext, BroadcastAction.MAIN_UPDATE_APK_DOWNLOADING,
+                                    "true",(int)curProgress);
+                        }
                     }
 
                     mMainHandler.post(new Runnable() {

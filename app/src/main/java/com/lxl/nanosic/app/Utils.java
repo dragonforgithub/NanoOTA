@@ -5,30 +5,17 @@ import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
-
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -44,7 +31,6 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManagerFactory;
 
-import static android.app.Notification.VISIBILITY_SECRET;
 import static android.content.Context.NOTIFICATION_SERVICE;
 
 
@@ -174,15 +160,41 @@ public class Utils {
         builder.setContentIntent(pendingIntent);*/
         builder.setOnlyAlertOnce(true);
         builder.setDefaults(Notification.FLAG_ONLY_ALERT_ONCE);
-        builder.setProgress(maxProgress, progress, false);
         builder.setWhen(System.currentTimeMillis());
-        builder.setContentText("下载进度:"+progress+"%");
+        builder.setProgress(maxProgress, progress, false);
+        builder.setContentText(progress != -1 ? (content + progress + "%"):content);
+
         getManager().notify(manageId, builder.build());
     }
 
     //@RequiresApi(api = Build.VERSION_CODES.O)
     public static void cancleNotification(int manageId) {
         getManager().cancel(manageId);
+    }
+
+
+    /**
+     * 保存输入数据，以便下次自动填入
+     */
+    public static void savePreferences(Context ctx, String entry, String value) {
+        //实例化SharedPreferences对象（第一步）
+        SharedPreferences mySharedPreferences= ctx.getSharedPreferences("test",
+                Activity.MODE_PRIVATE);
+        //实例化SharedPreferences.Editor对象（第二步）
+        SharedPreferences.Editor editor = mySharedPreferences.edit();
+        //用putString的方法保存数据
+        editor.putString(entry, value);
+        //提交当前数据
+        editor.commit();
+        L.d("savePreferences : <" + entry + "," + value + ">");
+    }
+
+    public static String getPreferences(Context ctx, String entry) {
+        //同样，在读取SharedPreferences数据前要实例化出一个SharedPreferences对象
+        SharedPreferences sharedPreferences= ctx.getSharedPreferences("test",
+                Activity.MODE_PRIVATE);
+        // 使用getString方法获得value，注意第2个参数是value的默认值
+        return sharedPreferences.getString(entry,null);
     }
 
 

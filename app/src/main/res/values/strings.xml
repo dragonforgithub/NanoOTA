@@ -3,6 +3,7 @@
     <string name="app_name">遥控器升级</string>
     <string name="ota_Local">本地升级</string>
     <string name="ota_Online">在线升级</string>
+    <string name="dev_Information">设备信息</string>
     <string name="copyright_notice">版权所有 ©2018 Nanosic Technology Corp\n保留所有权利</string>
 
     <!-- 蓝牙部分相关定义 -->
@@ -19,13 +20,19 @@
     <string name="button_text_color_red">#FF3030</string>
     <string name="button_text_color_black">#000000</string>
 
+
     <string name="Text_view_file_address">升级文件地址：</string>
     <string name="Text_view_file_version">升级文件版本：</string>
+
+    <string name="Text_view_remote_info">遥控器信息：</string>
     <string name="Text_view_remote_info_name">遥控器名称：</string>
     <string name="Text_view_remote_info_mac">蓝牙地址：</string>
-    <string name="Text_view_remote_ver">遥控器版本：</string>
-    <string name="Text_view_remote_power">电量：</string>
-    <string name="Text_view_operation_permission">操作权限：</string>
+
+    <string name="Text_view_remote_vp">遥控器电量及版本：</string>
+    <string name="Text_view_remote_ver">遥控器软件版本：</string>
+    <string name="Text_view_remote_power">遥控器电量：</string>
+
+    <string name="Text_view_operation_permission">已获得权限：</string>
     <string name="Text_view_info_display">状态显示：</string>
 
     <string name="Text_view_error_code_title">错误代码：</string>

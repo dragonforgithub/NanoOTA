@@ -31,9 +31,11 @@
             android:textSize="18sp" />
 
         <TextView android:id="@+id/txtHide"
-            android:layout_width="6dp"
+            android:layout_width="18dp"
             android:layout_height="1dp"
-            android:layout_centerHorizontal="true" />
+            android:layout_centerHorizontal="true"
+            android:textSize="18sp"
+            android:text="|" />
 
         <Button
             android:id="@+id/btn_no"

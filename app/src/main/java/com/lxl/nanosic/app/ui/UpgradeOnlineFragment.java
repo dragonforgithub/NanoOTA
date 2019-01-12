@@ -69,6 +69,12 @@ public class UpgradeOnlineFragment extends DialogFragment implements View.OnClic
 
     private void initView() {
         mEtPhone.addTextChangedListener(adapter);
+        // 自动填充之前输入的值
+        String preference = Utils.getPreferences(mContext,"project_download");
+        if(preference != null){
+            mEtPhone.setText(preference);
+        }
+
         mBtnNext.setOnClickListener(this);
         mBtnClose.setOnClickListener(this);
     }
@@ -79,6 +85,7 @@ public class UpgradeOnlineFragment extends DialogFragment implements View.OnClic
             if (s.length() >= 6 && s.toString().matches("^[a-z]{2}[0-9]*$")) {
                 mBtnNext.setEnabled(true);
                 mProjectId = s.toString();
+                Utils.savePreferences(mContext,"project_download", mProjectId);
             } else {
                 mBtnNext.setEnabled(false);
             }
@@ -86,7 +93,9 @@ public class UpgradeOnlineFragment extends DialogFragment implements View.OnClic
     };
 
     private void showLoading(boolean state) {
-        loading.setVisibility(state ? View.VISIBLE : View.INVISIBLE);
+        if(loading!=null){
+            loading.setVisibility(state ? View.VISIBLE : View.INVISIBLE);
+        }
     }
 
     private void CheckPhoneSuccess(String msg) {

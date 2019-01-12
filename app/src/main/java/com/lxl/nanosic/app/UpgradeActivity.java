@@ -23,7 +23,7 @@ import android.widget.Toast;
 import com.lxl.nanosic.app.ble.BluetoothLeService;
 import com.lxl.nanosic.app.ble.BroadcastAction;
 import com.lxl.nanosic.app.ble.Config;
-import com.lxl.nanosic.app.ble.MultipleProgressBar;
+import com.lxl.nanosic.app.ui.MultipleProgressBar;
 
 public class UpgradeActivity extends AppCompatActivity {
 
@@ -166,12 +166,12 @@ public class UpgradeActivity extends AppCompatActivity {
         //==========================================================================================
         // 初始化所有文本的显示
         sTempString = "AG:RemoteUpgrade,";
-        if(Config.isEncryptedSendBin){
+        if(Config.GetEncryptState()){
             sTempString += "Encrypted";
         }else{
             sTempString += "Unencrypted";
         }
-        L.i(sTempString);
+        L.w(sTempString);
 
         multipleProgressBar.setProgress(0);
         multipleProgressBar.setEnabled(true);

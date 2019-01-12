@@ -9,9 +9,18 @@ import com.lxl.nanosic.app.L;
 public class Config {
 
     // 是否加密传输数据，主要是针对新、旧款遥控器
-    public final static boolean isEncryptedSendBin = false;
+    private static boolean isEncryptedSendBin = false;
 
     private Config() {
         L.i("Config,cannot be initialized");
+    }
+
+    public static void SetEncryptState(boolean state) {
+        isEncryptedSendBin = state;
+        L.i("Config encrypt state : " + isEncryptedSendBin);
+    }
+
+    public static boolean GetEncryptState() {
+        return isEncryptedSendBin;
     }
 }

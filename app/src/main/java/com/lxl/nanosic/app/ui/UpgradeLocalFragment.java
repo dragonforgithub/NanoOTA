@@ -6,7 +6,6 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -15,7 +14,6 @@ import android.text.Editable;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -133,7 +131,7 @@ public class UpgradeLocalFragment extends DialogFragment
 						StartUpgradeActivity(); // 启动升级UI
 
 						// 发送广播告知路径
-						L.i("===Send file path broadcast");
+						L.i("===Send file path broadcast,Upgrade file : " + mUpgradeFile);
 						BroadcastAction.sendBroadcast(mContext, BroadcastAction.BROADCAST_SERVICE_REC_ACTION_REMOTE_UPGRADE,
 								BroadcastAction.BROADCAST_CONTENT_UPGRADE_FILE_PATH,
 								mUpgradeFile);
@@ -162,7 +160,9 @@ public class UpgradeLocalFragment extends DialogFragment
 	}
 
 	private void showDownLoading(boolean state) {
-		downloading.setVisibility(state ? View.VISIBLE : View.INVISIBLE);
+		if(downloading!=null){
+			downloading.setVisibility(state ? View.VISIBLE : View.INVISIBLE);
+		}
 	}
 
 	private void initView(){
@@ -180,6 +180,12 @@ public class UpgradeLocalFragment extends DialogFragment
 		if(mUpgradeMode.equals("Local")) {
 			// 添加文本输入框监听
 			project_id.addTextChangedListener(fileAdapter);
+
+			// 自动填充之前输入的值
+			String preference = Utils.getPreferences(mContext,"project_filtrate");
+			if(preference != null){
+				project_id.setText(preference);
+			}
 			project_id.setVisibility(View.VISIBLE);
 
 			// 显示删除键，添加监听
@@ -199,10 +205,9 @@ public class UpgradeLocalFragment extends DialogFragment
 	private TextWatcherAdapter fileAdapter = new TextWatcherAdapter() {
 		@Override
 		public void afterTextChanged(Editable s) {
-			if (s.length() > 0) {
-				mProjectSelect = s.toString();
-				listLocalUpgradeFile(mProjectSelect, mSDCardPath); // 更新选择列表
-			}
+		mProjectSelect = s.toString();
+		listLocalUpgradeFile(mProjectSelect, mSDCardPath); // 更新选择列表
+		Utils.savePreferences(mContext,"project_filtrate", mProjectSelect);
 		}
 	};
 
@@ -251,9 +256,9 @@ public class UpgradeLocalFragment extends DialogFragment
 					String filename = files[i].getName();
 					// 获取.bin格式文件，如果指定项目编号则进行筛选
 					if(filename.endsWith(".bin") && (ProjectId==null || filename.startsWith(ProjectId))){
-						String filePath = files[i].getAbsolutePath();
-						list_bin.add(filename);
+						//String filePath = files[i].getAbsolutePath();
 						//L.i("files[" + i + "].getAbsolutePath() = " + filePath);
+						list_bin.add(filename);
 					}
 				} else if (files[i].isDirectory()) {
 					FilePath = files[i].getAbsolutePath();
@@ -285,9 +290,11 @@ public class UpgradeLocalFragment extends DialogFragment
 		public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 
 			TextView tv = (TextView)arg1;
-			tv.setTextColor(getResources().getColor(R.color.cpb_blue_dark));    //设置颜色
-			tv.setTextSize(16.0f);    //设置字体大小
-			//tv.setGravity(Gravity.CENTER_HORIZONTAL);   //设置居中（异常）
+			if(tv != null){
+				tv.setTextColor(getResources().getColor(R.color.cpb_yellow_dark));    //设置颜色
+				tv.setTextSize(16.0f);    //设置字体大小
+				//tv.setGravity(Gravity.CENTER_HORIZONTAL);   //设置居中（异常）
+			}
 
 			switch (arg0.getId()) {
 				case R.id.UpgradeSpinner:
