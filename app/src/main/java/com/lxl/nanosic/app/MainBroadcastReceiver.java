@@ -127,7 +127,7 @@ public class MainBroadcastReceiver extends BroadcastReceiver {
                                     BroadcastAction.sendBroadcast(mContext, BroadcastAction.MAIN_UPDATE_APK_SELECT,
                                             projectName, newestVersionStr);
 
-                                }else{ // 本地push更新安装包则直接安装
+                                }else{ // 已下载安装包则提示安装
                                     L.i( "Install newest local apk");
                                     openApkFile(mContext, new File(mNewestApkPath));
                                 }
