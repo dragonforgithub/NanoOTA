@@ -98,7 +98,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         new Handler().postDelayed(new Runnable(){
             public void run() {
                if(!isDownloading){
-
                    L.d("===sendBroadcast MAIN_UPDATE_APK_CHECK");
                    BroadcastAction.sendBroadcast(getApplicationContext(),
                            BroadcastAction.MAIN_UPDATE_APK_CHECK,

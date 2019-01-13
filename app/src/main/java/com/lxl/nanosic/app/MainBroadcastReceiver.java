@@ -76,7 +76,7 @@ public class MainBroadcastReceiver extends BroadcastReceiver {
                     public void onFailure(Call call, Exception e) {
                         L.e( "check error:" + e.getMessage());
 
-                        // 扫描本地安装包比当前版本更高则提示升级
+                        // 联网异常,扫描本地安装包比当前版本更高则提示升级
                         if(curVerCode < GetLocalApkNewestVerCode(mContext, nanoOtaPath)){
                             L.i( "Install local apk");
                             openApkFile(mContext, new File(mNewestApkPath));
@@ -88,7 +88,7 @@ public class MainBroadcastReceiver extends BroadcastReceiver {
                         L.d("Post ---> " + response);
                         try {
                             int apkVerCur,apkVerCode=0;
-                            String newestversionStr=null;
+                            String newestVersionStr=null;
 
                             JSONObject jsObj = new JSONObject(response); //转换成json对象
                             JSONArray jsArray = jsObj.getJSONArray("list"); //取出版本列表
@@ -97,11 +97,14 @@ public class MainBroadcastReceiver extends BroadcastReceiver {
                             for (int i = 0; i < jsArray.length(); i++) {
                                 JSONObject verList = (JSONObject) jsArray.get(i);
                                 String versionStr = verList.getString("version");
-                                L.w("Server mVersionStr : "+versionStr);
-                                apkVerCur = Integer.parseInt(versionStr);
-                                if(apkVerCode < apkVerCur){
-                                    apkVerCode = apkVerCur;
-                                    newestversionStr = versionStr;
+
+                                if(Utils.isNumeric(versionStr)){
+                                    L.d("Server mVersionStr : "+versionStr);
+                                    apkVerCur = Integer.parseInt(versionStr);
+                                    if(apkVerCode < apkVerCur){
+                                        apkVerCode = apkVerCur;
+                                        newestVersionStr = versionStr;
+                                    }
                                 }
                             }
 
@@ -122,7 +125,7 @@ public class MainBroadcastReceiver extends BroadcastReceiver {
                                 if(apkVerCode > GetLocalApkNewestVerCode(mContext, nanoOtaPath)){
                                     L.d( "===Send apk select broadcast");
                                     BroadcastAction.sendBroadcast(mContext, BroadcastAction.MAIN_UPDATE_APK_SELECT,
-                                            projectName, newestversionStr);
+                                            projectName, newestVersionStr);
 
                                 }else{ // 本地push更新安装包则直接安装
                                     L.i( "Install newest local apk");

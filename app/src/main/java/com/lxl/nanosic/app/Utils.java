@@ -24,6 +24,8 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
@@ -196,6 +198,21 @@ public class Utils {
         // 使用getString方法获得value，注意第2个参数是value的默认值
         return sharedPreferences.getString(entry,null);
     }
+
+    /**
+     * 利用正则表达式判断字符串是否是数字
+     * @param str
+     * @return
+     */
+    public static boolean isNumeric(String str){
+        Pattern pattern = Pattern.compile("[0-9]*");
+        Matcher isNum = pattern.matcher(str);
+        if( !isNum.matches() ){
+            return false;
+        }
+        return true;
+    }
+
 
 
 
