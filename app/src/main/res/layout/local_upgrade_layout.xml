@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
@@ -27,42 +28,54 @@
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="12dp"
-            android:text="请选择升级版本："
+            android:text="@string/select_version"
             android:textColor="@android:color/black"
             android:textSize="20sp" />
 
         <Spinner
-            android:id="@+id/UpgradeSpinner"
-            android:layout_width="205dp"
+            android:id="@+id/UpgradeFileSpinner"
+            android:layout_width="wrap_content"
             android:layout_height="25dp"
             android:layout_below="@+id/title"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="15dp"
-            android:text="升级文件列表" />
+            android:layout_marginTop="15dp" />
 
         <Button
             android:id="@+id/Delete_File"
             android:layout_width="45dp"
             android:layout_height="25dp"
-            android:layout_toEndOf="@+id/UpgradeSpinner"
-            android:layout_marginTop="55dp"
+            android:layout_toEndOf="@+id/UpgradeFileSpinner"
+            android:layout_alignBottom="@+id/UpgradeFileSpinner"
             android:background="@drawable/btn_delete"
+            android:layout_marginEnd="2dp"
             android:text="删除"
             android:textColor="@color/white"
-            android:textSize="15sp"
+            android:textSize="12sp"
             android:visibility="gone" />
 
         <EditText
             android:id="@+id/Project_ID"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/UpgradeSpinner"
+            android:layout_below="@+id/UpgradeFileSpinner"
             android:layout_centerHorizontal="true"
-            android:hint="输入编号筛选列表,例如：rc1888"
+            android:hint="rc1888          "
             android:inputType="text"
-            android:padding="12dp"
+            android:padding="10dp"
             android:textColor="#2fa881"
-            android:textSize="16sp"
+            android:textSize="18sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tv_otaBin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toStartOf="@+id/Project_ID"
+            android:layout_alignBottom="@+id/Project_ID"
+            android:text="筛选："
+            android:paddingBottom="10dp"
+            android:textColor="@android:color/black"
+            android:textSize="15sp"
             android:visibility="gone" />
 
         <Button

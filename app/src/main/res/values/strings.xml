@@ -6,6 +6,10 @@
     <string name="dev_Information">设备信息</string>
     <string name="copyright_notice">版权所有 ©2018 Nanosic Technology Corp\n保留所有权利</string>
 
+    <string name="select_version">选择升级版本</string>
+    <string name="online_upgrade_title">获取版本列表</string>
+
+
     <!-- 蓝牙部分相关定义 -->
     <string name="button_name_connect_remote">连接遥控器</string>
     <string name="button_name_have_connect_remote">已连接</string>

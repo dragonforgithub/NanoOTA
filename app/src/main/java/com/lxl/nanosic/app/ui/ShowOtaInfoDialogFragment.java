@@ -107,40 +107,48 @@ public class ShowOtaInfoDialogFragment extends DialogFragment {
 
 		//获取当前Android设备的权限状态
 		sTempString = getResources().getString(R.string.Text_view_operation_permission);
+        sTempString += "\n";
 		if(hasPermission(mContext,BlePermissions[0]) == true)
 		{
 			L.w("BLUETOOTH permission are normal.");
-			sTempString += "  BLUETOOTH";
+			sTempString += "            BLUETOOTH";
+			sTempString += "\n";
 		}else{
 			L.e("No BLUETOOTH permission.");
 		}
+
 		if(hasPermission(mContext,BlePermissions[1]) == true)
 		{
 			L.w("BLUETOOTH_PRIVILEGED permissions are normal.");
-			sTempString += "\tBLUETOOTH_PRIVILEGED";
+			sTempString += "            BLUETOOTH_PRIVILEGED";
+			sTempString += "\n";
 		}else{
 			L.e("No BLUETOOTH_PRIVILEGED permission.");
 		}
-		sTempString += "\n";
+
 		if(hasPermission(mContext,BlePermissions[2]) == true)
 		{
 			L.w("BLUETOOTH_ADMIN permissions are normal.");
-			sTempString += "\t\t\t\t\t\t\t\t\tBLUETOOTH_ADMIN";
+			sTempString += "            BLUETOOTH_ADMIN";
+			sTempString += "\n";
 		}else{
 			L.e("No BLUETOOTH_ADMIN permission.");
 		}
-		sTempString += "\n";
+
 		if(hasPermission(mContext,StoragePermissions[0]) == true)
 		{
 			L.w("READ_EXTERNAL_STORAGE permission are normal.");
-			sTempString += "\t\t\t\t\t\t\t\t\tREAD_EXTERNAL_STORAGE";
+			sTempString += "            READ_EXTERNAL_STORAGE";
+			sTempString += "\n";
 		}else{
 			L.e("No READ_EXTERNAL_STORAGE permission.");
 		}
+
 		if(hasPermission(mContext,StoragePermissions[1]) == true)
 		{
 			L.w("WRITE_EXTERNAL_STORAGE permissions are normal.");
-			sTempString += "\tWRITE_EXTERNAL_STORAGE";
+			sTempString += "            WRITE_EXTERNAL_STORAGE";
+			sTempString += "\n";
 		}else{
 			L.e("No WRITE_EXTERNAL_STORAGE permission.");
 		}

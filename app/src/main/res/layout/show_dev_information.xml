@@ -21,12 +21,13 @@
        <LinearLayout
            android:layout_width="match_parent"
            android:layout_height="wrap_content"
+           android:layout_marginTop="18dp"
            android:orientation="vertical">
 
            <TextView
                android:id="@+id/textView_Remote_Info"
                android:layout_width="400dp"
-               android:layout_height="20dp"
+               android:layout_height="wrap_content"
                android:text="@string/Text_view_remote_info"
                android:layout_marginTop="8dp"
                android:layout_marginLeft="8dp"
@@ -35,7 +36,7 @@
            <TextView
                android:id="@+id/textView_Remote_Version_Power"
                android:layout_width="400dp"
-               android:layout_height="20dp"
+               android:layout_height="wrap_content"
                android:text="@string/Text_view_remote_vp"
                android:layout_marginTop="8dp"
                android:layout_marginLeft="8dp"
@@ -44,7 +45,7 @@
            <TextView
                android:id="@+id/textView_Operation_Permission"
                android:layout_width="400dp"
-               android:layout_height="50dp"
+               android:layout_height="wrap_content"
                android:text="@string/Text_view_operation_permission"
                android:layout_marginTop="8dp"
                android:layout_marginLeft="8dp"

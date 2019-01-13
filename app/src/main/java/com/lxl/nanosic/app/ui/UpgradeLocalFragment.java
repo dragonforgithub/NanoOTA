@@ -50,8 +50,11 @@ public class UpgradeLocalFragment extends DialogFragment
 	@BindView(R.id.Close_Frame)
 	ImageButton btn_close;
 
-	@BindView(R.id.UpgradeSpinner)
-	Spinner spinner_upgrade;
+	@BindView(R.id.tv_otaBin)
+	TextView tv_ota_bin;
+
+	@BindView(R.id.UpgradeFileSpinner)
+	Spinner spinner_UpgradeFile;
 
 	@BindView(R.id.Project_ID)
 	EditText project_id;
@@ -192,6 +195,9 @@ public class UpgradeLocalFragment extends DialogFragment
 			btn_delete.setVisibility(View.VISIBLE);
 			btn_delete.setOnClickListener(this);
 
+			// 显示筛选文本框
+			tv_ota_bin.setVisibility(View.VISIBLE);
+
 			L.i("Local upgrade mode...");
 			listLocalUpgradeFile(mProjectSelect, mSDCardPath); // 扫描本地文件更新选择列表
 		}
@@ -226,15 +232,13 @@ public class UpgradeLocalFragment extends DialogFragment
 
 		//设置下拉列表的风格
 		ArrayAdapter<String> adapter_res =new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_dropdown_item, list_bin);
-
-		//将adapter 添加到spinner中
-		spinner_upgrade.setAdapter(adapter_res);
+		spinner_UpgradeFile.setAdapter(adapter_res);
 
 		//設置背景顏色
-		//spinner_upgrade.setBackgroundColor(getResources().getColor(R.color.featureTitleColor));
+		//spinner_UpgradeFile.setBackgroundColor(getResources().getColor(R.color.featureTitleColor));
 
 		//添加事件Spinner事件监听
-		spinner_upgrade.setOnItemSelectedListener(new SpinnerSelectedListener());
+		spinner_UpgradeFile.setOnItemSelectedListener(new SpinnerSelectedListener());
 	}
 
 	/*扫描本机目录下的升级文件*/
@@ -274,13 +278,13 @@ public class UpgradeLocalFragment extends DialogFragment
         ArrayAdapter<String> adapter_res =new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_dropdown_item, list_bin);
 
         //将adapter 添加到spinner中
-        spinner_upgrade.setAdapter(adapter_res);
+		spinner_UpgradeFile.setAdapter(adapter_res);
 
         //設置背景顏色
         //spinner_upgrade.setBackgroundColor(getResources().getColor(R.color.featureTitleColor));
 
         //添加事件Spinner事件监听
-        spinner_upgrade.setOnItemSelectedListener(new SpinnerSelectedListener());
+		spinner_UpgradeFile.setOnItemSelectedListener(new SpinnerSelectedListener());
 	}
 
 	//播放列表事件监听---------------------------------------------
@@ -297,7 +301,7 @@ public class UpgradeLocalFragment extends DialogFragment
 			}
 
 			switch (arg0.getId()) {
-				case R.id.UpgradeSpinner:
+				case R.id.UpgradeFileSpinner:
 					// 选择的版本号
 					mBinVersion = list_bin.get(arg2); // 参数含义 ：在线是版本号，本地是路径
 					L.d("mBinVersion = "+mBinVersion);

@@ -33,8 +33,8 @@ import butterknife.ButterKnife;
 import okhttp3.Call;
 
 public class UpgradeOnlineFragment extends DialogFragment implements View.OnClickListener {
-    @BindView(R.id.et_phone)
-    EditText mEtPhone;
+    @BindView(R.id.et_DownloadFile)
+    EditText mDownloadFile;
     @BindView(R.id.BTN_NEXT)
     Button mBtnNext;
     @BindView(R.id.BTN_CLOSE)
@@ -68,11 +68,11 @@ public class UpgradeOnlineFragment extends DialogFragment implements View.OnClic
     }
 
     private void initView() {
-        mEtPhone.addTextChangedListener(adapter);
+        mDownloadFile.addTextChangedListener(adapter);
         // 自动填充之前输入的值
         String preference = Utils.getPreferences(mContext,"project_download");
         if(preference != null){
-            mEtPhone.setText(preference);
+            mDownloadFile.setText(preference);
         }
 
         mBtnNext.setOnClickListener(this);
