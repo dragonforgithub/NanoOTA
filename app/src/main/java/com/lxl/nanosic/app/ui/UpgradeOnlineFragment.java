@@ -115,6 +115,13 @@ public class UpgradeOnlineFragment extends DialogFragment implements View.OnClic
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.BTN_NEXT:
+
+                // 防止短时间连续点击产生多个DialogFragment
+                if(Utils.isFastDoubleClick()){
+                    L.w("Click too fast!!!");
+                    return;
+                }
+
                 // 显示进度图标
                 showLoading(true);
 

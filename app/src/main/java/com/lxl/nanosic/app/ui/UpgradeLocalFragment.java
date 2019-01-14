@@ -121,12 +121,20 @@ public class UpgradeLocalFragment extends DialogFragment
 
 	@Override
 	public void onClick(View view) {
+
 		switch (view.getId()){
 			case R.id.Close_Frame:
 				dismiss();
 				break;
 
 			case R.id.Start_Upgrade:
+
+				// 防止短时间连续点击产生多个Activity
+				if(Utils.isFastDoubleClick()){
+					L.w("Click too fast!!!");
+					return;
+				}
+
 				if(mUpgradeMode.equals("Local")) {
 
 					if(mUpgradeFile != null){
