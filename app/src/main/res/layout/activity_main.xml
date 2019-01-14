@@ -72,14 +72,15 @@
         lh2:textColor="#1C1C0F" />
 
     <TextView
-        android:id="@+id/copyright"
+        android:id="@+id/copyrightVer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="5dp"
         android:gravity="center"
-        android:text="@string/copyright_notice"
+        android:text="@string/copyright_info"
         android:textColor="@color/pickerview_timebtn_pre"
         android:textSize="15sp" />
+
 
 </RelativeLayout>

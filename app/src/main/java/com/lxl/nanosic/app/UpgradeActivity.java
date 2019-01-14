@@ -52,11 +52,11 @@ public class UpgradeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upgrade);
         mThis = this;
-        ComponentInitialization();
-        RegisterBroadcastReceiver();
-        checkBluetoothAndLocationPermission(this);
+        RegisterBroadcastReceiver(); //注册广播
+        ComponentInitialization();   //初始化界面
+        checkBluetoothAndLocationPermission(this); //检查权限
 
-        //如果没有收到正在升级的广播包则提示用户升级
+        // 如果没有收到正在升级的广播包则提示用户升级
         if(!isUpgrading){
             TextView_MainDisplay.setText("请连接蓝牙遥控器：");
             TextView_GuideDisplay.setText("{按任意键进入升级}\n{按返回键退出升级}");
@@ -70,7 +70,7 @@ public class UpgradeActivity extends AppCompatActivity {
         // 发送UI启动广播告知service
         BroadcastActivityState("ui started");
 
-        L.i("onCreate");
+        L.d("onCreate: isUpgrading="+isUpgrading);
     }
 
     @Override
@@ -101,8 +101,8 @@ public class UpgradeActivity extends AppCompatActivity {
             isRcvUpgradeKey = true;
             TextView_MainDisplay.setText("正在初始化信息...");
             TextView_GuideDisplay.setVisibility(View.GONE);
-            iv_fail.setVisibility(View.GONE);
-            iv_success.setVisibility(View.GONE);
+            //iv_fail.setVisibility(View.GONE);
+            //iv_success.setVisibility(View.GONE);
         }
 
         super.onPause();
@@ -125,23 +125,22 @@ public class UpgradeActivity extends AppCompatActivity {
     public boolean onKeyDown(int keyCode, KeyEvent event) { //重写的键盘按下监听
         L.i("Receive key code :" + keyCode);
 
-
-        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK
+        if (event.getKeyCode() != KeyEvent.KEYCODE_BACK
                 && event.getAction() == KeyEvent.ACTION_DOWN
                 && event.getRepeatCount() == 0) {
-            //具体的操作代码
+
+            /** 不要改变判断顺序，有优先级！*/
+            if(isUpgradeDone){
+                ExitUpgrade();
+            }else if(!isUpgrading){
+                isRcvUpgradeKey=true;
+                TextView_MainDisplay.setText("正在初始化信息...");
+                TextView_GuideDisplay.setVisibility(View.GONE);
+                //iv_fail.setVisibility(View.GONE);
+                //iv_success.setVisibility(View.GONE);
+            }
         }
 
-        /** 不要改变判断顺序，有优先级！*/
-        if(isUpgradeDone){
-            ExitUpgrade();
-        }else if(!isUpgrading){
-            isRcvUpgradeKey=true;
-            TextView_MainDisplay.setText("正在初始化信息...");
-            TextView_GuideDisplay.setVisibility(View.GONE);
-            iv_fail.setVisibility(View.GONE);
-            iv_success.setVisibility(View.GONE);
-        }
         return super.onKeyDown(keyCode, event);
     }
 
@@ -344,8 +343,8 @@ public class UpgradeActivity extends AppCompatActivity {
                     multipleProgressBar.setVisibility(View.VISIBLE);
                     TextView_MainDisplay.setText("升级中，请不要断电！");
                     TextView_GuideDisplay.setVisibility(View.GONE);
-                    iv_fail.setVisibility(View.GONE);
-                    iv_success.setVisibility(View.GONE);
+                    //iv_fail.setVisibility(View.GONE);
+                    //iv_success.setVisibility(View.GONE);
 
                     // 如果UI被转后台则通过toast提示升级信息
                     if(!isUIOnTheTop){
@@ -429,7 +428,7 @@ public class UpgradeActivity extends AppCompatActivity {
                 requestPermissions(BlePermissions,REQUEST_PERMISSION_BLUETOOTH_LE_CODE);
 
             }else{
-                L.e("BluetoothLe permissions check normal.");
+                L.d("BluetoothLe permissions check normal.");
             }
 
             if ((checkSelfPermission(StoragePermissions[0]) != PackageManager.PERMISSION_GRANTED)
@@ -440,7 +439,7 @@ public class UpgradeActivity extends AppCompatActivity {
                 requestPermissions(StoragePermissions,REQUEST_PERMISSION_STORAGE);
 
             }else{
-                L.e("Storage permissions check normal.");
+                L.d("Storage permissions check normal.");
             }
         }else{
             sTempString = getResources().getString(R.string.Text_view_operation_permission);
@@ -540,23 +539,24 @@ public class UpgradeActivity extends AppCompatActivity {
         BroadcastAction.sendBroadcast(mThis, BroadcastAction.BROADCAST_SERVICE_REC_ACTION_REMOTE_UPGRADE,
                 BroadcastAction.BROADCAST_CONTENT_UPGRADE_STOP);
 
-        FinishUpgrade(false,"遥控器升级已终止！",null);
+        FinishUpgrade(false,"退出遥控器升级！",null);
     }
 
     // 升级完成
     private void FinishUpgrade(boolean result, String mainInfo , String auxInfo){
 
-        //下一次检测（间隔大概5s）,如果用户还没按键则自动退出
-        if(isUpgradeDone){
-            ExitUpgrade();
-        }
-
         isUpgrading=false;
         isUpgradeDone=true;
         isRcvUpgradeKey=false;
 
-        // 更新UI显示内容
-        multipleProgressBar.setVisibility(View.GONE);
+        multipleProgressBar.setVisibility(View.GONE); //关闭进度条
+        if(result){
+            iv_success.setVisibility(View.VISIBLE); //显示升级成功图标
+        } else {
+            iv_fail.setVisibility(View.VISIBLE); //显示升级失败图标
+        }
+
+        // 显示文本提示信息
         TextView_MainDisplay.setText(mainInfo);
         if(TextUtils.isEmpty(auxInfo))
             TextView_GuideDisplay.setVisibility(View.GONE);
@@ -565,13 +565,9 @@ public class UpgradeActivity extends AppCompatActivity {
             TextView_GuideDisplay.setVisibility(View.VISIBLE);
         }
 
-        if(result) //升级成功图标
-            iv_success.setVisibility(View.VISIBLE);
-        else       //升级失败图标
-            iv_fail.setVisibility(View.VISIBLE);
-
-        // 如果UI被转后台则通过toast提示升级信息
+        // 如果UI被转后台则通过toast提示升级结果
         if(!isUIOnTheTop){
+            ExitUpgrade(); //关闭界面
             Utils.ToastShow(getApplicationContext(), Toast.LENGTH_LONG, Gravity.TOP, mainInfo, auxInfo);
         }
         L.i("Upgrade finish : "+result);
@@ -582,6 +578,5 @@ public class UpgradeActivity extends AppCompatActivity {
         L.i("Program exit.");
         BroadcastActivityState("ui stopped");// 发送UI停止广播告知service
         finish();
-        System.exit(0);
     }
 }

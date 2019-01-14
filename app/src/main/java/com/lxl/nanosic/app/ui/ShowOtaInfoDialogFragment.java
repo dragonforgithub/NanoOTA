@@ -14,10 +14,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.lxl.nanosic.app.L;
-import com.lxl.nanosic.app.MainActivity;
 import com.lxl.nanosic.app.R;
 import com.lxl.nanosic.app.ble.BroadcastAction;
 
@@ -33,10 +31,10 @@ public class ShowOtaInfoDialogFragment extends DialogFragment {
 	@BindView(R.id.textView_Operation_Permission)
 	TextView TextView_OperatePermission;
 
-	private Context mContext;
+	private Context mContext=null;
 
-	private String RemoteMac,RemoteName;
-	private int RemoteSfVer,RemotePower;
+	private String RemoteMac=null,RemoteName=null;
+	private int RemoteSfVer=0x0,RemotePower=0x0;
 
 	// 所需蓝牙和存储权限
 	private String[] BlePermissions = {
@@ -89,21 +87,10 @@ public class ShowOtaInfoDialogFragment extends DialogFragment {
 		// 注册广播
 		RegisterBroadcastReceiver();
 
-		// 发送广播，获取信息------------
-		//获得遥控器名字和MAC地址
+		// 发送广播,获得遥控器名字和MAC地址
 		BroadcastAction.sendBroadcast(mContext, BroadcastAction.BROADCAST_SERVICE_REC_ACTION_BLUETOOTH,
 				BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_GATT_INIT);
 
-		// TODO : 暂时用延时，后面看看是否有更好的办法
-		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-
-		//获得遥控版本和电量
-		BroadcastAction.sendBroadcast(mContext, BroadcastAction.BROADCAST_SERVICE_REC_ACTION_REMOTE_UPGRADE,
-				BroadcastAction.BROADCAST_CONTENT_REMOTE_INFO);
 
 		//获取当前Android设备的权限状态
 		sTempString = getResources().getString(R.string.Text_view_operation_permission);
@@ -236,6 +223,10 @@ public class ShowOtaInfoDialogFragment extends DialogFragment {
 					sTempString += RemoteMac;
 					TextView_RemoteInfo.setText(sTempString);
 
+					// 发送广播获取遥控版本和电量
+					BroadcastAction.sendBroadcast(mContext, BroadcastAction.BROADCAST_SERVICE_REC_ACTION_REMOTE_UPGRADE,
+							BroadcastAction.BROADCAST_CONTENT_REMOTE_INFO);
+
 				} else  if (sbroad_value.equals(BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_GATT_DISCONNECTED)) {
 					// Gatt dis connected
 					String BleAddress = sbroad_aux_val;
@@ -243,7 +234,6 @@ public class ShowOtaInfoDialogFragment extends DialogFragment {
 					sTempString = getResources().getString(R.string.Text_view_remote_info);
 					sTempString += getResources().getString(R.string.Toast_view_rc_not_exist);
 					TextView_RemoteInfo.setText(sTempString);
-
 				}
 			}
 			else if (BroadcastAction.BROADCAST_SERVICE_SEND_ACTION_REMOTE_UPGRADE.equals(action))

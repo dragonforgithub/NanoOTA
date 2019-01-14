@@ -91,7 +91,20 @@ public class Utils {
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         } return code;
+    }
 
+    /**
+     * 获得当前APP的版本名：
+     */
+    public static String getAppVersionName(Context mContext) {
+        PackageManager manager = mContext.getPackageManager();
+        String name=null;
+        try {
+            PackageInfo info = manager.getPackageInfo(mContext.getPackageName(), 0);
+            name = info.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        } return name;
     }
 
     /**
@@ -213,6 +226,21 @@ public class Utils {
         return true;
     }
 
+    /**
+     * 判断是否快速双击
+     * @return
+     */
+    private static long lastClickTime;
+    public static boolean isFastDoubleClick() {
+        long time = System.currentTimeMillis();
+        long timeD = time - lastClickTime;
+        //L.w(" Double click timeD = " + timeD);
+        lastClickTime = time;
+        if ( 0 < timeD && timeD < 800) {
+            return true;
+        }
+        return false;
+    }
 
 
 

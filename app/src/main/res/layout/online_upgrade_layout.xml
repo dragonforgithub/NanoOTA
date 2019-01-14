@@ -10,69 +10,61 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
 
-            <RelativeLayout
+            <TextView
+                android:id="@+id/tv_download_file"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:paddingTop="10dp"
+                android:text="@string/online_upgrade_title"
+                android:textColor="@android:color/black"
+                android:textSize="20sp" />
+
+            <ImageButton
+                android:id="@+id/BTN_CLOSE"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/btn_close" />
+
+            <TextView
+                android:id="@+id/tv_project"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_download_file"
+                android:layout_marginTop="40dp"
+                android:layout_marginStart="35dp"
+                android:paddingBottom="10dp"
+                android:text="项目编号："
+                android:textColor="@android:color/black"
+                android:textSize="15sp" />
+
+            <EditText
+                android:id="@+id/et_DownloadFile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp">
-
-                <TextView
-                    android:id="@+id/tv_download_file"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:paddingTop="10dp"
-                    android:text="@string/online_upgrade_title"
-                    android:textColor="@android:color/black"
-                    android:textSize="20sp" />
-
-                <ImageButton
-                    android:id="@+id/BTN_CLOSE"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginEnd="10dp"
-                    android:background="@drawable/btn_close" />
-
-                <TextView
-                    android:id="@+id/tv_project"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingStart="15dp"
-                    android:paddingTop="65dp"
-                    android:paddingBottom="10dp"
-                    android:text="项目编号："
-                    android:textColor="@android:color/black"
-                    android:textSize="15sp"
-                    tools:ignore="RtlSymmetry" />
-
-                <EditText
-                    android:id="@+id/et_DownloadFile"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignBottom="@+id/tv_project"
-                    android:layout_toEndOf="@+id/tv_project"
-                    android:hint="rc1888                   "
-                    android:inputType="text"
-                    android:padding="10dp"
-                    android:textColor="#2fa881"
-                    android:textSize="18sp" />
-
-            </RelativeLayout>
+                android:layout_alignBottom="@+id/tv_project"
+                android:layout_toEndOf="@+id/tv_project"
+                android:layout_marginEnd="35dp"
+                android:hint="rc1888                   "
+                android:inputType="text"
+                android:padding="10dp"
+                android:textColor="#2fa881"
+                android:textSize="18sp" />
 
             <Button
                 android:id="@+id/BTN_NEXT"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginBottom="10dp"
+                android:layout_margin="30dp"
+                android:layout_below="@+id/et_DownloadFile"
                 android:background="@drawable/btn_integrated"
                 android:enabled="false"
                 android:gravity="center"
@@ -80,7 +72,8 @@
                 android:text="下一步"
                 android:textColor="@color/white"
                 android:textSize="18sp" />
-        </LinearLayout>
+
+        </RelativeLayout>
 
         <ProgressBar xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/loading"

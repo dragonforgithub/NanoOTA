@@ -231,9 +231,12 @@ public class BluetoothLeService extends Service {
         if (mBluetoothManager != null) {
             L.w("The BluetoothManager is not null!");
             SendRemoteTotalInfo();
-            return false;
+            return true;
         }
+
+        // 重置蓝牙相关变量
         ResetBluetoothValue();
+
         if (mBluetoothManager == null) {
             mBluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
             if (mBluetoothManager == null) {
@@ -749,7 +752,12 @@ public class BluetoothLeService extends Service {
 
                 } else  if(sbroad_value.equals(BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_GATT_INIT)) {
                     L.i("BluetoothLeService receive a broadcast, initialize ble.");
-                    initialize(null,null);
+                    if (initialize(null, null)) {
+                        fCanAutoUpgrade = true;
+                        L.w("set fCanAutoUpgrade : " + fCanAutoUpgrade);
+                    } else {
+                        L.e("Init Err:no device.");
+                    }
                 }
             }else if (BroadcastAction.BROADCAST_SERVICE_REC_ACTION_FILE_OPERATION.equals(action)) {
 
@@ -879,7 +887,9 @@ public class BluetoothLeService extends Service {
                     break;
                 }
             }
-            L.i("OK:"+ fBleRecVendorPacketOk + ":" + fBleSendVendorPacketOk);
+
+            L.w("Send:"+ fBleSendVendorPacketOk + ", Rcv:" + fBleRecVendorPacketOk);
+
             if(fBleRecVendorPacketOk) {
                 if (BleRecBuff[0] == (byte) 0x5c){
                     if(BleRecBuff[1] == (byte) 0x70) {
@@ -971,7 +981,7 @@ public class BluetoothLeService extends Service {
                 }
             }
 
-            L.w("OK:"+ fBleRecVendorPacketOk + "," + fBleSendVendorPacketOk);
+            L.w("Send:"+ fBleSendVendorPacketOk + ", Rcv:" + fBleRecVendorPacketOk);
             if(fBleRecVendorPacketOk) {
                 if (BleRecBuff[0] == (byte) 0x5c){
                     if(BleRecBuff[1] == (byte) 0xf9) {
@@ -1018,7 +1028,9 @@ public class BluetoothLeService extends Service {
                     break;
                 }
             }
-            L.w("OK:"+ fBleRecVendorPacketOk + ":" + fBleSendVendorPacketOk);
+
+            L.w("Send:"+ fBleSendVendorPacketOk + ", Rcv:" + fBleRecVendorPacketOk);
+
             if(fBleRecVendorPacketOk) {
                 if (BleRecBuff[0] == (byte) 0x5c){
                     if(BleRecBuff[1] == (byte) 0xf7) {
@@ -1580,8 +1592,9 @@ public class BluetoothLeService extends Service {
                         //检测蓝牙设备，获取状态信息
                         if (initialize(null, null)) {
                             fCanAutoUpgrade = true;
+                            L.w("set fCanAutoUpgrade : " + fCanAutoUpgrade);
                         } else {
-                            L.i("Init Err:no device.");
+                            L.e("Init Err:no device.");
                         }
                     }
                     /* //修改定时器执行周期

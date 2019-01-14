@@ -23,6 +23,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.lxl.nanosic.app.ble.BluetoothLeService;
 import com.lxl.nanosic.app.ble.BroadcastAction;
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button mBtnOnline;
     private Button mBtnDevInfo;
     private DrawableSwitch mDrawableSwitch;
+    private TextView mTvCopyrightVer;
 
     private final int OTA_PERMISSION_REQUEST_CODE = 10000;
     private final String[] strPermissions  = new String[] {
@@ -134,6 +136,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Config.SetEncryptState(isSwitchOn);
             }
         });
+
+        /** 文本显示版权和应用版本信息 */
+        String copyRightStr = getResources().getString(R.string.copyright_info);
+        String appVersion = Utils.getAppVersionName(getApplicationContext());
+        mTvCopyrightVer = findViewById(R.id.copyrightVer);
+        mTvCopyrightVer.setText(copyRightStr+"\n版本："+appVersion);
     }
 
     @Override
@@ -209,6 +217,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
 
+        // 防止短时间连续点击产生多个DialogFragment
+        if(Utils.isFastDoubleClick()){
+            L.w("Click too fast!!!");
+            return;
+        }
+
         switch (view.getId()){
             case R.id.otaLocal:
 
@@ -237,6 +251,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 */
 
                 break;
+
             case R.id.otaOnline:
                 // 显示在线升级界面
                 fragment_Online.show(getFragmentManager(), "online"); //在线升级界面
