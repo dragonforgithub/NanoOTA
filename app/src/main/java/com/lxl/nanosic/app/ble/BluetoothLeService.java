@@ -1379,8 +1379,6 @@ public class BluetoothLeService extends Service {
                                     L.i("Remote version check is normal.");
                                     flagUpgrade = true;
                                 } else {
-                                    // 启动UI
-                                    //StartFloatActivity();
                                     // 发送广播显示结果
                                     BroadcastAction.sendBroadcast(mThis,
                                             BroadcastAction.BROADCAST_SERVICE_SEND_ACTION_REMOTE_UPGRADE,
@@ -1400,6 +1398,7 @@ public class BluetoothLeService extends Service {
                         }else{
                             // 启动UI
                             //StartFloatActivity();
+
                             L.i("The battery voltage is low, abort.");
                             // 发送广播显示结果
                             BroadcastAction.sendBroadcast(mThis,
@@ -1646,6 +1645,8 @@ public class BluetoothLeService extends Service {
                             } else { //-----版本相同-----
                                 // 启动UI
                                 // StartFloatActivity();
+                                // 停止定时器
+                                StopServiceTimer();
                                 // 发送广播给UI显示结果
                                 BroadcastAction.sendBroadcast(mThis,
                                         BroadcastAction.BROADCAST_SERVICE_SEND_ACTION_REMOTE_UPGRADE,
@@ -1656,6 +1657,8 @@ public class BluetoothLeService extends Service {
                         } else { //-----VID PID 不匹配-----
                             // 启动UI
                             // StartFloatActivity();
+                            // 停止定时器
+                            StopServiceTimer();
                             // 发送广播给UI显示结果
                             BroadcastAction.sendBroadcast(mThis,
                                     BroadcastAction.BROADCAST_SERVICE_SEND_ACTION_REMOTE_UPGRADE,
@@ -1691,8 +1694,8 @@ public class BluetoothLeService extends Service {
             Intent mainActivityIntent = new Intent(mThis, UpgradeActivity.class);  // 要启动的Activity
             mainActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             mThis.startActivity(mainActivityIntent);
+            L.i("StartFloatActivity...");
         }
-        L.i("=== Start UI : "+isUiStarted);
     }
 }
 

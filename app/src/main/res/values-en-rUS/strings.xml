@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 主页UI -->
+    <string name="app_name">RC OTA</string>
+    <string name="ota_Local">Local Upgrade</string>
+    <string name="ota_Online">Online Upgrade</string>
+    <string name="dev_Information">Device Information</string>
+    <string name="copyright_info">All right reserved ©2019 Nanosic Technology Corp</string>
+    <string name="app_version">Version:</string>
+    <string name="app_update_select">New version available, update?</string>
+    <string name="app_update_yes">Yes</string>
+    <string name="app_update_no">No</string>
+    <string name="app_update">Application Update</string>
+    <string name="app_download_failed">Download failed!</string>
+    <string name="app_download_progress">Download progress: </string>
+
+    <string name="encryption_text">Encrypt</string>
+    <string name="encryption_open">Open</string>
+    <string name="encryption_close">Close</string>
+
+    <string name="permission_guide">Please to \"App info -> Permissions\" authorize!</string>
+    <string name="permission_manual">Authorize</string>
+    <string name="permission_cancel">Cancel</string>
+
+    <!-- 本地升级UI -->
+    <string name="local_select_version">Select upgrade version</string>
+    <string name="local_upgrade_start">Start</string>
+    <string name="local_upgrade_delete">DEL</string>
+    <string name="local_upgrade_filtrate">Filtrate:</string>
+
+    <!-- 在线升级UI -->
+    <string name="online_upgrade_title">Get version list</string>
+    <string name="online_upgrade_projectID">Project ID:</string>
+    <string name="online_upgrade_next">Next</string>
+
+    <!-- 升级进度UI -->
+    <string name="upgrade_hint1">Please connect the RC</string>
+    <string name="upgrade_hint2">{Press any key to enter the upgrade}\n{Press back key to exit the upgrade}</string>
+    <string name="upgrade_failed">Upgrade failed!</string>
+    <string name="upgrade_RC_disconnected">RC disconnected!</string>
+    <string name="upgrade_low_battery">RC battery is too low!</string>
+    <string name="upgrade_VID_PID_error">Upgrade file does not match!</string>
+    <string name="upgrade_communicate_failed">Data transmission interrupt!</string>
+    <string name="upgrade_already_newest">Already the latest version!</string>
+    <string name="upgrade_success">Upgrade success!</string>
+    <string name="upgrade_exit">Exit upgrade!</string>
+    <string name="upgrade_initialize">Information initializing…</string>
+    <string name="upgrade_in_progress">Please do not power off!</string>
+    <string name="upgrade_in_progress_toast">Updating…</string>
+
+
+    <!-- 蓝牙部分相关定义 -->
+    <string name="button_name_connect_remote">连接遥控器</string>
+    <string name="button_name_have_connect_remote">已连接</string>
+    <string name="button_name_read_remote_ver_power">读取版本、电量</string>
+    <string name="button_name_star_upgrade">启动升级</string>
+    <string name="button_name_in_star_upgrade">升级中...</string>
+    <string name="button_name_in_upgrade_complete">升级完成</string>
+    <string name="button_name_in_upgrade_err">升级错误</string>
+    <string name="button_name_stop_upgrade">停止升级</string>
+    <string name="button_name_exit">退出</string>
+
+    <string name="button_text_color_red">#FF3030</string>
+    <string name="button_text_color_black">#000000</string>
+
+
+    <string name="Text_view_file_address">升级文件地址：</string>
+    <string name="Text_view_file_version">升级文件版本：</string>
+
+    <string name="Text_view_remote_info">RC Information: </string>
+    <string name="Text_view_remote_info_name">RC Name: </string>
+    <string name="Text_view_remote_info_mac">RC Mac: </string>
+
+    <string name="Text_view_remote_vp">RC Power and version: </string>
+    <string name="Text_view_remote_ver">RC Version: </string>
+    <string name="Text_view_remote_power">RC Power: </string>
+    <string name="Text_view_operation_permission">Permissions: </string>
+
+
+    <string name="Text_view_error_code_title">错误代码：</string>
+    <string name="Text_view_info_code_F0">请求下一个数据包</string>
+    <string name="Text_view_info_code_F1">数据包异常</string>
+    <string name="Text_view_info_code_F2">bin校验失败</string>
+    <string name="Text_view_info_code_F3">外部Flash异常</string>
+    <string name="Text_view_info_code_F4">升级包长度异常</string>
+    <string name="Text_view_info_code_F5">bin校验通过</string>
+    <string name="Text_view_info_code_F6">进入内部升级流程</string>
+    <string name="Text_view_info_code_F7">电量状态信息回复</string>
+    <string name="Text_view_info_code_F8">信息正确</string>
+    <string name="Text_view_info_code_F9">升级失败，校验错误</string>
+    <string name="Text_view_info_code_FA">遥控器升级成功</string>
+    <string name="Text_view_info_code_FB">遥控器复位</string>
+    <string name="Text_view_info_code_FC">image信息中的VID、PID和遥控器不对应</string>
+    <string name="Text_view_info_code_FD">image信息中的文件长度出错</string>
+    <string name="Text_view_info_code_FE">遥控器没有设置升级规则</string>
+    <string name="Text_view_info_code_FF">遥控器不允许升级</string>
+
+    <string name="Toast_view_star_upgrade">遥控器正在升级程序</string>
+    <string name="Toast_view_upgrade_success">遥控器升级完成</string>
+    <string name="Toast_view_power_low">遥控器电池电量低请更换电池</string>
+    <string name="Toast_view_test_chinese">测试</string>
+    <string name="Toast_view_rc_not_exist">遥控器未连接</string>
+
+</resources>

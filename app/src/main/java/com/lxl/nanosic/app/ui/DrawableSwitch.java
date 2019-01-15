@@ -194,7 +194,7 @@ public class DrawableSwitch extends View {
                 height = width / 20;
                 break;
         }
-        L.d("onMeasure(),width=" + width + ",height=" + height);
+        //L.d("onMeasure(),width=" + width + ",height=" + height);
         setMeasuredDimension(width, height);
     }
 
@@ -229,7 +229,7 @@ public class DrawableSwitch extends View {
             // 设置圆形滑块中的文字
             paint.setColor(textColor); // 文字颜色设置为布局文件里的值
             paint.setTextSize(24);  // 设置文字大小
-            String circleText = "加密";
+            String circleText = getResources().getString(R.string.encryption_text);
             float circleTextWidth = paint.measureText(circleText); // 关闭时需获取文字宽度
             Paint.FontMetrics circleFontMetrics = paint.getFontMetrics();
             float circleFontHeight = circleFontMetrics.bottom - circleFontMetrics.top;
@@ -239,7 +239,7 @@ public class DrawableSwitch extends View {
             // 设置状态文字
             paint.setColor(textColor); // 文字颜色设置为布局文件里的值
             paint.setTextSize(24); // 设置文字大小
-            String text = "打开";
+            String text = getResources().getString(R.string.encryption_open);
             Paint.FontMetrics fontMetrics = paint.getFontMetrics();
             float fontHeight = fontMetrics.bottom - fontMetrics.top;
             float baseline = radius + fontHeight / 2 - fontMetrics.bottom; // 计算文字绘制时的baseline
@@ -264,7 +264,7 @@ public class DrawableSwitch extends View {
             // 设置圆形滑块中的文字
             paint.setColor(textColor); // 文字颜色设置为布局文件里的值
             paint.setTextSize(24);  // 设置文字大小
-            String circleText = "加密";
+            String circleText = getResources().getString(R.string.encryption_text);
             float circleTextWidth = paint.measureText(circleText); // 关闭时需获取文字宽度
             Paint.FontMetrics circleFontMetrics = paint.getFontMetrics();
             float circleFontHeight = circleFontMetrics.bottom - circleFontMetrics.top;
@@ -274,7 +274,7 @@ public class DrawableSwitch extends View {
             // 设置状态文字
             paint.setColor(textColor); // 文字颜色设置为布局文件里的值
             paint.setTextSize(24); // 设置文字大小
-            String text = "关闭";
+            String text = getResources().getString(R.string.encryption_close);
             float textWidth = paint.measureText(text); // 关闭时需获取文字宽度
             Paint.FontMetrics fontMetrics = paint.getFontMetrics();
             float fontHeight = fontMetrics.bottom - fontMetrics.top;

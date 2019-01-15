@@ -35,8 +35,8 @@ android {
         applicationId "com.lxl.nanosic.app"
         minSdkVersion 19
         targetSdkVersion 26
-        versionCode 2
-        versionName "1.0.2"
+        versionCode 3
+        versionName "1.0.3"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         // 设置Cmake参数
@@ -69,6 +69,7 @@ android {
             zipAlignEnabled true //4字节对齐，减少运行内存消耗　
             minifyEnabled false  //false = 关闭混淆
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 

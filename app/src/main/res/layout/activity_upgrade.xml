@@ -13,7 +13,7 @@
         android:id="@+id/textView_Info_Display"
         android:layout_width="600dp"
         android:layout_height="80dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="50dp"
         android:gravity="center"
         android:textSize="30sp"
         android:textStyle="bold"
@@ -25,7 +25,7 @@
         android:id="@+id/textView_Guide_Info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:gravity="center_horizontal"
         android:text="......"
         android:textSize="20sp"
@@ -35,25 +35,25 @@
         app:layout_constraintTop_toBottomOf="@+id/textView_Info_Display" />
 
     <ImageView
-        android:id="@+id/imageView_failed"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:layout_marginTop="40dp"
-        android:src="@drawable/fail"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView_Guide_Info" />
-
-    <ImageView
         android:id="@+id/imageView_success"
         android:layout_width="120dp"
         android:layout_height="120dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="20dp"
         android:src="@drawable/success"
         android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView_Guide_Info" />
+
+    <ImageView
+        android:id="@+id/imageView_failed"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="20dp"
+        android:src="@drawable/fail"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView_Guide_Info" />
 
     <com.lxl.nanosic.app.ui.MultipleProgressBar

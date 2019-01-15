@@ -422,8 +422,8 @@ public class UpgradeLocalFragment extends DialogFragment
 			Intent upgradeUiIntent = new Intent(mContext, UpgradeActivity.class);  // 要启动的Activity
 			upgradeUiIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			mContext.startActivity(upgradeUiIntent);
+			L.i("StartFloatActivity...");
 		}
-		L.i("=== Start UI : "+isUiStarted);
 	}
 
 	//删除文件

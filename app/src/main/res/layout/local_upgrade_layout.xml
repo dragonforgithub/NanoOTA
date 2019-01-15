@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
@@ -28,7 +27,7 @@
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="12dp"
-            android:text="@string/select_version"
+            android:text="@string/local_select_version"
             android:textColor="@android:color/black"
             android:textSize="20sp" />
 
@@ -48,7 +47,7 @@
             android:layout_alignBottom="@+id/UpgradeFileSpinner"
             android:background="@drawable/btn_delete"
             android:layout_marginEnd="2dp"
-            android:text="删除"
+            android:text="@string/local_upgrade_delete"
             android:textColor="@color/white"
             android:textSize="12sp"
             android:visibility="gone" />
@@ -72,7 +71,7 @@
             android:layout_height="wrap_content"
             android:layout_toStartOf="@+id/Project_ID"
             android:layout_alignBottom="@+id/Project_ID"
-            android:text="筛选："
+            android:text="@string/local_upgrade_filtrate"
             android:paddingBottom="10dp"
             android:textColor="@android:color/black"
             android:textSize="15sp"
@@ -86,7 +85,7 @@
             android:layout_centerHorizontal="true"
             android:layout_margin="20dp"
             android:background="@drawable/btn_integrated"
-            android:text="开始"
+            android:text="@string/local_upgrade_start"
             android:textColor="@color/white"
             android:textSize="18sp" />
 

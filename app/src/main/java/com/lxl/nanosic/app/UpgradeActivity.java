@@ -52,20 +52,17 @@ public class UpgradeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upgrade);
         mThis = this;
-        RegisterBroadcastReceiver(); //注册广播
+
         ComponentInitialization();   //初始化界面
         checkBluetoothAndLocationPermission(this); //检查权限
-
-        // 如果没有收到正在升级的广播包则提示用户升级
-        if(!isUpgrading){
-            TextView_MainDisplay.setText("请连接蓝牙遥控器：");
-            TextView_GuideDisplay.setText("{按任意键进入升级}\n{按返回键退出升级}");
-        }
+        RegisterBroadcastReceiver(); //注册广播
 
         // 绑定 BluetoothLeService
+        /*
         if (localService == null) {
             BinderService();
         }
+        */
 
         // 发送UI启动广播告知service
         BroadcastActivityState("ui started");
@@ -78,7 +75,7 @@ public class UpgradeActivity extends AppCompatActivity {
         StopUpgrade(); //停止升级
         BroadcastActivityState("ui stopped");// 发送UI停止广播告知service
         unRegisterBroadcastReceiver();
-        UnBinderService();
+        //UnBinderService();
         super.onDestroy();
         L.i("onDestroy");
     }
@@ -92,22 +89,23 @@ public class UpgradeActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        BroadcastActivityState("ui stopped");// 发送UI停止广播告知service
+
         //按HOME键退出的情况也进入升级
         if(isUpgradeDone){
             ExitUpgrade();
         }
         else if(!isUpgrading) {
             isRcvUpgradeKey = true;
-            TextView_MainDisplay.setText("正在初始化信息...");
+            TextView_MainDisplay.setText(getResources().getString(R.string.upgrade_initialize));
             TextView_GuideDisplay.setVisibility(View.GONE);
             //iv_fail.setVisibility(View.GONE);
             //iv_success.setVisibility(View.GONE);
+            BroadcastActivityState("ui stopped");// 发送UI停止广播告知service
         }
 
-        super.onPause();
         isUIOnTheTop=false;
         L.i("onPause");
+        super.onPause();
     }
 
     /**
@@ -132,9 +130,10 @@ public class UpgradeActivity extends AppCompatActivity {
             /** 不要改变判断顺序，有优先级！*/
             if(isUpgradeDone){
                 ExitUpgrade();
-            }else if(!isUpgrading){
+            }
+            else if(!isUpgrading){
                 isRcvUpgradeKey=true;
-                TextView_MainDisplay.setText("正在初始化信息...");
+                TextView_MainDisplay.setText(getResources().getString(R.string.upgrade_initialize));
                 TextView_GuideDisplay.setVisibility(View.GONE);
                 //iv_fail.setVisibility(View.GONE);
                 //iv_success.setVisibility(View.GONE);
@@ -148,21 +147,31 @@ public class UpgradeActivity extends AppCompatActivity {
     private void  ComponentInitialization(){
         String sTempString;
 
+        // 向导文本
         TextView_MainDisplay = (TextView) findViewById(R.id.textView_Info_Display); //主要状态显示
         TextView_GuideDisplay = (TextView) findViewById(R.id.textView_Guide_Info);
-        multipleProgressBar = (MultipleProgressBar) findViewById(R.id.circleBar); // 进度条
 
-        //升级结果图标
-        iv_fail    = (ImageView) findViewById(R.id.imageView_failed);
+        // 如果没有收到正在升级的广播包则提示用户升级
+        if(!isUpgrading){
+            TextView_MainDisplay.setText(getResources().getString(R.string.upgrade_hint1));
+            TextView_GuideDisplay.setText(getResources().getString(R.string.upgrade_hint2));
+        }
+
         iv_success = (ImageView) findViewById(R.id.imageView_success);
+        iv_fail    = (ImageView) findViewById(R.id.imageView_failed);
 
+        multipleProgressBar = (MultipleProgressBar) findViewById(R.id.circleBar); // 进度条
+        multipleProgressBar.setProgress(0);
+        multipleProgressBar.setEnabled(true);
+
+        // 初始化变量
         RemoteMac = null;
         RemoteName = null;
         RemoteSfVer = 0x00;
         RemotePower = 0x00;
         UpgradeFileVersion = null;
         UpgradeFilePath = null;
-        //==========================================================================================
+
         // 初始化所有文本的显示
         sTempString = "AG:RemoteUpgrade,";
         if(Config.GetEncryptState()){
@@ -171,9 +180,6 @@ public class UpgradeActivity extends AppCompatActivity {
             sTempString += "Unencrypted";
         }
         L.w(sTempString);
-
-        multipleProgressBar.setProgress(0);
-        multipleProgressBar.setEnabled(true);
     }
 
     //==============================================================================================
@@ -297,7 +303,7 @@ public class UpgradeActivity extends AppCompatActivity {
                     String BleAddress = sbroad_aux_val;
                     L.i("Receive broadcast,Ble disconnected :" + BleAddress);
                     if(isUpgrading)
-                        FinishUpgrade(false,"遥控器已断连！",null);
+                        FinishUpgrade(false,getResources().getString(R.string.upgrade_RC_disconnected),null);
 
                 }else  if (sbroad_value.equals(BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_GATT_DISCOVERED)) {
                     // Gatt discovered
@@ -341,7 +347,7 @@ public class UpgradeActivity extends AppCompatActivity {
                     L.i("Receive broadcast,Upgrade Percent:" + String.format("%d,", iPercent));
                     multipleProgressBar.setProgress(iPercent);
                     multipleProgressBar.setVisibility(View.VISIBLE);
-                    TextView_MainDisplay.setText("升级中，请不要断电！");
+                    TextView_MainDisplay.setText(getResources().getString(R.string.upgrade_in_progress));
                     TextView_GuideDisplay.setVisibility(View.GONE);
                     //iv_fail.setVisibility(View.GONE);
                     //iv_success.setVisibility(View.GONE);
@@ -349,38 +355,39 @@ public class UpgradeActivity extends AppCompatActivity {
                     // 如果UI被转后台则通过toast提示升级信息
                     if(!isUIOnTheTop){
                         Utils.ToastShow(getApplicationContext(), Toast.LENGTH_LONG, Gravity.TOP,
-                                "遥控器升级中...", + iPercent +"%");
+                                getResources().getString(R.string.upgrade_in_progress_toast), + iPercent +"%");
                     }
-
                 }else if (sbroad_value.equals(BroadcastAction.BROADCAST_CONTENT_UPGRADE_COMPLETE)) {
                     // 升级完成
                     L.i("Receive broadcast,upgrade complete:" + sbroad_aux_val);
-
                     if(sbroad_aux_val.equals("version is the same")){
-                        FinishUpgrade(true,"已经是最新版本！",null);
+                        String main_val = getResources().getString(R.string.upgrade_already_newest);
+                        FinishUpgrade(true, main_val,null);
                     }else{
-                        FinishUpgrade(true,"升级成功！",null);
+                        String main_val = getResources().getString(R.string.upgrade_success);
+                        FinishUpgrade(true, main_val,null);
                     }
 
                 }else if (sbroad_value.equals(BroadcastAction.BROADCAST_CONTENT_UPGRADE_ERR_INFO)) {
                     // 升级错误
+                    String main_val= getResources().getString(R.string.upgrade_failed);
                     String aux_val=null;
                     L.i("Receive broadcast,upgrade err info:" + sbroad_aux_val);
                     if(sbroad_aux_val.equals("low battery")){
-                        aux_val = "遥控器电量过低，请更换电池！";
+                        aux_val = getResources().getString(R.string.upgrade_low_battery);
                     }else if(sbroad_aux_val.equals("VID or PID error")){
-                        aux_val = "升级文件不匹配，请确认遥控器型号！";
+                        aux_val = getResources().getString(R.string.upgrade_VID_PID_error);
                     }else if(sbroad_aux_val.equals("Send Image fail")
                             || sbroad_aux_val.equals("Send bin fail")
                             || sbroad_aux_val.equals("Send all header fail")
                             || sbroad_aux_val.equals("Send end command fail")
                             || sbroad_aux_val.equals("Initial fail")){
-                        aux_val = "数据传输异常，请重试！";
+                        aux_val = getResources().getString(R.string.upgrade_communicate_failed);
                     }
-                    FinishUpgrade(false,"升级失败！",aux_val);
+                    FinishUpgrade(false, main_val, aux_val);
                 }
                 else if (sbroad_value.equals(BroadcastAction.BROADCAST_CONTENT_UPGRADE_ERR_CODE)) {
-                    L.i("Receive broadcast,upgrade err code:" + sbroad_aux_val);
+                    L.e("Receive broadcast,upgrade err code:" + sbroad_aux_val);
                 }
             }else if (BroadcastAction.BROADCAST_SERVICE_SEND_ACTION_FILE_OPERATION.equals(action)) {
                 // 和文件操作相关的广播
@@ -539,7 +546,7 @@ public class UpgradeActivity extends AppCompatActivity {
         BroadcastAction.sendBroadcast(mThis, BroadcastAction.BROADCAST_SERVICE_REC_ACTION_REMOTE_UPGRADE,
                 BroadcastAction.BROADCAST_CONTENT_UPGRADE_STOP);
 
-        FinishUpgrade(false,"退出遥控器升级！",null);
+        FinishUpgrade(false,getResources().getString(R.string.upgrade_exit),null);
     }
 
     // 升级完成
@@ -548,13 +555,6 @@ public class UpgradeActivity extends AppCompatActivity {
         isUpgrading=false;
         isUpgradeDone=true;
         isRcvUpgradeKey=false;
-
-        multipleProgressBar.setVisibility(View.GONE); //关闭进度条
-        if(result){
-            iv_success.setVisibility(View.VISIBLE); //显示升级成功图标
-        } else {
-            iv_fail.setVisibility(View.VISIBLE); //显示升级失败图标
-        }
 
         // 显示文本提示信息
         TextView_MainDisplay.setText(mainInfo);
@@ -565,15 +565,28 @@ public class UpgradeActivity extends AppCompatActivity {
             TextView_GuideDisplay.setVisibility(View.VISIBLE);
         }
 
+        //关闭进度条
+        multipleProgressBar.setVisibility(View.GONE);
+
+        //显示升级结果图标
+        if(result){
+            //L.w("显示成功图标！！！ "+result);
+            iv_success.setVisibility(View.VISIBLE);
+        } else {
+            //L.w("显示失败图标！！！ "+result);
+            iv_fail.setVisibility(View.VISIBLE);
+        }
+
         // 如果UI被转后台则通过toast提示升级结果
         if(!isUIOnTheTop){
-            ExitUpgrade(); //关闭界面
             Utils.ToastShow(getApplicationContext(), Toast.LENGTH_LONG, Gravity.TOP, mainInfo, auxInfo);
+            ExitUpgrade(); //关闭界面
         }
+
         L.i("Upgrade finish : "+result);
     }
 
-    // 退出
+    // 退出升级进度界面
     private void ExitUpgrade(){
         L.i("Program exit.");
         BroadcastActivityState("ui stopped");// 发送UI停止广播告知service

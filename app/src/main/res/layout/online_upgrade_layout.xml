@@ -42,7 +42,7 @@
                 android:layout_marginTop="40dp"
                 android:layout_marginStart="35dp"
                 android:paddingBottom="10dp"
-                android:text="项目编号："
+                android:text="@string/online_upgrade_projectID"
                 android:textColor="@android:color/black"
                 android:textSize="15sp" />
 
@@ -69,7 +69,7 @@
                 android:enabled="false"
                 android:gravity="center"
                 android:padding="10dp"
-                android:text="下一步"
+                android:text="@string/online_upgrade_next"
                 android:textColor="@color/white"
                 android:textSize="18sp" />
 

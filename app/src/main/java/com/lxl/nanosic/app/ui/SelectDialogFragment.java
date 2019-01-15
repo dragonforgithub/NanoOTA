@@ -30,15 +30,8 @@ public class SelectDialogFragment extends DialogFragment implements View.OnClick
 	Button mBtnNo;
 
     private Context mContext;
-    private static String mTitle=null;
 
-	public static SelectDialogFragment newInstance(String str1, String str2)
-	{
-		if(str1.equals("OtaApk")){
-			mTitle = "检测到新版本，是否下载？";
-		}else{
-			mTitle = "新版本已下载，是否安装？";
-		}
+	public static SelectDialogFragment newInstance(String str1, String str2) {
 		SelectDialogFragment mFragment = new SelectDialogFragment();
 		Bundle bundle = new Bundle();
 		bundle.putString("name", str1); //projectName
@@ -60,7 +53,7 @@ public class SelectDialogFragment extends DialogFragment implements View.OnClick
 		LayoutInflater inflater = getActivity().getLayoutInflater();
 		View view = inflater.inflate(R.layout.select_dialog, null);
 		ButterKnife.bind(this, view);
-		initView(mTitle); // 初始化界面
+		initView(mContext.getResources().getString(R.string.app_update_select));
 		builder.setView(view);
 		return builder.create();
 	}

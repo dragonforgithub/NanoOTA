@@ -20,7 +20,7 @@
 
     <Button
         android:id="@+id/otaLocal"
-        android:layout_width="226dp"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_above="@id/otaOnline"
         android:layout_marginBottom="12dp"
@@ -33,7 +33,7 @@
 
     <Button
         android:id="@+id/otaOnline"
-        android:layout_width="226dp"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
@@ -45,7 +45,7 @@
 
     <Button
         android:id="@+id/devInfo"
-        android:layout_width="226dp"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/otaOnline"
         android:layout_marginTop="12dp"

@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_margin="20dp"
-        android:text="检测到新版本，立即下载？"
+        android:text="@string/app_update_select"
         android:textColor="@android:color/black"
         android:textSize="20sp" />
 
@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/btn_entry"
             android:layout_toStartOf="@+id/txtHide"
-            android:text="是"
+            android:text="@string/app_update_yes"
             android:textColor="@color/white"
             android:textSize="18sp" />
 
@@ -43,7 +43,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/btn_entry"
             android:layout_toEndOf="@+id/txtHide"
-            android:text="否"
+            android:text="@string/app_update_no"
             android:textColor="@color/white"
             android:textSize="18sp" />
 

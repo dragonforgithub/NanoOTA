@@ -82,6 +82,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         strPermissions,
                         OTA_PERMISSION_REQUEST_CODE
                 );
+            } else {
+                // TODO:3s等待,检测是否已经在下载新版的安装包，没有则发送版本检测广播包
+                new Handler().postDelayed(new Runnable(){
+                    public void run() {
+                        if(!isDownloading){
+                            L.d("===sendBroadcast MAIN_UPDATE_APK_CHECK");
+                            BroadcastAction.sendBroadcast(getApplicationContext(),
+                                    BroadcastAction.MAIN_UPDATE_APK_CHECK,
+                                    "check version");
+                        }
+                    }
+                }, 3000);
             }
 
             /** 第 3 步: 判断权限申请结果，如用户未同意则引导至设置界面打开权限 **/
@@ -95,18 +107,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         fragment_Local = UpgradeLocalFragment.newInstance("Local", null,null); //本地升级界面
         fragment_Online = new UpgradeOnlineFragment(); //在线升级界面
         fragment_ShowOtaInfo = ShowOtaInfoDialogFragment.newInstance(); //设备信息界面
-
-        // TODO:3s等待,检测是否已经在下载新版的安装包，没有则发送版本检测广播包
-        new Handler().postDelayed(new Runnable(){
-            public void run() {
-               if(!isDownloading){
-                   L.d("===sendBroadcast MAIN_UPDATE_APK_CHECK");
-                   BroadcastAction.sendBroadcast(getApplicationContext(),
-                           BroadcastAction.MAIN_UPDATE_APK_CHECK,
-                           "check version");
-               }
-            }
-        }, 3000);
 
         /** 创建和服务器的SSL连接 */
         //sslClient = new SSLClient(getApplicationContext());
@@ -139,9 +139,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         /** 文本显示版权和应用版本信息 */
         String copyRightStr = getResources().getString(R.string.copyright_info);
+        String versionText = getResources().getString(R.string.app_version);
         String appVersion = Utils.getAppVersionName(getApplicationContext());
         mTvCopyrightVer = findViewById(R.id.copyrightVer);
-        mTvCopyrightVer.setText(copyRightStr+"\n版本："+appVersion);
+        mTvCopyrightVer.setText(copyRightStr+"\n"+versionText + appVersion);
     }
 
     @Override
@@ -170,8 +171,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     private void openAppDetails() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("请到 “应用信息 -> 权限” 中授予！");
-        builder.setPositiveButton("去手动授权", new DialogInterface.OnClickListener() {
+        builder.setMessage(getResources().getString(R.string.permission_guide));
+        builder.setPositiveButton(getResources().getString(R.string.permission_manual), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Intent intent = new Intent();
@@ -184,7 +185,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(intent);
             }
         });
-        builder.setNegativeButton("取消", null);
+        builder.setNegativeButton(getResources().getString(R.string.permission_cancel), null);
         builder.show();
     }
 
@@ -371,13 +372,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             // 通知栏显示下载进度,内部已封装兼容低版本
             if(curProgress > 0){
-                Utils.showNotification("版本更新","下载进度：",0x3,"0x1",curProgress,100);
-                L.d("安装包下载进度："+curProgress+"%");
+                Utils.showNotification(getResources().getString(R.string.app_update),
+                        getResources().getString(R.string.app_download_progress),
+                        0x3,"0x1",curProgress,100);
+                L.d("Download progress:"+curProgress+"%");
             }
         }
         else if(action.equals(BroadcastAction.MAIN_UPDATE_APK_DOWNLOADFAILED)){
-            Utils.showNotification("版本更新","下载失败！",0x3,"0x1",-1,100);
-            L.d("安装包下载失败！");
+            Utils.showNotification(getResources().getString(R.string.app_update),
+                    getResources().getString(R.string.app_download_failed),
+                    0x3,"0x1",-1,100);
+            L.e("安装包下载失败！");
             isDownloading = false;
         }
         }

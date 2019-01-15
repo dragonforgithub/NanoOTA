@@ -1,13 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- UI部分定义 -->
+    <!-- 主页UI -->
     <string name="app_name">遥控器升级</string>
     <string name="ota_Local">本地升级</string>
     <string name="ota_Online">在线升级</string>
     <string name="dev_Information">设备信息</string>
-    <string name="copyright_info">版权所有 ©2018 Nanosic Technology Corp</string>
+    <string name="copyright_info">版权所有 ©2019 Nanosic Technology Corp</string>
+    <string name="app_version">版本：</string>
+    <string name="app_update_select">检测到新版本，是否更新？</string>
+    <string name="app_update_yes">是</string>
+    <string name="app_update_no">否</string>
+    <string name="app_update">版本更新</string>
+    <string name="app_download_failed">下载失败！</string>
+    <string name="app_download_progress">下载进度：</string>
 
-    <string name="select_version">选择升级版本</string>
+    <string name="encryption_text">加密</string>
+    <string name="encryption_open">打开</string>
+    <string name="encryption_close">关闭</string>
+
+    <string name="permission_guide">请到 “应用信息 -> 权限” 中授予！</string>
+    <string name="permission_manual">去手动授权</string>
+    <string name="permission_cancel">取消</string>
+
+
+    <!-- 本地升级UI -->
+    <string name="local_select_version">选择升级版本</string>
+    <string name="local_upgrade_start">开始</string>
+    <string name="local_upgrade_delete">删除</string>
+    <string name="local_upgrade_filtrate">筛选：</string>
+
+    <!-- 在线升级UI -->
     <string name="online_upgrade_title">获取版本列表</string>
+    <string name="online_upgrade_projectID">项目编号：</string>
+    <string name="online_upgrade_next">下一步</string>
+
+    <!-- 升级进度UI -->
+    <string name="upgrade_hint1">请连接蓝牙遥控器</string>
+    <string name="upgrade_hint2">{按任意键进入升级}\n{按返回键退出升级}</string>
+    <string name="upgrade_failed">升级失败！</string>
+    <string name="upgrade_RC_disconnected">遥控器已断连！</string>
+    <string name="upgrade_low_battery">遥控器电量过低，请更换电池！</string>
+    <string name="upgrade_VID_PID_error">升级文件不匹配，请确认遥控器型号！</string>
+    <string name="upgrade_communicate_failed">数据传输异常，请重试！</string>
+    <string name="upgrade_already_newest">已经是最新版本！</string>
+    <string name="upgrade_success">升级成功！</string>
+    <string name="upgrade_exit">退出遥控器升级！</string>
+    <string name="upgrade_initialize">正在初始化信息…</string>
+    <string name="upgrade_in_progress">升级中，请不要断电！</string>
+    <string name="upgrade_in_progress_toast">遥控器升级中…</string>
 
 
     <!-- 蓝牙部分相关定义 -->
@@ -15,7 +55,7 @@
     <string name="button_name_have_connect_remote">已连接</string>
     <string name="button_name_read_remote_ver_power">读取版本、电量</string>
     <string name="button_name_star_upgrade">启动升级</string>
-    <string name="button_name_in_star_upgrade">升级中...</string>
+    <string name="button_name_in_star_upgrade">升级中…</string>
     <string name="button_name_in_upgrade_complete">升级完成</string>
     <string name="button_name_in_upgrade_err">升级错误</string>
     <string name="button_name_stop_upgrade">停止升级</string>
@@ -35,9 +75,8 @@
     <string name="Text_view_remote_vp">遥控器电量及版本：</string>
     <string name="Text_view_remote_ver">遥控器软件版本：</string>
     <string name="Text_view_remote_power">遥控器电量：</string>
-
     <string name="Text_view_operation_permission">已获得权限：</string>
-    <string name="Text_view_info_display">状态显示：</string>
+
 
     <string name="Text_view_error_code_title">错误代码：</string>
     <string name="Text_view_info_code_F0">请求下一个数据包</string>
