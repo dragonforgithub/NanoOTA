@@ -30,7 +30,7 @@ import com.lxl.nanosic.app.ble.BroadcastAction;
 import com.lxl.nanosic.app.ble.Config;
 import com.lxl.nanosic.app.ui.DrawableSwitch;
 import com.lxl.nanosic.app.ui.SelectDialogFragment;
-import com.lxl.nanosic.app.ui.ShowOtaInfoDialogFragment;
+import com.lxl.nanosic.app.ui.UpgradeDevInfoFragment;
 import com.lxl.nanosic.app.ui.UpgradeLocalFragment;
 import com.lxl.nanosic.app.ui.UpgradeOnlineFragment;
 
@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     
     private UpgradeLocalFragment fragment_Local;
     private UpgradeOnlineFragment fragment_Online;
-    private ShowOtaInfoDialogFragment fragment_ShowOtaInfo;
+    private UpgradeDevInfoFragment fragment_ShowOtaInfo;
 
     private boolean isDownloading = false;
 
@@ -99,6 +99,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             /** 第 3 步: 判断权限申请结果，如用户未同意则引导至设置界面打开权限 **/
             int[] grantResults={0};
             onRequestPermissionsResult(OTA_PERMISSION_REQUEST_CODE,strPermissions,grantResults);
+
+        }else{  //小于Android6.0的版本直接检测版本（无需手动授权sdcard读写权限）
+            // TODO:3s等待,检测是否已经在下载新版的安装包，没有则发送版本检测广播包
+            new Handler().postDelayed(new Runnable(){
+                public void run() {
+                    if(!isDownloading){
+                        L.d("===sendBroadcast MAIN_UPDATE_APK_CHECK");
+                        BroadcastAction.sendBroadcast(getApplicationContext(),
+                                BroadcastAction.MAIN_UPDATE_APK_CHECK,
+                                "check version");
+                    }
+                }
+            }, 3000);
         }
 
         //TODO : 初始化C层进程，可移除
@@ -106,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         fragment_Local = UpgradeLocalFragment.newInstance("Local", null,null); //本地升级界面
         fragment_Online = new UpgradeOnlineFragment(); //在线升级界面
-        fragment_ShowOtaInfo = ShowOtaInfoDialogFragment.newInstance(); //设备信息界面
+        fragment_ShowOtaInfo = UpgradeDevInfoFragment.newInstance(); //设备信息界面
 
         /** 创建和服务器的SSL连接 */
         //sslClient = new SSLClient(getApplicationContext());

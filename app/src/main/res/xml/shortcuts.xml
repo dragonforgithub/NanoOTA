@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_upgrade_local_24dp"
+        android:shortcutId="assets_upgrade"
+        android:shortcutLongLabel="@string/Toast_view_assets_upgrade"
+        android:shortcutShortLabel="@string/Toast_view_assets_upgrade">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.lxl.nanosic.app.UpgradeActivity"
+            android:targetPackage="com.lxl.nanosic.app" />
+    </shortcut>
+
+</shortcuts>

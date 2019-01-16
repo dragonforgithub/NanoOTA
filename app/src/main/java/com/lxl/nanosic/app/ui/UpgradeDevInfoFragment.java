@@ -13,17 +13,21 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.lxl.nanosic.app.L;
 import com.lxl.nanosic.app.R;
+import com.lxl.nanosic.app.Utils;
 import com.lxl.nanosic.app.ble.BroadcastAction;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ShowOtaInfoDialogFragment extends DialogFragment {
+public class UpgradeDevInfoFragment extends DialogFragment implements View.OnClickListener {
 
+	@BindView(R.id.BTN_CLOSE)
+	ImageButton mBtn_Close;
 	@BindView(R.id.textView_Remote_Info)
 	TextView TextView_RemoteInfo;
 	@BindView(R.id.textView_Remote_Version_Power)
@@ -47,8 +51,8 @@ public class ShowOtaInfoDialogFragment extends DialogFragment {
 			Manifest.permission.WRITE_EXTERNAL_STORAGE,
 	};
 
-	public static ShowOtaInfoDialogFragment newInstance() {
-		ShowOtaInfoDialogFragment mFragment = new ShowOtaInfoDialogFragment();
+	public static UpgradeDevInfoFragment newInstance() {
+		UpgradeDevInfoFragment mFragment = new UpgradeDevInfoFragment();
 		return mFragment;
 	}
 
@@ -66,23 +70,42 @@ public class ShowOtaInfoDialogFragment extends DialogFragment {
 		ButterKnife.bind(this, view);
 		initView(view);
 		builder.setView(view);
+
+		// 设置关闭按钮监听
+		mBtn_Close.setOnClickListener(this);
+
 		return builder.create();
 	}
 
+	@Override
+	public void onDestroy() {
+		// 注销广播
+		UnRegisterBroadcastReceiver();
+		super.onDestroy();
+	}
+
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+			case R.id.BTN_CLOSE:
+				dismiss();
+				break;
+		}
+	}
+
+	/** 初始化文本信息 */
 	private void initView(View view){
 		String sTempString;
 		sTempString = getResources().getString(R.string.Text_view_remote_info_name);
-		sTempString += "    ";
+		sTempString += "\n";
 		sTempString += getResources().getString(R.string.Text_view_remote_info_mac);
 		TextView_RemoteInfo.setText(sTempString);
 		sTempString = getResources().getString(R.string.Text_view_remote_ver);
-		sTempString += "    ";
+		sTempString += "\n";
 		sTempString += getResources().getString(R.string.Text_view_remote_power);
 		TextView_RemoteVerPower.setText(sTempString);
 		sTempString = getResources().getString(R.string.Text_view_operation_permission);
 		TextView_OperatePermission.setText(sTempString);
-
-		//TextView_MainDisplay.setText(sTempString);
 
 		// 注册广播
 		RegisterBroadcastReceiver();
@@ -90,7 +113,6 @@ public class ShowOtaInfoDialogFragment extends DialogFragment {
 		// 发送广播,获得遥控器名字和MAC地址
 		BroadcastAction.sendBroadcast(mContext, BroadcastAction.BROADCAST_SERVICE_REC_ACTION_BLUETOOTH,
 				BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_GATT_INIT);
-
 
 		//获取当前Android设备的权限状态
 		sTempString = getResources().getString(R.string.Text_view_operation_permission);
@@ -106,20 +128,20 @@ public class ShowOtaInfoDialogFragment extends DialogFragment {
 
 		if(hasPermission(mContext,BlePermissions[1]) == true)
 		{
-			L.w("BLUETOOTH_PRIVILEGED permissions are normal.");
-			sTempString += "            BLUETOOTH_PRIVILEGED";
-			sTempString += "\n";
-		}else{
-			L.e("No BLUETOOTH_PRIVILEGED permission.");
-		}
-
-		if(hasPermission(mContext,BlePermissions[2]) == true)
-		{
 			L.w("BLUETOOTH_ADMIN permissions are normal.");
 			sTempString += "            BLUETOOTH_ADMIN";
 			sTempString += "\n";
 		}else{
 			L.e("No BLUETOOTH_ADMIN permission.");
+		}
+
+		if(hasPermission(mContext,BlePermissions[2]) == true)
+		{
+			L.w("BLUETOOTH_PRIVILEGED permissions are normal.");
+			sTempString += "            BLUETOOTH_PRIVILEGED";
+			sTempString += "\n";
+		}else{
+			L.e("No BLUETOOTH_PRIVILEGED permission.");
 		}
 
 		if(hasPermission(mContext,StoragePermissions[0]) == true)
@@ -141,14 +163,6 @@ public class ShowOtaInfoDialogFragment extends DialogFragment {
 		}
 		TextView_OperatePermission.setText(sTempString);
 	}
-
-	@Override
-	public void onDestroy() {
-		// 注销广播
-		UnRegisterBroadcastReceiver();
-		super.onDestroy();
-	}
-
 
 	// 检测权限
 	private boolean hasPermission(Context context, String permission){
@@ -207,7 +221,7 @@ public class ShowOtaInfoDialogFragment extends DialogFragment {
 					L.i("Receive broadcast,Ble Address :" + RemoteMac);
 
 					sTempString = getResources().getString(R.string.Text_view_remote_info_name);
-					sTempString += "    ";
+					sTempString += "\n";
 					sTempString += getResources().getString(R.string.Text_view_remote_info_mac);
 					sTempString += RemoteMac;
 					TextView_RemoteInfo.setText(sTempString);
@@ -218,7 +232,8 @@ public class ShowOtaInfoDialogFragment extends DialogFragment {
 					L.i("Receive broadcast,the device is connected successfully.The name is:" + RemoteName);
 
 					sTempString = getResources().getString(R.string.Text_view_remote_info_name);
-					sTempString += RemoteName + "    ";
+					sTempString += RemoteName;
+					sTempString += "\n";
 					sTempString += getResources().getString(R.string.Text_view_remote_info_mac);
 					sTempString += RemoteMac;
 					TextView_RemoteInfo.setText(sTempString);
@@ -244,7 +259,8 @@ public class ShowOtaInfoDialogFragment extends DialogFragment {
 					L.i("Receive broadcast,the device software version:" + String.format("0x%04X,", RemoteSfVer));
 
 					sTempString = getResources().getString(R.string.Text_view_remote_ver);
-					sTempString += String.format("0x%04X    ", RemoteSfVer);
+					sTempString += String.format("0x%04X", RemoteSfVer);
+					sTempString += "\n";
 					sTempString += getResources().getString(R.string.Text_view_remote_power);
 					TextView_RemoteVerPower.setText(sTempString);
 
@@ -254,7 +270,8 @@ public class ShowOtaInfoDialogFragment extends DialogFragment {
 					L.i("Receive broadcast,the device software version:" + String.format("%d,", RemotePower));
 
 					sTempString = getResources().getString(R.string.Text_view_remote_ver);
-					sTempString += String.format("0x%04X   ", RemoteSfVer);
+					sTempString += String.format("0x%04X", RemoteSfVer);
+					sTempString += "\n";
 					sTempString += getResources().getString(R.string.Text_view_remote_power);
 					sTempString += String.format("%dmV", RemotePower);
 					TextView_RemoteVerPower.setText(sTempString);

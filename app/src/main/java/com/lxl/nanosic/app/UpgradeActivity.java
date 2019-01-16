@@ -57,12 +57,10 @@ public class UpgradeActivity extends AppCompatActivity {
         checkBluetoothAndLocationPermission(this); //检查权限
         RegisterBroadcastReceiver(); //注册广播
 
-        // 绑定 BluetoothLeService
-        /*
+        // 绑定 BluetoothLeService，用shortcut调起时启动蓝牙服务
         if (localService == null) {
             BinderService();
         }
-        */
 
         // 发送UI启动广播告知service
         BroadcastActivityState("ui started");
@@ -75,7 +73,7 @@ public class UpgradeActivity extends AppCompatActivity {
         StopUpgrade(); //停止升级
         BroadcastActivityState("ui stopped");// 发送UI停止广播告知service
         unRegisterBroadcastReceiver();
-        //UnBinderService();
+        UnBinderService();
         super.onDestroy();
         L.i("onDestroy");
     }
@@ -456,18 +454,20 @@ public class UpgradeActivity extends AppCompatActivity {
             }else{
                 L.e("No BLUETOOTH permission.");
             }
+
             if(hasPermission(context,BlePermissions[1]) == true)
-            {
-                sTempString += "  BLUETOOTH_PRIVILEGED";
-            }else{
-                L.e("No BLUETOOTH_PRIVILEGED permission.");
-            }
-            sTempString += "\n";
-            if(hasPermission(context,BlePermissions[2]) == true)
             {
                 sTempString += "  BLUETOOTH_ADMIN";
             }else{
                 L.e("No BLUETOOTH_ADMIN permission.");
+            }
+
+            sTempString += "\n";
+            if(hasPermission(context,BlePermissions[2]) == true)
+            {
+                sTempString += "  BLUETOOTH_PRIVILEGED";
+            }else{
+                L.e("No BLUETOOTH_PRIVILEGED permission.");
             }
 
             sTempString += "\n";

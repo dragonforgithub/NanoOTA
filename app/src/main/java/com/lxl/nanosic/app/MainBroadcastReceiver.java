@@ -280,7 +280,9 @@ public class MainBroadcastReceiver extends BroadcastReceiver {
             ctx.startActivity(installInte);
         } catch (Exception var5) {
             var5.printStackTrace();
-            Utils.ToastShow(mContext, Toast.LENGTH_LONG, Gravity.TOP,"错误：","没有找到打开此类文件的程序!");
+            String mainText = mContext.getResources().getString(R.string.Text_view_error_code_title);
+            String subText = mContext.getResources().getString(R.string.Toast_view_unrecognized_file);
+            Utils.ToastShow(mContext, Toast.LENGTH_LONG, Gravity.TOP, mainText, subText);
         }
     }
 }

@@ -42,8 +42,8 @@ public class UpgradeOnlineFragment extends DialogFragment implements View.OnClic
     @BindView(R.id.loading)
     ProgressBar loading;
 
-    private Context mContext;
-    private String mProjectId;
+    private Context mContext=null;
+    private String mProjectId=null;
 
     /**handler消息类型定义*/
     public final int SSL_SENDMSG_GET_LIST = 1;      //获取下载地址
@@ -65,6 +65,13 @@ public class UpgradeOnlineFragment extends DialogFragment implements View.OnClic
         initView();
         builder.setView(view);
         return builder.create();
+    }
+
+    @Override
+    public void onDestroy() {
+        mContext = null;
+        L.d("UpgradeOnlineFragment : onDestroy");
+        super.onDestroy();
     }
 
     private void initView() {
@@ -163,7 +170,13 @@ public class UpgradeOnlineFragment extends DialogFragment implements View.OnClic
                             public void onFailure(Call call, Exception e) {
                                 L.e( "error:" + e.getMessage());
                                 showLoading(false);// 关闭进度图标
-                                Utils.ToastShow(mContext, Toast.LENGTH_SHORT, Gravity.CENTER_HORIZONTAL,"错误:","请检查网络!");
+
+                                //如果界面已经关闭则直接返回
+                                if(mContext==null) return;
+
+                                String mainText = getResources().getString(R.string.Text_view_error_code_title);
+                                String subText = getResources().getString(R.string.Toast_view_network_error);
+                                Utils.ToastShow(mContext, Toast.LENGTH_SHORT, Gravity.CENTER_HORIZONTAL, mainText, subText);
                             }
 
                             @Override
@@ -174,7 +187,9 @@ public class UpgradeOnlineFragment extends DialogFragment implements View.OnClic
                                     JSONArray jsArray = jsObj.getJSONArray("list"); //取出版本列表
 
                                     showLoading(false); // 关闭进度图标
-                                    //dismiss(); // 关闭项目编号输入界面
+
+                                    //如果界面已经关闭则直接返回
+                                    if(mContext==null) return;
 
                                     // 显示列表选择界面
                                     UpgradeLocalFragment fragment_Download = UpgradeLocalFragment.newInstance("Server", msgInte, jsArray);
@@ -182,8 +197,14 @@ public class UpgradeOnlineFragment extends DialogFragment implements View.OnClic
 
                                 } catch (JSONException e) {
                                     L.e("Get list error: " + e.getMessage());
-                                    showLoading(false); // 显示列表选择界面
-                                    Utils.ToastShow(mContext , Toast.LENGTH_SHORT, Gravity.CENTER_HORIZONTAL,"错误:","未立项编号!");
+                                    showLoading(false);
+
+                                    //如果界面已经关闭则直接返回
+                                    if(mContext==null) return;
+
+                                    String mainText = getResources().getString(R.string.Text_view_error_code_title);
+                                    String subText = getResources().getString(R.string.Toast_view_invalid_project);
+                                    Utils.ToastShow(mContext , Toast.LENGTH_SHORT, Gravity.CENTER_HORIZONTAL, mainText, subText);
                                 }
                             }
                         });

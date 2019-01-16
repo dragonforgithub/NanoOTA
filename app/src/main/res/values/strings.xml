@@ -78,7 +78,7 @@
     <string name="Text_view_operation_permission">已获得权限：</string>
 
 
-    <string name="Text_view_error_code_title">错误代码：</string>
+    <string name="Text_view_error_code_title">错误：</string>
     <string name="Text_view_info_code_F0">请求下一个数据包</string>
     <string name="Text_view_info_code_F1">数据包异常</string>
     <string name="Text_view_info_code_F2">bin校验失败</string>
@@ -99,7 +99,13 @@
     <string name="Toast_view_star_upgrade">遥控器正在升级程序</string>
     <string name="Toast_view_upgrade_success">遥控器升级完成</string>
     <string name="Toast_view_power_low">遥控器电池电量低请更换电池</string>
-    <string name="Toast_view_test_chinese">测试</string>
+
     <string name="Toast_view_rc_not_exist">遥控器未连接</string>
+    <string name="Toast_view_network_error">请检查网络！</string>
+    <string name="Toast_view_not_support_ota">该设备不支持OTA！</string>
+    <string name="Toast_view_invalid_project">未立项编号！</string>
+    <string name="Toast_view_select_file">未选择文件！</string>
+    <string name="Toast_view_unrecognized_file">没有找到打开此类文件的程序！</string>
+    <string name="Toast_view_assets_upgrade">内置升级</string>
 
 </resources>

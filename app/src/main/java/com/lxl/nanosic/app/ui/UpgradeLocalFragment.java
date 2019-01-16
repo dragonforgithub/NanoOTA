@@ -77,7 +77,7 @@ public class UpgradeLocalFragment extends DialogFragment
 	private List<String> list_bin=new ArrayList<String>();
 	private static JSONArray downloadList=null;
 
-	private Context mContext;
+	private Context mContext=null;
 
 	private String mUpgradeMode=null;
 	private String mUpgradeFile=null;
@@ -120,6 +120,13 @@ public class UpgradeLocalFragment extends DialogFragment
 	}
 
 	@Override
+	public void onDestroy() {
+		mContext = null;
+		L.d("UpgradeLocalFragment : onDestroy");
+		super.onDestroy();
+	}
+
+	@Override
 	public void onClick(View view) {
 
 		switch (view.getId()){
@@ -147,7 +154,8 @@ public class UpgradeLocalFragment extends DialogFragment
 								BroadcastAction.BROADCAST_CONTENT_UPGRADE_FILE_PATH,
 								mUpgradeFile);
 					}else{
-						Utils.ToastShow(mContext, Toast.LENGTH_SHORT, Gravity.CENTER_HORIZONTAL,"未选择文件！",null);
+						String mainText = getResources().getString(R.string.Toast_view_select_file);
+						Utils.ToastShow(mContext, Toast.LENGTH_SHORT, Gravity.CENTER_HORIZONTAL, mainText,null);
 					}
 
 				}else if(mUpgradeMode.equals("Server")) {
@@ -161,10 +169,12 @@ public class UpgradeLocalFragment extends DialogFragment
 			case R.id.Delete_File:
 				if(mUpgradeFile != null){
 					DeleteFile(mUpgradeFile);
-					Utils.ToastShow(mContext, Toast.LENGTH_SHORT, Gravity.CENTER_HORIZONTAL,"删除:",mUpgradeFile);
+					String mainText = getResources().getString(R.string.local_upgrade_delete);
+					Utils.ToastShow(mContext, Toast.LENGTH_SHORT, Gravity.CENTER_HORIZONTAL, mainText, mUpgradeFile);
 					listLocalUpgradeFile(mProjectSelect, mSDCardPath); // 扫描本地文件更新选择列表
 				}else{
-					Utils.ToastShow(mContext, Toast.LENGTH_SHORT, Gravity.CENTER_HORIZONTAL,"未选择文件！",null);
+					String mainText = getResources().getString(R.string.Toast_view_select_file);
+					Utils.ToastShow(mContext, Toast.LENGTH_SHORT, Gravity.CENTER_HORIZONTAL, mainText,null);
 				}
 				break;
 		}
@@ -362,8 +372,15 @@ public class UpgradeLocalFragment extends DialogFragment
 						@Override
 						public void onFailure(Call call, Exception e) {
 							L.e( "DownloadFile error:" + e);
-							Utils.ToastShow(mContext, Toast.LENGTH_SHORT, Gravity.CENTER_HORIZONTAL,"错误:","文件下载失败！");
+
+							//如果界面已经关闭则直接返回
+							if(mContext==null) return;
+
+							String mainText = getResources().getString(R.string.Text_view_error_code_title);
+							String subText = getResources().getString(R.string.app_download_failed);
+							Utils.ToastShow(mContext, Toast.LENGTH_SHORT, Gravity.CENTER_HORIZONTAL, mainText, subText);
 							showDownLoading(false);
+
 						}
 
 						@Override
@@ -376,6 +393,9 @@ public class UpgradeLocalFragment extends DialogFragment
 						public void onResponse(File response) {
 							L.d("DownloadFile(File) ---> " + response);
 							showDownLoading(false);
+
+							//如果界面已经关闭则直接返回
+							if(mContext==null) return;
 
 							if(response != null){
                                 //发送广播包给BLE service，告知本地升级文件路径
@@ -390,7 +410,9 @@ public class UpgradeLocalFragment extends DialogFragment
                                 // 启动升级UI
                                 StartUpgradeActivity();
                             } else{
-                                Utils.ToastShow(mContext, Toast.LENGTH_SHORT, Gravity.CENTER_HORIZONTAL,"错误:","无效的升级文件！");
+								String mainText = getResources().getString(R.string.Text_view_error_code_title);
+								String subText = getResources().getString(R.string.app_download_failed);
+                                Utils.ToastShow(mContext, Toast.LENGTH_SHORT, Gravity.CENTER_HORIZONTAL, mainText, subText);
                             }
 						}
 					});

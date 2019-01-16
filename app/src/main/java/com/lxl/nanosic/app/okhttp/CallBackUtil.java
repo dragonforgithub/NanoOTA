@@ -180,7 +180,7 @@ public abstract class CallBackUtil<T> {
                 is = response.body().byteStream();
                 final long total = response.body().contentLength();
                 if(total < 1024){ //少于1k则认为无效文件
-                    throw new Exception("<1k : 无效文件");
+                    throw new Exception("file < 1k !!!");
                 }
                 L.i("Download file total size = " + total);
 

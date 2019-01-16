@@ -5,55 +5,72 @@
     android:orientation="vertical"
     android:layout_gravity="center" >
 
-    <TextView
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageButton
+            android:id="@+id/BTN_CLOSE"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/btn_close" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dev_Information"
+            android:textSize="20sp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="12dp"
+            android:textColor="@android:color/black" />
+
+    </RelativeLayout>
+
+    <FrameLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/dev_Information"
-        android:textSize="20sp"
-        android:layout_gravity="center|top"
-        android:textColor="@android:color/black"
-        android:layout_marginTop="16dp" />
+        android:layout_height="wrap_content">
 
-   <FrameLayout
-       android:layout_width="wrap_content"
-       android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:orientation="vertical">
 
-       <LinearLayout
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           android:layout_marginTop="18dp"
-           android:orientation="vertical">
+            <TextView
+                android:id="@+id/textView_Remote_Info"
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+                android:text="@string/Text_view_remote_info"
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp" />
 
-           <TextView
-               android:id="@+id/textView_Remote_Info"
-               android:layout_width="400dp"
-               android:layout_height="wrap_content"
-               android:text="@string/Text_view_remote_info"
-               android:layout_marginTop="8dp"
-               android:layout_marginLeft="8dp"
-               android:layout_marginRight="8dp" />
+            <TextView
+                android:id="@+id/textView_Remote_Version_Power"
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+                android:text="@string/Text_view_remote_vp"
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp" />
 
-           <TextView
-               android:id="@+id/textView_Remote_Version_Power"
-               android:layout_width="400dp"
-               android:layout_height="wrap_content"
-               android:text="@string/Text_view_remote_vp"
-               android:layout_marginTop="8dp"
-               android:layout_marginLeft="8dp"
-               android:layout_marginRight="8dp" />
+            <TextView
+                android:id="@+id/textView_Operation_Permission"
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+                android:text="@string/Text_view_operation_permission"
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="8dp"/>
 
-           <TextView
-               android:id="@+id/textView_Operation_Permission"
-               android:layout_width="400dp"
-               android:layout_height="wrap_content"
-               android:text="@string/Text_view_operation_permission"
-               android:layout_marginTop="8dp"
-               android:layout_marginLeft="8dp"
-               android:layout_marginRight="8dp"
-               android:layout_marginBottom="8dp"/>
+        </LinearLayout>
 
-       </LinearLayout>
-
-   </FrameLayout>
+    </FrameLayout>
 
 </LinearLayout>

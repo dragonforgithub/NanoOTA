@@ -4,7 +4,7 @@
     <string name="app_name">RC OTA</string>
     <string name="ota_Local">Local Upgrade</string>
     <string name="ota_Online">Online Upgrade</string>
-    <string name="dev_Information">Device Information</string>
+    <string name="dev_Information">Device Info</string>
     <string name="copyright_info">All right reserved ©2019 Nanosic Technology Corp</string>
     <string name="app_version">Version:</string>
     <string name="app_update_select">New version available, update?</string>
@@ -23,13 +23,13 @@
     <string name="permission_cancel">Cancel</string>
 
     <!-- 本地升级UI -->
-    <string name="local_select_version">Select upgrade version</string>
+    <string name="local_select_version">Select Upgrade Version</string>
     <string name="local_upgrade_start">Start</string>
     <string name="local_upgrade_delete">DEL</string>
     <string name="local_upgrade_filtrate">Filtrate:</string>
 
     <!-- 在线升级UI -->
-    <string name="online_upgrade_title">Get version list</string>
+    <string name="online_upgrade_title">Get Version List</string>
     <string name="online_upgrade_projectID">Project ID:</string>
     <string name="online_upgrade_next">Next</string>
 
@@ -46,14 +46,14 @@
     <string name="upgrade_exit">Exit upgrade!</string>
     <string name="upgrade_initialize">Information initializing…</string>
     <string name="upgrade_in_progress">Please do not power off!</string>
-    <string name="upgrade_in_progress_toast">Updating…</string>
+    <string name="upgrade_in_progress_toast">RC Updating…</string>
 
 
     <!-- 蓝牙部分相关定义 -->
     <string name="button_name_connect_remote">连接遥控器</string>
     <string name="button_name_have_connect_remote">已连接</string>
     <string name="button_name_read_remote_ver_power">读取版本、电量</string>
-    <string name="button_name_star_upgrade">启动升级</string>
+    <string name="button_name_star_upgrade">Start Upgrade</string>
     <string name="button_name_in_star_upgrade">升级中...</string>
     <string name="button_name_in_upgrade_complete">升级完成</string>
     <string name="button_name_in_upgrade_err">升级错误</string>
@@ -77,7 +77,7 @@
     <string name="Text_view_operation_permission">Permissions: </string>
 
 
-    <string name="Text_view_error_code_title">错误代码：</string>
+    <string name="Text_view_error_code_title">Error: </string>
     <string name="Text_view_info_code_F0">请求下一个数据包</string>
     <string name="Text_view_info_code_F1">数据包异常</string>
     <string name="Text_view_info_code_F2">bin校验失败</string>
@@ -98,7 +98,14 @@
     <string name="Toast_view_star_upgrade">遥控器正在升级程序</string>
     <string name="Toast_view_upgrade_success">遥控器升级完成</string>
     <string name="Toast_view_power_low">遥控器电池电量低请更换电池</string>
-    <string name="Toast_view_test_chinese">测试</string>
-    <string name="Toast_view_rc_not_exist">遥控器未连接</string>
+
+    <string name="Toast_view_rc_not_exist">Disconnected</string>
+    <string name="Toast_view_network_error">Please check the network!</string>
+    <string name="Toast_view_not_support_ota">The device does not support OTA!</string>
+    <string name="Toast_view_invalid_project">Project not exist!</string>
+    <string name="Toast_view_select_file">No file selected!</string>
+    <string name="Toast_view_unrecognized_file">File unrecognized!</string>
+    <string name="Toast_view_assets_upgrade">Assets Upgrade</string>
+
 
 </resources>

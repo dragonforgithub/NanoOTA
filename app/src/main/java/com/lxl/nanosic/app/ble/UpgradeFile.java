@@ -23,8 +23,8 @@ public class UpgradeFile {
     private int UpgradeAppLen,UpgradeAppStarAddr;
     String FileVersion;
 
-    public UpgradeFile(Context bContex, String filePath){
-        backContext = bContex;
+    public UpgradeFile(Context bContext, String filePath){
+        backContext = bContext;
         OnePacketBuf = new byte[20];
         mFileUpgradeHead = new byte[32];
         BackFileHead = new byte[64];
@@ -36,7 +36,7 @@ public class UpgradeFile {
 
         if(filePath == null) { //未指定sdcard的路径则从asset目录加载升级文件
             pathFile = "RemoteUpgrade" + File.separator + "remote.bin";
-            mFileBuf = mRemoteFileR.ReadAssetUpgradeFile(bContex,pathFile);
+            mFileBuf = mRemoteFileR.ReadAssetUpgradeFile(bContext, pathFile);
             if(mFileBuf != null) {
                 if(mFileBuf.length > 0x6000) {
                     mFileLeng = mFileBuf.length;
@@ -49,11 +49,12 @@ public class UpgradeFile {
                     mFileBuf = null;
                 }
             }else{
+                L.w("No APK/assets/" + pathFile);
                 mFileLeng = 0x00;
             }
         } else { //指定sdcard路径的升级文件
 
-            mFileBuf = mRemoteFileR.ReadSdCardUpgradeFile(bContex,filePath);
+            mFileBuf = mRemoteFileR.ReadSdCardUpgradeFile(bContext,filePath);
             if(mFileBuf != null) {
                 if(mFileBuf.length > 0x6000) {
                     mFileLeng = mFileBuf.length;
@@ -68,7 +69,6 @@ public class UpgradeFile {
             }else{
                 mFileLeng = 0x00;
             }
-
         }
     }
 

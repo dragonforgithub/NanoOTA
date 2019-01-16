@@ -219,6 +219,8 @@ public class BluetoothLeService extends Service {
         }
         if(mUpgradeFile != null) {
             mUpgradeFile.SendFileTotalInfo();
+        }else{
+            L.e("No upgrade file!");
         }
     }
     /**
@@ -464,7 +466,9 @@ public class BluetoothLeService extends Service {
                 }
                 else{
                     L.e("Invalid device!" );
-                    Utils.ToastShow(mThis, Toast.LENGTH_LONG, Gravity.TOP,"错误:","该设备不支持OTA！");
+                    String mainText = getResources().getString(R.string.Text_view_error_code_title);
+                    String subText = getResources().getString(R.string.Toast_view_not_support_ota);
+                    Utils.ToastShow(mThis, Toast.LENGTH_LONG, Gravity.TOP, mainText, subText);
                 }
             } else {
                 L.i("onServicesDiscovered received: " + status);
