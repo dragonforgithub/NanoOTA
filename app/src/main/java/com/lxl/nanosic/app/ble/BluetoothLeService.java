@@ -683,6 +683,7 @@ public class BluetoothLeService extends Service {
                         isUiStarted = true;
                     }else if(sbroad_aux_val.equals("ui stopped")){
                         isUiStarted = false;
+                        StopServiceTimer(); // 升级界面关闭时停止定时器
                     }
                 }
                 else if (sbroad_value.equals(BroadcastAction.BROADCAST_CONTENT_UPGRADE_FILE_PATH)) {
@@ -1649,8 +1650,6 @@ public class BluetoothLeService extends Service {
                             } else { //-----版本相同-----
                                 // 启动UI
                                 // StartFloatActivity();
-                                // 停止定时器
-                                StopServiceTimer();
                                 // 发送广播给UI显示结果
                                 BroadcastAction.sendBroadcast(mThis,
                                         BroadcastAction.BROADCAST_SERVICE_SEND_ACTION_REMOTE_UPGRADE,
@@ -1661,8 +1660,6 @@ public class BluetoothLeService extends Service {
                         } else { //-----VID PID 不匹配-----
                             // 启动UI
                             // StartFloatActivity();
-                            // 停止定时器
-                            StopServiceTimer();
                             // 发送广播给UI显示结果
                             BroadcastAction.sendBroadcast(mThis,
                                     BroadcastAction.BROADCAST_SERVICE_SEND_ACTION_REMOTE_UPGRADE,
