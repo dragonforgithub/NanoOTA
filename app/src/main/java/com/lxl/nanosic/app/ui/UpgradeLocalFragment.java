@@ -160,7 +160,7 @@ public class UpgradeLocalFragment extends DialogFragment
 
 				}else if(mUpgradeMode.equals("Server")) {
 
-					showDownLoading(true); // 显示进度图标
+					showLoadingIcon(true); // 显示进度图标
 					L.d("下载升级文件 ---> " + mDownLoadURL);
 					sendHttpsMessage(SSL_SENDMSG_DOWNLOAD_FILE, mDownLoadURL, mPrjId);
 				}
@@ -180,7 +180,8 @@ public class UpgradeLocalFragment extends DialogFragment
 		}
 	}
 
-	private void showDownLoading(boolean state) {
+	private void showLoadingIcon(boolean state) {
+		btn_start.setEnabled(!state); // 下载时关闭按键
 		if(downloading!=null){
 			downloading.setVisibility(state ? View.VISIBLE : View.INVISIBLE);
 		}
@@ -379,20 +380,20 @@ public class UpgradeLocalFragment extends DialogFragment
 							String mainText = getResources().getString(R.string.Text_view_error_code_title);
 							String subText = getResources().getString(R.string.app_download_failed);
 							Utils.ToastShow(mContext, Toast.LENGTH_SHORT, Gravity.CENTER_HORIZONTAL, mainText, subText);
-							showDownLoading(false);
+							showLoadingIcon(false);
 
 						}
 
 						@Override
 						public void onResponse(String response) {
 							L.d("DownloadFile(String) ---> " + response);
-							showDownLoading(false);
+							showLoadingIcon(false);
 						}
 
 						@Override
 						public void onResponse(File response) {
 							L.d("DownloadFile(File) ---> " + response);
-							showDownLoading(false);
+							showLoadingIcon(false);
 
 							//如果界面已经关闭则直接返回
 							if(mContext==null) return;

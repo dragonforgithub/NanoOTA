@@ -230,15 +230,15 @@ public class Utils {
      * 判断是否快速双击
      * @return
      */
-    private static long lastClickTime;
+    private static long lastClickTime=0;
     public static boolean isFastDoubleClick() {
         long time = System.currentTimeMillis();
         long timeD = time - lastClickTime;
-        //L.w(" Double click timeD = " + timeD);
-        lastClickTime = time;
-        if ( 0 < timeD && timeD < 800) {
+        L.w(" Double click timeD = " + timeD);
+        if ( 0 < timeD && timeD < 500) {
             return true;
         }
+        lastClickTime = time;
         return false;
     }
 

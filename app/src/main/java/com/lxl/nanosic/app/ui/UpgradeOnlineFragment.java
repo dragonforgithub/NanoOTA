@@ -99,7 +99,9 @@ public class UpgradeOnlineFragment extends DialogFragment implements View.OnClic
         }
     };
 
-    private void showLoading(boolean state) {
+    // 展示下载进度图标
+    private void showLoadingIcon(boolean state) {
+        mBtnNext.setEnabled(!state); // 下载时关闭按键
         if(loading!=null){
             loading.setVisibility(state ? View.VISIBLE : View.INVISIBLE);
         }
@@ -124,13 +126,15 @@ public class UpgradeOnlineFragment extends DialogFragment implements View.OnClic
             case R.id.BTN_NEXT:
 
                 // 防止短时间连续点击产生多个DialogFragment
+                /*
                 if(Utils.isFastDoubleClick()){
                     L.w("Click too fast!!!");
                     return;
                 }
+                */
 
                 // 显示进度图标
-                showLoading(true);
+                showLoadingIcon(true);
 
                 // 检测到合理项目名则发送服务器访问消息，获取下载路径
                 sendHttpsMessage(SSL_SENDMSG_GET_LIST, mProjectId);
@@ -169,7 +173,7 @@ public class UpgradeOnlineFragment extends DialogFragment implements View.OnClic
                             @Override
                             public void onFailure(Call call, Exception e) {
                                 L.e( "error:" + e.getMessage());
-                                showLoading(false);// 关闭进度图标
+                                showLoadingIcon(false);// 关闭进度图标
 
                                 //如果界面已经关闭则直接返回
                                 if(mContext==null) return;
@@ -186,7 +190,7 @@ public class UpgradeOnlineFragment extends DialogFragment implements View.OnClic
                                     JSONObject jsObj = new JSONObject(response); //转换成json对象
                                     JSONArray jsArray = jsObj.getJSONArray("list"); //取出版本列表
 
-                                    showLoading(false); // 关闭进度图标
+                                    showLoadingIcon(false); // 关闭进度图标
 
                                     //如果界面已经关闭则直接返回
                                     if(mContext==null) return;
@@ -197,7 +201,7 @@ public class UpgradeOnlineFragment extends DialogFragment implements View.OnClic
 
                                 } catch (JSONException e) {
                                     L.e("Get list error: " + e.getMessage());
-                                    showLoading(false);
+                                    showLoadingIcon(false);
 
                                     //如果界面已经关闭则直接返回
                                     if(mContext==null) return;

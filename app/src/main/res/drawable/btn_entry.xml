@@ -3,9 +3,16 @@
 
     <item android:drawable="@drawable/btn_focused" android:state_focused="true"/>
 
+    <item android:state_pressed="true">
+        <shape>
+            <solid android:color="#ee02022b"/>
+            <corners android:radius="6dp"/>
+        </shape>
+    </item>
+
     <item>
         <shape>
-            <solid android:color="#ee080926"/>
+            <solid android:color="#ee080d33"/>
             <corners android:radius="6dp"/>
         </shape>
     </item>
