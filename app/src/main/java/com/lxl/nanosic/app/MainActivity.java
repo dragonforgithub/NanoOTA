@@ -351,53 +351,57 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private BroadcastReceiver MainActivityReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-        int ibroad_value = 0x00;
-        String sbroad_value = null, sbroad_aux_val = null;
-        final String action = intent.getAction();
-        String value_type = intent.getStringExtra(BroadcastAction.BROADCAST_VALUE_TYPE);
-        if (value_type.equals(BroadcastAction.BROADCAST_VALUE_STRING)) {
-            sbroad_value = intent.getStringExtra(BroadcastAction.BROADCAST_VALUE_CONTENT_STRING);
-        } else if (value_type.equals(BroadcastAction.BROADCAST_VALUE_INT)) {
-            ibroad_value = intent.getIntExtra(BroadcastAction.BROADCAST_VALUE_CONTENT_INT, 0);
-        } else if (value_type.equals(BroadcastAction.BROADCAST_VALUE_STRING_INT)) {
-            sbroad_value = intent.getStringExtra(BroadcastAction.BROADCAST_VALUE_CONTENT_STRING);
-            ibroad_value = intent.getIntExtra(BroadcastAction.BROADCAST_VALUE_CONTENT_INT, 0);
-        } else if (value_type.equals(BroadcastAction.BROADCAST_VALUE_STRING_STRING)) {
-            sbroad_value = intent.getStringExtra(BroadcastAction.BROADCAST_VALUE_CONTENT_STRING);
-            sbroad_aux_val = intent.getStringExtra(BroadcastAction.BROADCAST_VALUE_CONTENT_STRING_AUX);
-        }
-
-        // 服务器检测到新版本，提示用户升级
-        if(action.equals(BroadcastAction.MAIN_UPDATE_APK_SELECT)){
-            // 获得项目名和版本号参数
-            String projectName = sbroad_value;
-            String versionStr = sbroad_aux_val;
-
-            // TODO:本来想把升级选择界面放到MainBroadcastReceiver中处理，但是无法getFragmentManager()
-            // 根据服务器版本检测结果，进行下载(网络正常)还是本地扫描(网络异常)
-            SelectDialogFragment fragment_Select = SelectDialogFragment.newInstance(projectName, versionStr);
-            fragment_Select.show(getFragmentManager(),"select");
-        }
-        else if(action.equals(BroadcastAction.MAIN_UPDATE_APK_DOWNLOADING)){
-            String state = sbroad_value;
-            int curProgress = ibroad_value;
-            isDownloading = state.equals("true"); // 正在下载升级文件标志位
-
-            // 通知栏显示下载进度,内部已封装兼容低版本
-            if(curProgress > 0){
-                Utils.showNotification(getResources().getString(R.string.app_update),
-                        getResources().getString(R.string.app_download_progress),
-                        0x3,"0x1",curProgress,100);
-                L.d("Download progress:"+curProgress+"%");
+            int ibroad_value = 0x00;
+            String sbroad_value = null, sbroad_aux_val = null;
+            final String action = intent.getAction();
+            String value_type = intent.getStringExtra(BroadcastAction.BROADCAST_VALUE_TYPE);
+            if (value_type.equals(BroadcastAction.BROADCAST_VALUE_STRING)) {
+                sbroad_value = intent.getStringExtra(BroadcastAction.BROADCAST_VALUE_CONTENT_STRING);
+            } else if (value_type.equals(BroadcastAction.BROADCAST_VALUE_INT)) {
+                ibroad_value = intent.getIntExtra(BroadcastAction.BROADCAST_VALUE_CONTENT_INT, 0);
+            } else if (value_type.equals(BroadcastAction.BROADCAST_VALUE_STRING_INT)) {
+                sbroad_value = intent.getStringExtra(BroadcastAction.BROADCAST_VALUE_CONTENT_STRING);
+                ibroad_value = intent.getIntExtra(BroadcastAction.BROADCAST_VALUE_CONTENT_INT, 0);
+            } else if (value_type.equals(BroadcastAction.BROADCAST_VALUE_STRING_STRING)) {
+                sbroad_value = intent.getStringExtra(BroadcastAction.BROADCAST_VALUE_CONTENT_STRING);
+                sbroad_aux_val = intent.getStringExtra(BroadcastAction.BROADCAST_VALUE_CONTENT_STRING_AUX);
             }
-        }
-        else if(action.equals(BroadcastAction.MAIN_UPDATE_APK_DOWNLOADFAILED)){
-            Utils.showNotification(getResources().getString(R.string.app_update),
-                    getResources().getString(R.string.app_download_failed),
-                    0x3,"0x1",-1,100);
-            L.e("安装包下载失败！");
-            isDownloading = false;
-        }
+
+            // 服务器检测到新版本，提示用户升级
+            if(action.equals(BroadcastAction.MAIN_UPDATE_APK_SELECT)){
+                // 获得项目名和版本号参数
+                String projectName = sbroad_value;
+                String versionStr = sbroad_aux_val;
+
+                // TODO:本来想把升级选择界面放到MainBroadcastReceiver中处理，但是无法getFragmentManager()
+                // 根据服务器版本检测结果，进行下载(网络正常)还是本地扫描(网络异常)
+                SelectDialogFragment fragment_Select = SelectDialogFragment.newInstance(projectName, versionStr);
+                fragment_Select.show(getFragmentManager(),"select");
+            }
+            else if(action.equals(BroadcastAction.MAIN_UPDATE_APK_DOWNLOADING)){
+                String state = sbroad_value;
+                int curProgress = ibroad_value;
+                isDownloading = state.equals("true"); // 正在下载升级文件标志位
+
+                // 通知栏显示下载进度,内部已封装兼容低版本
+                /*
+                if(curProgress > 0){
+                    Utils.showNotification(getResources().getString(R.string.app_update),
+                            getResources().getString(R.string.app_download_progress),
+                            0x3,"0x1",curProgress,100);
+                    L.d("Download progress:"+curProgress+"%");
+                }
+                */
+            }
+            else if(action.equals(BroadcastAction.MAIN_UPDATE_APK_DOWNLOADFAILED)){
+                /*
+                Utils.showNotification(getResources().getString(R.string.app_update),
+                        getResources().getString(R.string.app_download_failed),
+                        0x3,"0x1",-1,100);
+                */
+                L.e("安装包下载失败！");
+                isDownloading = false;
+            }
         }
     };
 }

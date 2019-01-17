@@ -99,7 +99,7 @@ public class MainBroadcastReceiver extends BroadcastReceiver {
                                 String versionStr = verList.getString("version");
 
                                 if(Utils.isNumeric(versionStr)){
-                                    L.d("Server mVersionStr : "+versionStr);
+                                    //L.d("Server mVersionStr : "+versionStr);
                                     apkVerCur = Integer.parseInt(versionStr);
                                     if(apkVerCode < apkVerCur){
                                         apkVerCode = apkVerCur;
@@ -107,15 +107,6 @@ public class MainBroadcastReceiver extends BroadcastReceiver {
                                     }
                                 }
                             }
-
-                            // 按规则最后一项是最新版本号，但实际不一样
-                            // Post ---> { "ret": 0, "list": [ { "version": "001" }, { "version": "004" }, { "version": "002" }, { "version": "003" } ] }
-                            /*
-                            JSONObject verList = (JSONObject) jsArray.get(jsArray.length()-1);
-                            String versionStr = verList.getString("version");
-                            apkVerCode = Integer.parseInt(versionStr);
-                            L.d("Server newest apkVerCode : "+apkVerCode);
-                            */
 
                             L.w("Server newest VerCode:"+apkVerCode+",cur app VerCode:"+curVerCode);
 
@@ -235,6 +226,10 @@ public class MainBroadcastReceiver extends BroadcastReceiver {
                 //Utils.ToastShow(mContext, Toast.LENGTH_SHORT, Gravity.CENTER_HORIZONTAL,"错误:","文件下载失败！");
                 BroadcastAction.sendBroadcast(mContext, BroadcastAction.MAIN_UPDATE_APK_DOWNLOADFAILED,
                         null);
+
+                Utils.showNotification(mContext.getResources().getString(R.string.app_update),
+                        mContext.getResources().getString(R.string.app_download_failed),
+                        0x3,"0x1",-1,100);
             }
 
             @Override
@@ -256,6 +251,10 @@ public class MainBroadcastReceiver extends BroadcastReceiver {
                     //Utils.ToastShow(mContext, Toast.LENGTH_SHORT, Gravity.CENTER_HORIZONTAL,"错误:","文件下载失败！");
                     BroadcastAction.sendBroadcast(mContext, BroadcastAction.MAIN_UPDATE_APK_DOWNLOADFAILED,
                             null);
+
+                    Utils.showNotification(mContext.getResources().getString(R.string.app_update),
+                            mContext.getResources().getString(R.string.app_download_failed),
+                            0x3,"0x1",-1,100);
                 }
             }
         });

@@ -124,20 +124,22 @@ class RequestUtil {
             e.printStackTrace();
         }
 
-        L.w("Skip CA Trusted...");
-
-        // 重新建立OkHttpClient
-        mOkHttpClient = new OkHttpClient.Builder()
-                .connectTimeout(15L, TimeUnit.SECONDS)
-                .sslSocketFactory(sslContext.getSocketFactory())
-                .hostnameVerifier(new HostnameVerifier() {
-                    @Override
-                    public boolean verify(String hostname, SSLSession session) {
-                        return true;
-                    }
-                })
-                .build();
+        if(sslContext != null){
+            L.w("Skip CA Trusted...");
+            // 重新建立OkHttpClient
+            mOkHttpClient = new OkHttpClient.Builder()
+                    .connectTimeout(15L, TimeUnit.SECONDS)
+                    .sslSocketFactory(sslContext.getSocketFactory())
+                    .hostnameVerifier(new HostnameVerifier() {
+                        @Override
+                        public boolean verify(String hostname, SSLSession session) {
+                            return true;
+                        }
+                    })
+                    .build();
+        }
         //TODO:-------------------------------------------------------------------------
+
 
         mRequestBuilder = new Request.Builder();
         if(mFile != null || mfileList != null || mfileMap != null){//先判断是否有文件，

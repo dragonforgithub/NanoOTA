@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.lxl.nanosic.app.L;
+import com.lxl.nanosic.app.R;
 import com.lxl.nanosic.app.Utils;
 import com.lxl.nanosic.app.ble.BroadcastAction;
 
@@ -206,6 +207,10 @@ public abstract class CallBackUtil<T> {
                         if(total > 1024*100) {  //大于1M则发送广播显示进度条（认为是下载apk）
                             BroadcastAction.sendBroadcast(mContext, BroadcastAction.MAIN_UPDATE_APK_DOWNLOADING,
                                     "true",(int)curProgress);
+
+                            Utils.showNotification(mContext.getResources().getString(R.string.app_update),
+                                    mContext.getResources().getString(R.string.app_download_progress),
+                                    0x3,"0x1",(int)curProgress,100);
                         }
                     }
 
