@@ -13,6 +13,7 @@ import android.view.View;
 import com.lxl.nanosic.app.L;
 import com.lxl.nanosic.app.R;
 import com.lxl.nanosic.app.Utils;
+import com.lxl.nanosic.app.ble.Config;
 
 /**
  * 一个简单的带提示文字的状态开关
@@ -95,6 +96,7 @@ public class DrawableSwitch extends View {
                     String preference = Utils.getPreferences(mContext,"encryption_switch");
                     if(preference != null){
                         isSwitchOn = Boolean.valueOf(preference);
+                        Config.SetEncryptState(isSwitchOn);
                     }else{
                         isSwitchOn = ta.getBoolean(attr, false); // 控件的开关状态
                     }
