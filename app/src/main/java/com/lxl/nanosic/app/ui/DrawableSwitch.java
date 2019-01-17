@@ -133,7 +133,7 @@ public class DrawableSwitch extends View {
         if(focused){  // 被选中的状态，设置特殊背景色
             circleColor = 0xFF4853a1;
         } else{ // 恢复默认值
-            circleColor = 0xFFF9F9F9; // 默认底色
+            circleColor = 0xFF0B8678; // 默认底色
         }
 
         this.postInvalidate(); // 状态更改之后还要更新一下界面

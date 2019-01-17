@@ -343,10 +343,13 @@ public class UpgradeActivity extends AppCompatActivity {
                     int iPercent = ibroad_value;
                     isUpgrading=true;
                     L.i("Receive broadcast,Upgrade Percent:" + String.format("%d,", iPercent));
+
+                    TextView_MainDisplay.setText(getResources().getString(R.string.upgrade_in_progress));
+                    //TextView_GuideDisplay.setVisibility(View.GONE);
+
                     multipleProgressBar.setProgress(iPercent);
                     multipleProgressBar.setVisibility(View.VISIBLE);
-                    TextView_MainDisplay.setText(getResources().getString(R.string.upgrade_in_progress));
-                    TextView_GuideDisplay.setVisibility(View.GONE);
+
                     //iv_fail.setVisibility(View.GONE);
                     //iv_success.setVisibility(View.GONE);
 

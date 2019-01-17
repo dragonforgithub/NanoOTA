@@ -64,7 +64,7 @@
         android:layout_below="@+id/nanosic_logo"
         android:layout_marginTop="30dp"
         android:layout_centerHorizontal="true"
-        lh2:circleColor="#F9F9F9"
+        lh2:circleColor="#0b8678"
         lh2:isSwitchOn="false"
         lh2:radius="20dp"
         lh2:switchOffColor="#c6c2c2"
