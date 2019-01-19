@@ -4,7 +4,7 @@
     <string name="app_name">遥控器升级</string>
     <string name="ota_Local">本地升级</string>
     <string name="ota_Online">在线升级</string>
-    <string name="dev_Information">设备信息</string>
+    <string name="dev_Information">获取信息</string>
     <string name="copyright_info">版权所有 ©2019 Nanosic Technology Corp</string>
     <string name="app_version">版本：</string>
     <string name="app_update_select">检测到新版本，是否更新？</string>
@@ -23,11 +23,13 @@
     <string name="permission_cancel">取消</string>
 
 
+
     <!-- 本地升级UI -->
     <string name="local_select_version">选择升级版本</string>
     <string name="local_upgrade_start">开始</string>
     <string name="local_upgrade_delete">删除</string>
     <string name="local_upgrade_filtrate">筛选：</string>
+    <string name="local_no_matching_version">没有找到相匹配的版本</string>
 
     <!-- 在线升级UI -->
     <string name="online_upgrade_title">获取版本列表</string>
@@ -68,7 +70,7 @@
     <string name="Text_view_file_address">升级文件地址：</string>
     <string name="Text_view_file_version">升级文件版本：</string>
 
-    <string name="Text_view_remote_info">遥控器信息：</string>
+    <string name="Text_view_remote_info">遥控器状态：</string>
     <string name="Text_view_remote_info_name">遥控器名称：</string>
     <string name="Text_view_remote_info_mac">蓝牙地址：</string>
 

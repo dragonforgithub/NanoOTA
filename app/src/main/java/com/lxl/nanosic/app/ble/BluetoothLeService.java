@@ -19,6 +19,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
 import android.view.Gravity;
 import android.widget.Toast;
 
@@ -27,9 +28,15 @@ import com.lxl.nanosic.app.R;
 import com.lxl.nanosic.app.UpgradeActivity;
 import com.lxl.nanosic.app.Utils;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -176,6 +183,7 @@ public class BluetoothLeService extends Service {
         L.i("------Service onDestroy------");
         StopServiceTimer();
         unRegisterBroadcastReceiver();
+        close();
         super.onDestroy();
     }
 
@@ -196,7 +204,7 @@ public class BluetoothLeService extends Service {
         mBluetoothManager = null;
         mBluetoothAdapter = null;
         mBluetoothGatt = null;
-        mBluetoothDevice = null ;
+        mBluetoothDevice = null;
         VendorOut_Characteristic = null;
         VendorIn_Characteristic = null;
         OtaIn_Characteristic = null;
@@ -207,8 +215,9 @@ public class BluetoothLeService extends Service {
 
     private void SendRemoteTotalInfo(){
         if((mBluetoothGatt != null) && (mBluetoothDevice != null)
-                && (VendorOut_Characteristic != null)
-                ) {
+                && (VendorOut_Characteristic != null)) {
+
+            L.d("===Send BLE name and address broadcast");
             BroadcastAction.sendBroadcast(mThis, BroadcastAction.BROADCAST_SERVICE_SEND_ACTION_BLUETOOTH,
                     BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_GATT_CONNECTED,
                     mBluetoothDevice.getAddress());
@@ -217,6 +226,7 @@ public class BluetoothLeService extends Service {
                     BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_GATT_DISCOVERED,
                     mBluetoothDevice.getName());
         }
+
         if(mUpgradeFile != null) {
             mUpgradeFile.SendFileTotalInfo();
         }else{
@@ -230,7 +240,7 @@ public class BluetoothLeService extends Service {
      */
     public boolean initialize(String name, String addr) {
         L.d("initialize ble,name:" + name + " addr:" + addr);
-        if (mBluetoothManager != null) {
+        if (mBluetoothManager != null && name==null && addr==null) {
             L.w("The BluetoothManager is not null!");
             SendRemoteTotalInfo();
             return true;
@@ -246,31 +256,35 @@ public class BluetoothLeService extends Service {
                 return false;
             }
         }
+
         mBluetoothAdapter = mBluetoothManager.getAdapter();
         if (mBluetoothAdapter == null) {
             L.e("Unable to obtain a BluetoothAdapter.");
             return false;
         }
+
         Set<BluetoothDevice> devices = mBluetoothAdapter.getBondedDevices();
         L.i("bonded device size:" + devices.size());
+
+        boolean findDev=false;
         if(devices.size()>0){
             for(Iterator<BluetoothDevice> it = devices.iterator(); it.hasNext();) {
                 BluetoothDevice device = it.next();
-                String mBluetoothDeviceName = device.getName();
-                String mBluetoothDeviceAddress = device.getAddress();
-                L.i("Find Bluetooth device name:" + mBluetoothDeviceName);
+                String bluetoothDeviceName = device.getName();
+                String bluetoothDeviceAddress = device.getAddress();
+                L.i("Find Remote:" + bluetoothDeviceName);
                 if(((name == null) && (addr == null))
-                        || (mBluetoothDeviceName.equals(name) && (addr == null))
-                        || (mBluetoothDeviceAddress.equals(addr) && (name == null)))
+                        || (bluetoothDeviceName.equals(name) && (addr == null))
+                        || (bluetoothDeviceAddress.equals(addr) && (name == null)))
                 {
-                    mBluetoothDevice = device;
-                    mBluetoothGatt = mBluetoothDevice.connectGatt(this, false, mGattCallbacks);
-                    L.i("Find Remote:" + mBluetoothDeviceName);
-                    return true ;
+                    // 对当前绑定过的设备遍历进行GATT连接
+                    BluetoothGatt devGatt = device.connectGatt(this, false, mGattCallbacks);
+                    L.i("connectGatt : " + devGatt.getDevice().getAddress());
+                    findDev = true;
                 }
             }
         }
-        return false;
+        return findDev;
     }
 
     /**
@@ -293,34 +307,64 @@ public class BluetoothLeService extends Service {
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
             try {
                 switch (newState) {
+                    case BluetoothProfile.STATE_CONNECTING:
+                        L.d("connection state: CONNECTING...");
+                        break;
+
                     case BluetoothProfile.STATE_CONNECTED:
                         if (gatt != null) {
-                            mBluetoothGatt = gatt;
-                            mBluetoothGatt.discoverServices() ;
-                            BroadcastAction.sendBroadcast(mThis,BroadcastAction.BROADCAST_SERVICE_SEND_ACTION_BLUETOOTH,
-                                    BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_GATT_CONNECTED,
-                                    gatt.getDevice().getAddress());
-                            L.i("Bluetooth device connected ");
-                            L.i("onConnectionStateChange (" + gatt.getDevice().getAddress() + ") "
+                            // TODO:只记录检测到的第一个连接设备，尝试过设备列表切换，但是重新通过mac地址连接无回调
+                            if(mBluetoothGatt == null || mBluetoothDevice == null){
+                                mBluetoothGatt = gatt;
+                                mBluetoothDevice = gatt.getDevice();
+                                mBluetoothGatt.discoverServices();
+
+                                // 发送连接广播
+                                BroadcastAction.sendBroadcast(mThis,BroadcastAction.BROADCAST_SERVICE_SEND_ACTION_BLUETOOTH,
+                                        BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_GATT_CONNECTED,
+                                        gatt.getDevice().getAddress());
+
+                                // 发广播给主UI更新设备名
+                                BroadcastAction.sendBroadcast(mThis,BroadcastAction.BROADCAST_CONTENT_DEV_INFO,
+                                        gatt.getDevice().getName(), gatt.getDevice().getAddress());
+
+                            }
+                            L.w("onConnectionStateChange (" + gatt.getDevice().getAddress() + ") "
                                     + newState + " status: " + status);
-                        }
-                        else{
-                            L.i("device connected,but gatt is empty.");
+                        } else{
+                            L.e("device connected,but gatt is empty.");
                         }
                         break;
+
+                    case BluetoothProfile.STATE_DISCONNECTING:
+                        L.d("connection state: DISCONNECTING...");
+                        break;
+
                     case BluetoothProfile.STATE_DISCONNECTED:
-                        if (mBluetoothGatt != null) {
-                            mBluetoothGatt.close();
+
+                        String devAddress = gatt.getDevice().getAddress();
+                        if(devAddress.equals(mBluetoothDevice.getAddress())){
+                            // 重置蓝牙状态
+                            ResetBluetoothValue();
+                            // 发送断开广播
+                            BroadcastAction.sendBroadcast(mThis,BroadcastAction.BROADCAST_SERVICE_SEND_ACTION_BLUETOOTH,
+                                    BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_GATT_DISCONNECTED,
+                                    gatt.getDevice().getAddress());
+
+                            // 发广播给主UI更新设备名
+                            /*
+                            BroadcastAction.sendBroadcast(mThis,BroadcastAction.BROADCAST_CONTENT_DEV_INFO,
+                                    getResources().getString(R.string.upgrade_RC_disconnected));
+                            */
+
                         }
 
-                        L.i("Ble disconnected.");
-                        ResetBluetoothValue();
-                        BroadcastAction.sendBroadcast(mThis,BroadcastAction.BROADCAST_SERVICE_SEND_ACTION_BLUETOOTH,
-                                BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_GATT_DISCONNECTED,
-                                gatt.getDevice().getAddress());
+                        L.w("Ble disconnected : " + devAddress);
+                        gatt.close();
                         break;
+
                     default:
-                        L.i( "New state not processed: " + newState);
+                        L.w( "New state not processed: " + newState);
                         break;
                 }
             } catch (NullPointerException e) {
@@ -405,6 +449,7 @@ public class BluetoothLeService extends Service {
                         L.i("BluetoothGattService is null");
                     }
 
+                    // TODO:蜂鸣器服务？要不要？
                     BluetoothGattService BuzzerService = gatt.getService(UUID_BUZZER_SERVICE);
                     if (BuzzerService != null) {
                         Buzzer_Characteristic = BuzzerService.getCharacteristic(UUID_BUZZER_CHARACTER);
@@ -636,6 +681,7 @@ public class BluetoothLeService extends Service {
         mFilter.addAction(BroadcastAction.BROADCAST_SERVICE_REC_ACTION_REMOTE_UPGRADE);
         mFilter.addAction(BroadcastAction.BROADCAST_SERVICE_REC_ACTION_BLUETOOTH);
         mFilter.addAction(BroadcastAction.BROADCAST_SERVICE_REC_ACTION_FILE_OPERATION);
+        mFilter.addAction(BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_DEV_LIST);
         registerReceiver(BluetoothLeReceiver, mFilter);
     }
 
@@ -671,19 +717,16 @@ public class BluetoothLeService extends Service {
 
             if (BroadcastAction.BROADCAST_SERVICE_REC_ACTION_GENERAL.equals(action)) {
                 // 普通的广播
-
             }else if (BroadcastAction.BROADCAST_SERVICE_REC_ACTION_SERVICE.equals(action)) {
 
             }else if (BroadcastAction.BROADCAST_SERVICE_REC_ACTION_REMOTE_UPGRADE.equals(action)) {
                 if (sbroad_value.equals(BroadcastAction.BROADCAST_CONTENT_UPGRADE_INFO)) {
                     // 升级过程中需要显示的信息
                     L.i("===Received Upgrade information:"+sbroad_aux_val);
-
                     if(sbroad_aux_val.equals("ui started")){
                         isUiStarted = true;
                     }else if(sbroad_aux_val.equals("ui stopped")){
                         isUiStarted = false;
-                        //StopServiceTimer(); // 升级界面关闭时停止定时器
                     }
                 }
                 else if (sbroad_value.equals(BroadcastAction.BROADCAST_CONTENT_UPGRADE_FILE_PATH)) {
@@ -706,7 +749,7 @@ public class BluetoothLeService extends Service {
                                 BroadcastAction.BROADCAST_SERVICE_SEND_ACTION_REMOTE_UPGRADE,
                                 BroadcastAction.BROADCAST_CONTENT_UPGRADE_INFO,
                                 "In the process of upgrading");
-                    }else if(fRemoteReadVerThreadIsRun){
+                    } else if(fRemoteReadVerThreadIsRun){
                         BroadcastAction.sendBroadcast(mThis,
                                 BroadcastAction.BROADCAST_SERVICE_SEND_ACTION_REMOTE_UPGRADE,
                                 BroadcastAction.BROADCAST_CONTENT_UPGRADE_INFO,
@@ -758,13 +801,12 @@ public class BluetoothLeService extends Service {
                 } else  if(sbroad_value.equals(BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_GATT_INIT)) {
                     L.i("BluetoothLeService receive a broadcast, initialize ble.");
                     if (initialize(null, null)) {
-                        fCanAutoUpgrade = true;
-                        L.w("set fCanAutoUpgrade : " + fCanAutoUpgrade);
+                        L.d("Broadcast Init : find device.");
                     } else {
                         L.e("Init Err:no device.");
                     }
                 }
-            }else if (BroadcastAction.BROADCAST_SERVICE_REC_ACTION_FILE_OPERATION.equals(action)) {
+            } else if (BroadcastAction.BROADCAST_SERVICE_REC_ACTION_FILE_OPERATION.equals(action)) {
 
             }
         }
@@ -1394,7 +1436,7 @@ public class BluetoothLeService extends Service {
                                 // 启动UI
                                 //StartFloatActivity();
                                 // 发送广播显示结果
-                                L.i("VID or PID error, abort.");
+                                L.e("VID or PID error, abort.");
                                 BroadcastAction.sendBroadcast(mThis,
                                         BroadcastAction.BROADCAST_SERVICE_SEND_ACTION_REMOTE_UPGRADE,
                                         BroadcastAction.BROADCAST_CONTENT_UPGRADE_ERR_INFO,
@@ -1593,13 +1635,16 @@ public class BluetoothLeService extends Service {
                             || (mBluetoothGatt == null) || (VendorOut_Characteristic == null)) {
                         //重置蓝牙状态
                         ResetBluetoothValue();
-                        //检测蓝牙设备，获取状态信息
+                        //检测绑定的设备进行连接
                         if (initialize(null, null)) {
-                            fCanAutoUpgrade = true;
-                            L.w("set fCanAutoUpgrade : " + fCanAutoUpgrade);
+                            L.d("Init : find bonded devices.");
                         } else {
                             L.e("Init Err:no device.");
                         }
+                    }else{
+                        // 设备连接已完成，可以进行升级
+                        fCanAutoUpgrade = true;
+                        L.w("set fCanAutoUpgrade : " + fCanAutoUpgrade);
                     }
                     /* //修改定时器执行周期
                     else{
@@ -1651,30 +1696,31 @@ public class BluetoothLeService extends Service {
                                 // 启动UI
                                 // StartFloatActivity();
 
-                                StopServiceTimer();
-
-                                // 发送广播给UI显示结果
-                                BroadcastAction.sendBroadcast(mThis,
-                                        BroadcastAction.BROADCAST_SERVICE_SEND_ACTION_REMOTE_UPGRADE,
-                                        BroadcastAction.BROADCAST_CONTENT_UPGRADE_COMPLETE,
-                                        "version is the same");
+                                if(isUiStarted){
+                                    StopServiceTimer();
+                                    // 发送广播给UI显示结果
+                                    BroadcastAction.sendBroadcast(mThis,
+                                            BroadcastAction.BROADCAST_SERVICE_SEND_ACTION_REMOTE_UPGRADE,
+                                            BroadcastAction.BROADCAST_CONTENT_UPGRADE_COMPLETE,
+                                            "version is the same");
+                                }
                                 L.i("Automatic upgrade,SoftVersion check is same.");
                             }
                         } else { //-----VID PID 不匹配-----
                             // 启动UI
                             // StartFloatActivity();
 
-                            StopServiceTimer();
-
-                            // 发送广播给UI显示结果
-                            BroadcastAction.sendBroadcast(mThis,
-                                    BroadcastAction.BROADCAST_SERVICE_SEND_ACTION_REMOTE_UPGRADE,
-                                    BroadcastAction.BROADCAST_CONTENT_UPGRADE_ERR_INFO,
-                                    "VID or PID error");
-                            L.i("Automatic upgrade,VID check error.");
+                            if(isUiStarted){
+                                StopServiceTimer();
+                                // 发送广播给UI显示结果
+                                BroadcastAction.sendBroadcast(mThis,
+                                        BroadcastAction.BROADCAST_SERVICE_SEND_ACTION_REMOTE_UPGRADE,
+                                        BroadcastAction.BROADCAST_CONTENT_UPGRADE_ERR_INFO,
+                                        "VID or PID error");
+                            }
+                            L.e("Automatic upgrade,VID check error.");
                         }
                     }
-
                     break;
             }
             return false;

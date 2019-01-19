@@ -248,6 +248,9 @@ public class UpgradeDevInfoFragment extends DialogFragment implements View.OnCli
 					L.i("Receive broadcast,Ble disconnected :" + BleAddress);
 					sTempString = getResources().getString(R.string.Text_view_remote_info);
 					sTempString += getResources().getString(R.string.Toast_view_rc_not_exist);
+					sTempString += "\n";
+					sTempString += getResources().getString(R.string.Text_view_remote_info_mac);
+					sTempString += BleAddress;
 					TextView_RemoteInfo.setText(sTempString);
 				}
 			}

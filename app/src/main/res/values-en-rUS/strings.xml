@@ -4,7 +4,7 @@
     <string name="app_name">RC OTA</string>
     <string name="ota_Local">Local Upgrade</string>
     <string name="ota_Online">Online Upgrade</string>
-    <string name="dev_Information">Device Info</string>
+    <string name="dev_Information">Update DevInfo</string>
     <string name="copyright_info">All right reserved ©2019 Nanosic Technology Corp</string>
     <string name="app_version">Version:</string>
     <string name="app_update_select">New version available, update?</string>
@@ -27,6 +27,7 @@
     <string name="local_upgrade_start">Start</string>
     <string name="local_upgrade_delete">DEL</string>
     <string name="local_upgrade_filtrate">Filtrate:</string>
+    <string name="local_no_matching_version">No matching version</string>
 
     <!-- 在线升级UI -->
     <string name="online_upgrade_title">Get Version List</string>
@@ -65,9 +66,9 @@
 
 
     <string name="Text_view_file_address">升级文件地址：</string>
-    <string name="Text_view_file_version">升级文件版本：</string>
+    <string name="Text_view_file_version">Upgrade file version:</string>
 
-    <string name="Text_view_remote_info">RC Information: </string>
+    <string name="Text_view_remote_info">RC State: </string>
     <string name="Text_view_remote_info_name">RC Name: </string>
     <string name="Text_view_remote_info_mac">RC Mac: </string>
 

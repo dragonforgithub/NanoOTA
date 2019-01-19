@@ -129,13 +129,12 @@ public class DrawableSwitch extends View {
      */
     protected void switchFocused(boolean focused)
     {
-        L.d("switchFocused : " + focused);
+        //L.d("switchFocused : " + focused);
         if(focused){  // 被选中的状态，设置特殊背景色
-            circleColor = 0xFF4853a1;
+            circleColor = getResources().getColor(R.color.entry_color_focused);
         } else{ // 恢复默认值
-            circleColor = 0xFF0B8678; // 默认底色
+            circleColor = getResources().getColor(R.color.entry_color_default);
         }
-
         this.postInvalidate(); // 状态更改之后还要更新一下界面
     }
 
@@ -196,7 +195,7 @@ public class DrawableSwitch extends View {
                 height = width / 20;
                 break;
         }
-        //L.d("onMeasure(),width=" + width + ",height=" + height);
+        L.d("onMeasure(),width=" + width + ",height=" + height);
         setMeasuredDimension(width, height);
     }
 
@@ -210,8 +209,6 @@ public class DrawableSwitch extends View {
         // 图形的绘制：左边一个半圆，中间一个矩形，右边一个半圆。实际绘制时，分两种情况：switchOn和switchOff
         // switchOn：先绘制左边的整个圆，然后再绘制矩形，然后改变颜色，绘制右边的圆，中间的矩形被右边的圆覆盖了一部分
         // switchOff：先绘制中间的矩形，再绘制右边的圆，右边的圆的颜色和矩形相同，然后再更改颜色，绘制左边的圆
-        L.d("onDraw()... isSwitchOn=" + isSwitchOn);
-
         float switchWidth = 3.0f * radius;
         float switchHeight = 2.0f * radius;
 

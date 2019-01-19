@@ -8,15 +8,32 @@
     android:background="@mipmap/blackgrave"
     tools:context="com.lxl.nanosic.app.MainActivity">
 
-    <ImageView
-        android:id="@+id/nanosic_logo"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
+
+    <TextView
+        android:id="@+id/DeviceInfo"
+        android:layout_width="100dp"
+        android:layout_height="80dp"
         android:layout_centerHorizontal="true"
-        android:layout_alignParentTop="true"
         android:adjustViewBounds="true"
-        android:background="@mipmap/nanosic"
-        android:scaleType="fitXY" />
+        android:gravity="right|bottom"
+        android:scaleType="fitXY"
+        android:background="@mipmap/remote_control"
+        android:textSize="8sp" />
+
+    <com.lxl.nanosic.app.ui.DrawableSwitch
+        android:id="@+id/drawableSwitch"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/DeviceInfo"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:background="@color/transparent"
+        lh2:circleColor="@color/entry_color_default"
+        lh2:isSwitchOn="false"
+        lh2:radius="20dp"
+        lh2:switchOffColor="#c3cfcd"
+        lh2:switchOnColor="#5dd41c"
+        lh2:textColor="#d6060c" />
 
     <Button
         android:id="@+id/otaLocal"
@@ -57,20 +74,6 @@
         android:textColor="@color/dividerColor"
         android:textSize="22sp" />
 
-    <com.lxl.nanosic.app.ui.DrawableSwitch
-        android:id="@+id/drawableSwitch"
-        android:layout_width="100dp"
-        android:layout_height="60dp"
-        android:layout_below="@+id/nanosic_logo"
-        android:layout_marginTop="30dp"
-        android:layout_centerHorizontal="true"
-        lh2:circleColor="#0b8678"
-        lh2:isSwitchOn="false"
-        lh2:radius="20dp"
-        lh2:switchOffColor="#c6c2c2"
-        lh2:switchOnColor="#77cc49"
-        lh2:textColor="#1C1C0F" />
-
     <TextView
         android:id="@+id/copyrightVer"
         android:layout_width="match_parent"
@@ -79,8 +82,7 @@
         android:layout_marginBottom="5dp"
         android:gravity="center"
         android:text="@string/copyright_info"
-        android:textColor="@color/pickerview_timebtn_pre"
+        android:textColor="@color/white"
         android:textSize="15sp" />
-
 
 </RelativeLayout>

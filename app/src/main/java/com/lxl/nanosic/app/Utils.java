@@ -14,6 +14,9 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.KeyStore;
@@ -242,6 +245,28 @@ public class Utils {
         return false;
     }
 
+
+
+
+
+    /**
+     * 从JSON字符串获取key值
+     *
+     * @param data
+     * @param key
+     * @return
+     */
+    public static String getValueFromJson(String data, String key) {
+        JSONObject dataJson;
+        try {
+            dataJson = new JSONObject(data);
+            String value = dataJson.getString(key);
+            return value;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
 
     // 使用命令keytool -printcert -rfc -file xxx.cer 导出证书为字符串，然后将字符串转换为输入流，

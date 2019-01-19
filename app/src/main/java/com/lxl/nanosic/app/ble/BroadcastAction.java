@@ -70,6 +70,7 @@ public class BroadcastAction {
     public final static String BROADCAST_CONTENT_UPGRADE_SELF_STAR = "com.nanosic.wnf1x0upgrade.BROADCAST_CONTENT_UPGRADE_SELF_STAR";
     public final static String BROADCAST_CONTENT_UPGRADE_GUIDE_STAR = "com.nanosic.wnf1x0upgrade.BROADCAST_CONTENT_UPGRADE_GUIDE_STAR";
     public final static String BROADCAST_CONTENT_UPGRADE_FILE_PATH = "com.nanosic.wnf1x0upgrade.BROADCAST_CONTENT_UPGRADE_GUIDE_STAR";
+    public final static String BROADCAST_CONTENT_DEV_INFO = "com.nanosic.wnf1x0upgrade.BROADCAST_CONTENT_DEV_INFO";
 
     //==================================================================================================
     // BROADCAST_SERVICE_SEND_ACTION_BLUETOOTH
@@ -78,6 +79,7 @@ public class BroadcastAction {
     public final static String ROADCAST_CONTENT_BLUETOOTH_GATT_DISCONNECTED = "com.nanosic.wnf1x0upgrade.ROADCAST_CONTENT_BLUETOOTH_GATT_DISCONNECTED";
     public final static String ROADCAST_CONTENT_BLUETOOTH_GATT_DISCOVERED = "com.nanosic.wnf1x0upgrade.ROADCAST_CONTENT_BLUETOOTH_GATT_DISCOVERED";
     public final static String ROADCAST_CONTENT_BLUETOOTH_GATT_INIT = "com.nanosic.wnf1x0upgrade.ROADCAST_CONTENT_BLUETOOTH_GATT_INIT";
+    public final static String ROADCAST_CONTENT_BLUETOOTH_DEV_LIST = "com.nanosic.wnf1x0upgrade.ROADCAST_CONTENT_BLUETOOTH_DEV_LIST";
 
     //==================================================================================================
     //  BROADCAST_SERVICE_SEND_ACTION_FILE_OPERATION 相关广播项

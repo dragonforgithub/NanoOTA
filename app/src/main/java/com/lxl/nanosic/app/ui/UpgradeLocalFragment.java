@@ -249,15 +249,7 @@ public class UpgradeLocalFragment extends DialogFragment
 			}
 		}
 
-		//设置下拉列表的风格
-		ArrayAdapter<String> adapter_res =new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_dropdown_item, list_bin);
-		spinner_UpgradeFile.setAdapter(adapter_res);
-
-		//設置背景顏色
-		//spinner_UpgradeFile.setBackgroundColor(getResources().getColor(R.color.featureTitleColor));
-
-		//添加事件Spinner事件监听
-		spinner_UpgradeFile.setOnItemSelectedListener(new SpinnerSelectedListener());
+		updateSpinner(spinner_UpgradeFile, list_bin, android.R.layout.simple_spinner_dropdown_item);
 	}
 
 	/*扫描本机目录下的升级文件*/
@@ -293,21 +285,36 @@ public class UpgradeLocalFragment extends DialogFragment
 			L.e(FilePath+":not exist,then mkdirs.");
 		}
 
-        //设置下拉列表的风格
-        ArrayAdapter<String> adapter_res =new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_dropdown_item, list_bin);
-
-        //将adapter 添加到spinner中
-		spinner_UpgradeFile.setAdapter(adapter_res);
-
-        //設置背景顏色
-        //spinner_upgrade.setBackgroundColor(getResources().getColor(R.color.featureTitleColor));
-
-        //添加事件Spinner事件监听
-		spinner_UpgradeFile.setOnItemSelectedListener(new SpinnerSelectedListener());
+		updateSpinner(spinner_UpgradeFile, list_bin, android.R.layout.simple_spinner_dropdown_item);
 	}
 
-	//播放列表事件监听---------------------------------------------
-	class SpinnerSelectedListener implements AdapterView.OnItemSelectedListener {
+	// 更新下拉列表
+	private void updateSpinner(Spinner mSpinnerObj, List<String> listObj , int style) {
+
+		if(listObj.isEmpty()){
+			listObj.add(getResources().getString(R.string.local_no_matching_version));
+			btn_start.setEnabled(false);
+			btn_delete.setEnabled(false);
+		}else{
+			btn_start.setEnabled(true);
+			btn_delete.setEnabled(true);
+		}
+
+		//设置下拉列表的风格
+		ArrayAdapter<String> adapter_res = new ArrayAdapter<String>(mContext, style, listObj);
+
+		//将adapter 添加到spinner中
+		mSpinnerObj.setAdapter(adapter_res);
+
+		//設置背景顏色
+		//mSpinnerObj.setBackgroundColor(getResources().getColor(R.color.featureTitleColor));
+
+		//添加事件Spinner事件监听
+		mSpinnerObj.setOnItemSelectedListener(new SpinnerSelectedListener());
+	}
+
+	// 列表事件监听---------------------------------------------
+	private class SpinnerSelectedListener implements AdapterView.OnItemSelectedListener {
 
 		@Override
 		public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {

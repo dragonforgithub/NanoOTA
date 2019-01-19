@@ -46,4 +46,8 @@
     <color name="cpb_white">@android:color/white</color>
 
     <color name="home_back">#4E4E4E</color>
+    <color name="entry_color_default">#1c1859</color>
+    <color name="entry_color_pressed">#FF22284F</color>
+    <color name="entry_color_focused">#FF4853a1</color>
+
 </resources>

@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button mBtnDevInfo;
     private DrawableSwitch mDrawableSwitch;
     private TextView mTvCopyrightVer;
+    private TextView mDevInfo;
 
     private final int OTA_PERMISSION_REQUEST_CODE = 10000;
     private final String[] strPermissions  = new String[] {
@@ -130,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         /** 注册广播 */
         RegisterBroadcastReceiver();
 
-        /** 添加按键监听 */
+        /** 添加监听 */
         mBtnLocal = findViewById(R.id.otaLocal);
         mBtnLocal.setOnClickListener(this);
 
@@ -139,6 +140,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         mBtnDevInfo = findViewById(R.id.devInfo);
         mBtnDevInfo.setOnClickListener(this);
+
+        mDevInfo = findViewById(R.id.DeviceInfo);
 
         /** 设置加密开关 */
         mDrawableSwitch = findViewById(R.id.drawableSwitch);
@@ -156,6 +159,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String appVersion = Utils.getAppVersionName(getApplicationContext());
         mTvCopyrightVer = findViewById(R.id.copyrightVer);
         mTvCopyrightVer.setText(copyRightStr+"\n"+versionText + appVersion);
+
+        /** 发送广播,获得遥控器名字和MAC地址 */
+        new Handler().postDelayed(new Runnable(){
+                public void run() {
+                if(!isDownloading){
+                    L.d("===sendBroadcast init ble devices");
+                    BroadcastAction.sendBroadcast(getApplicationContext(), BroadcastAction.BROADCAST_SERVICE_REC_ACTION_BLUETOOTH,
+                            BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_GATT_INIT);
+                }
+            }
+        }, 100);
     }
 
     @Override
@@ -279,7 +293,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-
     //==============================================================================================
     // 启动BLE操作service
     //==============================================================================================
@@ -328,6 +341,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         IntentFilter activityFilter = new IntentFilter(BroadcastAction.MAIN_UPDATE_APK_SELECT);
         activityFilter.addAction(BroadcastAction.MAIN_UPDATE_APK_DOWNLOADING);
         activityFilter.addAction(BroadcastAction.MAIN_UPDATE_APK_DOWNLOADFAILED);
+        activityFilter.addAction(BroadcastAction.BROADCAST_CONTENT_DEV_INFO);
         registerReceiver(MainActivityReceiver, activityFilter);
         L.i("Register MainActivityReceiver");
     }
@@ -401,6 +415,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 */
                 L.e("安装包下载失败！");
                 isDownloading = false;
+            }else if(action.equals(BroadcastAction.BROADCAST_CONTENT_DEV_INFO)){
+                mDevInfo.setText(sbroad_value);
+                L.w("Update BLE device info : "+sbroad_value+"-"+sbroad_value);
             }
         }
     };
