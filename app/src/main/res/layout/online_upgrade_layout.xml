@@ -3,76 +3,73 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_gravity="center"
     android:orientation="vertical">
 
-    <FrameLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="200dp"
+        android:gravity="center_vertical">
 
-        <RelativeLayout
+        <ImageButton
+            android:id="@+id/BTN_CLOSE"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/btn_close"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:nextFocusDown="@+id/et_DownloadFile"/>
+
+        <TextView
+            android:id="@+id/tv_version_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:text="@string/online_upgrade_title"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/tv_project"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_version_list"
+            android:layout_marginTop="40dp"
+            android:layout_marginStart="35dp"
+            android:paddingBottom="10dp"
+            android:text="@string/online_upgrade_projectID"
+            android:textColor="@android:color/black"
+            android:textSize="15sp" />
+
+        <EditText
+            android:id="@+id/et_DownloadFile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp">
+            android:layout_alignBottom="@+id/tv_project"
+            android:layout_toEndOf="@+id/tv_project"
+            android:layout_marginEnd="35dp"
+            android:hint="rc1888                   "
+            android:inputType="text"
+            android:padding="10dp"
+            android:textColor="#2fa881"
+            android:textSize="18sp" />
 
-            <TextView
-                android:id="@+id/tv_download_file"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:paddingTop="10dp"
-                android:text="@string/online_upgrade_title"
-                android:textColor="@android:color/black"
-                android:textSize="20sp" />
-
-            <ImageButton
-                android:id="@+id/BTN_CLOSE"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginEnd="10dp"
-                android:background="@drawable/btn_close" />
-
-            <TextView
-                android:id="@+id/tv_project"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/tv_download_file"
-                android:layout_marginTop="40dp"
-                android:layout_marginStart="35dp"
-                android:paddingBottom="10dp"
-                android:text="@string/online_upgrade_projectID"
-                android:textColor="@android:color/black"
-                android:textSize="15sp" />
-
-            <EditText
-                android:id="@+id/et_DownloadFile"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/tv_project"
-                android:layout_toEndOf="@+id/tv_project"
-                android:layout_marginEnd="35dp"
-                android:hint="rc1888                   "
-                android:inputType="text"
-                android:padding="10dp"
-                android:textColor="#2fa881"
-                android:textSize="18sp" />
-
-            <Button
-                android:id="@+id/BTN_NEXT"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="30dp"
-                android:layout_below="@+id/et_DownloadFile"
-                android:background="@drawable/btn_integrated"
-                android:enabled="false"
-                android:gravity="center"
-                android:padding="10dp"
-                android:text="@string/online_upgrade_next"
-                android:textColor="@color/white"
-                android:textSize="18sp" />
-
-        </RelativeLayout>
+        <Button
+            android:id="@+id/BTN_NEXT"
+            android:layout_width="125dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="20dp"
+            android:background="@drawable/btn_integrated"
+            android:enabled="false"
+            android:text="@string/online_upgrade_next"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
 
         <ProgressBar xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/loading"
@@ -84,6 +81,7 @@
             android:indeterminateTint="@color/common_h2"
             android:indeterminateTintMode="src_in"
             android:visibility="gone" />
-    </FrameLayout>
+
+    </RelativeLayout>
 
 </LinearLayout>

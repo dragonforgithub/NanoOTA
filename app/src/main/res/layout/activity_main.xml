@@ -8,7 +8,6 @@
     android:background="@mipmap/blackgrave"
     tools:context="com.lxl.nanosic.app.MainActivity">
 
-
     <TextView
         android:id="@+id/DeviceInfo"
         android:layout_width="100dp"
@@ -26,54 +25,66 @@
         android:layout_height="40dp"
         android:layout_below="@+id/DeviceInfo"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
+        android:layout_margin="15dp"
         android:background="@color/transparent"
         lh2:circleColor="@color/entry_color_default"
         lh2:isSwitchOn="false"
         lh2:radius="20dp"
         lh2:switchOffColor="#c3cfcd"
         lh2:switchOnColor="#5dd41c"
-        lh2:textColor="#d6060c" />
+        lh2:textColor="#960308" />
 
-    <Button
-        android:id="@+id/otaLocal"
-        android:layout_width="250dp"
+    <ScrollView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@id/otaOnline"
-        android:layout_marginBottom="12dp"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/btn_entry"
-        android:enabled="true"
-        android:text="@string/ota_Local"
-        android:textColor="@color/dividerColor"
-        android:textSize="22sp" />
+        android:layout_below="@+id/drawableSwitch"
+        android:layout_above="@+id/copyrightVer"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:fillViewport="true"
+        android:fadeScrollbars="false">
 
-    <Button
-        android:id="@+id/otaOnline"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:background="@drawable/btn_entry"
-        android:enabled="true"
-        android:text="@string/ota_Online"
-        android:textColor="@color/dividerColor"
-        android:textSize="22sp" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center" >
 
-    <Button
-        android:id="@+id/devInfo"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/otaOnline"
-        android:layout_marginTop="12dp"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:background="@drawable/btn_entry"
-        android:enabled="true"
-        android:text="@string/dev_Information"
-        android:textColor="@color/dividerColor"
-        android:textSize="22sp" />
+            <Button
+                android:id="@+id/otaLocal"
+                android:layout_width="250dp"
+                android:layout_height="45dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/btn_entry"
+                android:enabled="true"
+                android:text="@string/ota_Local"
+                android:textColor="@color/dividerColor"
+                android:textSize="20sp" />
 
+            <Button
+                android:id="@+id/otaOnline"
+                android:layout_width="250dp"
+                android:layout_height="45dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/btn_entry"
+                android:enabled="true"
+                android:text="@string/ota_Online"
+                android:textColor="@color/dividerColor"
+                android:textSize="20sp" />
+
+            <Button
+                android:id="@+id/devInfo"
+                android:layout_width="250dp"
+                android:layout_height="45dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/btn_entry"
+                android:enabled="true"
+                android:text="@string/dev_Information"
+                android:textColor="@color/dividerColor"
+                android:textSize="20sp" />
+        </LinearLayout>
+
+    </ScrollView>
     <TextView
         android:id="@+id/copyrightVer"
         android:layout_width="match_parent"

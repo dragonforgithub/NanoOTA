@@ -1,6 +1,7 @@
 package com.lxl.nanosic.app.ui;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -18,7 +19,6 @@ import android.widget.TextView;
 
 import com.lxl.nanosic.app.L;
 import com.lxl.nanosic.app.R;
-import com.lxl.nanosic.app.Utils;
 import com.lxl.nanosic.app.ble.BroadcastAction;
 
 import butterknife.BindView;
@@ -38,6 +38,7 @@ public class UpgradeDevInfoFragment extends DialogFragment implements View.OnCli
 	private Context mContext=null;
 
 	private String RemoteMac=null,RemoteName=null;
+	private String RemoteVidPid=null,RemoteProtocol=null;
 	private int RemoteSfVer=0x0,RemotePower=0x0;
 
 	// 所需蓝牙和存储权限
@@ -68,8 +69,18 @@ public class UpgradeDevInfoFragment extends DialogFragment implements View.OnCli
 		LayoutInflater inflater = getActivity().getLayoutInflater();
 		View view = inflater.inflate(R.layout.show_dev_information, null);
 		ButterKnife.bind(this, view);
-		initView(view);
+
+		// 注册广播
+		RegisterBroadcastReceiver();
+
+		// 发送初始化广播
+		BroadcastAction.sendBroadcast(mContext, BroadcastAction.BROADCAST_SERVICE_REC_ACTION_BLUETOOTH,
+				BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_GATT_INIT);
+
 		builder.setView(view);
+
+		// 更新文本信息
+		updateTextView();
 
 		// 设置关闭按钮监听
 		mBtn_Close.setOnClickListener(this);
@@ -93,31 +104,39 @@ public class UpgradeDevInfoFragment extends DialogFragment implements View.OnCli
 		}
 	}
 
-	/** 初始化文本信息 */
-	private void initView(View view){
+	/** 更新文本信息 */
+	private void updateTextView(){
+
+		L.i("Update device information ...");
+
 		String sTempString;
 		sTempString = getResources().getString(R.string.Text_view_remote_info_name);
+		sTempString += RemoteName;
+
+		sTempString += "      "+getResources().getString(R.string.Text_view_remote_protocol)+RemoteProtocol;
+
 		sTempString += "\n";
 		sTempString += getResources().getString(R.string.Text_view_remote_info_mac);
+		sTempString += RemoteMac;
+
+		sTempString += "      VID/PID:"+RemoteVidPid;
+
 		TextView_RemoteInfo.setText(sTempString);
 		sTempString = getResources().getString(R.string.Text_view_remote_ver);
+		if(RemoteSfVer > 0)
+			sTempString += String.format("0x%04X", RemoteSfVer);
 		sTempString += "\n";
 		sTempString += getResources().getString(R.string.Text_view_remote_power);
+		if(RemotePower > 0)
+			sTempString += String.format("%dmV", RemotePower);
 		TextView_RemoteVerPower.setText(sTempString);
 		sTempString = getResources().getString(R.string.Text_view_operation_permission);
 		TextView_OperatePermission.setText(sTempString);
 
-		// 注册广播
-		RegisterBroadcastReceiver();
-
-		// 发送广播,获得遥控器名字和MAC地址
-		BroadcastAction.sendBroadcast(mContext, BroadcastAction.BROADCAST_SERVICE_REC_ACTION_BLUETOOTH,
-				BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_GATT_INIT);
-
 		//获取当前Android设备的权限状态
 		sTempString = getResources().getString(R.string.Text_view_operation_permission);
         sTempString += "\n";
-		if(hasPermission(mContext,BlePermissions[0]) == true)
+		if(hasPermission(mContext, BlePermissions[0]))
 		{
 			L.w("BLUETOOTH permission are normal.");
 			sTempString += "            BLUETOOTH";
@@ -126,7 +145,7 @@ public class UpgradeDevInfoFragment extends DialogFragment implements View.OnCli
 			L.e("No BLUETOOTH permission.");
 		}
 
-		if(hasPermission(mContext,BlePermissions[1]) == true)
+		if(hasPermission(mContext, BlePermissions[1]))
 		{
 			L.w("BLUETOOTH_ADMIN permissions are normal.");
 			sTempString += "            BLUETOOTH_ADMIN";
@@ -135,7 +154,7 @@ public class UpgradeDevInfoFragment extends DialogFragment implements View.OnCli
 			L.e("No BLUETOOTH_ADMIN permission.");
 		}
 
-		if(hasPermission(mContext,BlePermissions[2]) == true)
+		if(hasPermission(mContext, BlePermissions[2]))
 		{
 			L.w("BLUETOOTH_PRIVILEGED permissions are normal.");
 			sTempString += "            BLUETOOTH_PRIVILEGED";
@@ -144,7 +163,7 @@ public class UpgradeDevInfoFragment extends DialogFragment implements View.OnCli
 			L.e("No BLUETOOTH_PRIVILEGED permission.");
 		}
 
-		if(hasPermission(mContext,StoragePermissions[0]) == true)
+		if(hasPermission(mContext, StoragePermissions[0]))
 		{
 			L.w("READ_EXTERNAL_STORAGE permission are normal.");
 			sTempString += "            READ_EXTERNAL_STORAGE";
@@ -153,7 +172,7 @@ public class UpgradeDevInfoFragment extends DialogFragment implements View.OnCli
 			L.e("No READ_EXTERNAL_STORAGE permission.");
 		}
 
-		if(hasPermission(mContext,StoragePermissions[1]) == true)
+		if(hasPermission(mContext, StoragePermissions[1]))
 		{
 			L.w("WRITE_EXTERNAL_STORAGE permissions are normal.");
 			sTempString += "            WRITE_EXTERNAL_STORAGE";
@@ -219,24 +238,13 @@ public class UpgradeDevInfoFragment extends DialogFragment implements View.OnCli
 					// Gatt connected
 					RemoteMac = sbroad_aux_val;
 					L.i("Receive broadcast,Ble Address :" + RemoteMac);
-
-					sTempString = getResources().getString(R.string.Text_view_remote_info_name);
-					sTempString += "\n";
-					sTempString += getResources().getString(R.string.Text_view_remote_info_mac);
-					sTempString += RemoteMac;
-					TextView_RemoteInfo.setText(sTempString);
+					updateTextView();
 
 				} else if (sbroad_value.equals(BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_GATT_DISCOVERED)) {
 					// Gatt discovered
 					RemoteName = sbroad_aux_val;
 					L.i("Receive broadcast,the device is connected successfully.The name is:" + RemoteName);
-
-					sTempString = getResources().getString(R.string.Text_view_remote_info_name);
-					sTempString += RemoteName;
-					sTempString += "\n";
-					sTempString += getResources().getString(R.string.Text_view_remote_info_mac);
-					sTempString += RemoteMac;
-					TextView_RemoteInfo.setText(sTempString);
+					updateTextView();
 
 					// 发送广播获取遥控版本和电量
 					BroadcastAction.sendBroadcast(mContext, BroadcastAction.BROADCAST_SERVICE_REC_ACTION_REMOTE_UPGRADE,
@@ -246,12 +254,19 @@ public class UpgradeDevInfoFragment extends DialogFragment implements View.OnCli
 					// Gatt dis connected
 					String BleAddress = sbroad_aux_val;
 					L.i("Receive broadcast,Ble disconnected :" + BleAddress);
-					sTempString = getResources().getString(R.string.Text_view_remote_info);
-					sTempString += getResources().getString(R.string.Toast_view_rc_not_exist);
-					sTempString += "\n";
-					sTempString += getResources().getString(R.string.Text_view_remote_info_mac);
-					sTempString += BleAddress;
-					TextView_RemoteInfo.setText(sTempString);
+					updateTextView();
+
+				} else if (sbroad_value.equals(BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_DEV_PROTOCOL)) {
+					// 遥控器OTA协议
+					RemoteProtocol = sbroad_aux_val;
+					L.i("Receive broadcast,the device ota protocol:" + RemoteProtocol);
+					updateTextView();
+
+				} else if (sbroad_value.equals(BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_DEV_VIDPID)) {
+					// 遥控器VID PID
+					RemoteVidPid = "0x"+sbroad_aux_val;
+					L.i("Receive broadcast,the device ota vid pid:" + RemoteVidPid);
+					updateTextView();
 				}
 			}
 			else if (BroadcastAction.BROADCAST_SERVICE_SEND_ACTION_REMOTE_UPGRADE.equals(action))
@@ -260,24 +275,13 @@ public class UpgradeDevInfoFragment extends DialogFragment implements View.OnCli
 					// 遥控器版本
 					RemoteSfVer = ibroad_value;
 					L.i("Receive broadcast,the device software version:" + String.format("0x%04X,", RemoteSfVer));
-
-					sTempString = getResources().getString(R.string.Text_view_remote_ver);
-					sTempString += String.format("0x%04X", RemoteSfVer);
-					sTempString += "\n";
-					sTempString += getResources().getString(R.string.Text_view_remote_power);
-					TextView_RemoteVerPower.setText(sTempString);
+					updateTextView();
 
 				} else if (sbroad_value.equals(BroadcastAction.BROADCAST_CONTENT_REMOTE_POWER)) {
 					// 遥控器电量
 					RemotePower = ibroad_value;
 					L.i("Receive broadcast,the device software version:" + String.format("%d,", RemotePower));
-
-					sTempString = getResources().getString(R.string.Text_view_remote_ver);
-					sTempString += String.format("0x%04X", RemoteSfVer);
-					sTempString += "\n";
-					sTempString += getResources().getString(R.string.Text_view_remote_power);
-					sTempString += String.format("%dmV", RemotePower);
-					TextView_RemoteVerPower.setText(sTempString);
+					updateTextView();
 				}
 			}
 		}

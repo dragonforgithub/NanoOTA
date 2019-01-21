@@ -412,9 +412,6 @@ public class UpgradeLocalFragment extends DialogFragment
                                         BroadcastAction.BROADCAST_CONTENT_UPGRADE_FILE_PATH,
                                         response.toString());
 
-                                //退出选择界面
-                                dismiss();
-
                                 // 启动升级UI
                                 StartUpgradeActivity();
                             } else{

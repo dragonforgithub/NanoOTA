@@ -77,8 +77,9 @@
     <string name="Text_view_remote_vp">遥控器电量及版本：</string>
     <string name="Text_view_remote_ver">遥控器软件版本：</string>
     <string name="Text_view_remote_power">遥控器电量：</string>
-    <string name="Text_view_operation_permission">已获得权限：</string>
+    <string name="Text_view_remote_protocol">升级协议：</string>
 
+    <string name="Text_view_operation_permission">已获得权限：</string>
 
     <string name="Text_view_error_code_title">错误：</string>
     <string name="Text_view_info_code_F0">请求下一个数据包</string>

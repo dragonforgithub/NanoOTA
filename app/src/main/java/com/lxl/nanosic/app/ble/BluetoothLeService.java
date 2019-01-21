@@ -156,7 +156,6 @@ public class BluetoothLeService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         L.i("Bluetooth Le Service onBind");
-
         return binder;
     }
 
@@ -164,8 +163,12 @@ public class BluetoothLeService extends Service {
     public boolean onUnbind(Intent intent) {
         // After using a given device, you should make sure that
         // BluetoothGatt.close() is called
-//        close();
-//        BluetoothLeBroadcast(BLUETOOTH_SERVICE_BROADCAST, BROADCAST_DESCRIBE_SERVICES_STOP, "UnBind");
+        close();
+        /*
+        BroadcastAction.sendBroadcast(mThis, BroadcastAction.BROADCAST_SERVICE_SEND_ACTION_BLUETOOTH,
+                BroadcastAction.BROADCAST_DESCRIBE_SERVICES_STOP,
+                "UnBind");
+                */
         return super.onUnbind(intent);
     }
 
@@ -194,6 +197,7 @@ public class BluetoothLeService extends Service {
     private BluetoothAdapter mBluetoothAdapter = null;
     private BluetoothGatt mBluetoothGatt = null;
     private BluetoothDevice mBluetoothDevice = null ;
+    private String mCurProtocol = null;
     public BluetoothGattCharacteristic VendorOut_Characteristic = null;
     public BluetoothGattCharacteristic VendorIn_Characteristic = null;
     public BluetoothGattCharacteristic Buzzer_Characteristic = null;
@@ -217,7 +221,7 @@ public class BluetoothLeService extends Service {
         if((mBluetoothGatt != null) && (mBluetoothDevice != null)
                 && (VendorOut_Characteristic != null)) {
 
-            L.d("===Send BLE name and address broadcast");
+            L.d("===Send BLE information broadcast");
             BroadcastAction.sendBroadcast(mThis, BroadcastAction.BROADCAST_SERVICE_SEND_ACTION_BLUETOOTH,
                     BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_GATT_CONNECTED,
                     mBluetoothDevice.getAddress());
@@ -225,6 +229,10 @@ public class BluetoothLeService extends Service {
             BroadcastAction.sendBroadcast(mThis, BroadcastAction.BROADCAST_SERVICE_SEND_ACTION_BLUETOOTH,
                     BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_GATT_DISCOVERED,
                     mBluetoothDevice.getName());
+
+            BroadcastAction.sendBroadcast(mThis,BroadcastAction.BROADCAST_SERVICE_SEND_ACTION_BLUETOOTH,
+                    BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_DEV_PROTOCOL,
+                    mCurProtocol);
         }
 
         if(mUpgradeFile != null) {
@@ -323,11 +331,6 @@ public class BluetoothLeService extends Service {
                                 BroadcastAction.sendBroadcast(mThis,BroadcastAction.BROADCAST_SERVICE_SEND_ACTION_BLUETOOTH,
                                         BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_GATT_CONNECTED,
                                         gatt.getDevice().getAddress());
-
-                                // 发广播给主UI更新设备名
-                                BroadcastAction.sendBroadcast(mThis,BroadcastAction.BROADCAST_CONTENT_DEV_INFO,
-                                        gatt.getDevice().getName(), gatt.getDevice().getAddress());
-
                             }
                             L.w("onConnectionStateChange (" + gatt.getDevice().getAddress() + ") "
                                     + newState + " status: " + status);
@@ -350,13 +353,6 @@ public class BluetoothLeService extends Service {
                             BroadcastAction.sendBroadcast(mThis,BroadcastAction.BROADCAST_SERVICE_SEND_ACTION_BLUETOOTH,
                                     BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_GATT_DISCONNECTED,
                                     gatt.getDevice().getAddress());
-
-                            // 发广播给主UI更新设备名
-                            /*
-                            BroadcastAction.sendBroadcast(mThis,BroadcastAction.BROADCAST_CONTENT_DEV_INFO,
-                                    getResources().getString(R.string.upgrade_RC_disconnected));
-                            */
-
                         }
 
                         L.w("Ble disconnected : " + devAddress);
@@ -376,7 +372,6 @@ public class BluetoothLeService extends Service {
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
             if (status == gatt.GATT_SUCCESS) {
 
-                String curProtocol = null;
                 // 判断当前服务的协议类型
                 List<BluetoothGattService> list = gatt.getServices();
                 for (BluetoothGattService bluetoothGattService:list){
@@ -384,14 +379,18 @@ public class BluetoothLeService extends Service {
                     L.d("serviceUUID ---> " + serviceUUID_Str);
 
                     if(serviceUUID_Str.equalsIgnoreCase(HID_SERVICE)){
-                        curProtocol = "hid";
+                        mCurProtocol = "HID";
                     }else if(serviceUUID_Str.equalsIgnoreCase(GATT_SERVICE)){
-                        curProtocol = "gatt";
+                        mCurProtocol = "GATT";
                     }
+
+                    BroadcastAction.sendBroadcast(mThis,BroadcastAction.BROADCAST_SERVICE_SEND_ACTION_BLUETOOTH,
+                            BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_DEV_PROTOCOL,
+                            mCurProtocol);
                 }
 
                 /** HID 协议 */
-                if (curProtocol.equals("hid"))
+                if (mCurProtocol.equals("HID"))
                 {
                     BluetoothGattService HidService = gatt.getService(UUID_HID_SERVICE);
                     L.i("Discovered hid service:" + HidService);
@@ -456,7 +455,7 @@ public class BluetoothLeService extends Service {
                     }
                 }
                 /** GATT 协议 */
-                else if (curProtocol.equals("gatt"))
+                else if (mCurProtocol.equals("GATT"))
                 {
                     BluetoothGattService GattService = gatt.getService(UUID_GATT_SERVICE);
                     L.i("Discovered gatt service:" + GattService.getUuid().toString());
@@ -681,7 +680,6 @@ public class BluetoothLeService extends Service {
         mFilter.addAction(BroadcastAction.BROADCAST_SERVICE_REC_ACTION_REMOTE_UPGRADE);
         mFilter.addAction(BroadcastAction.BROADCAST_SERVICE_REC_ACTION_BLUETOOTH);
         mFilter.addAction(BroadcastAction.BROADCAST_SERVICE_REC_ACTION_FILE_OPERATION);
-        mFilter.addAction(BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_DEV_LIST);
         registerReceiver(BluetoothLeReceiver, mFilter);
     }
 
@@ -954,8 +952,13 @@ public class BluetoothLeService extends Service {
                             RemotePid = BleRecBuff[3];     // 遥控器PID
                             RemoteVerL = BleRecBuff[4];    // 遥控器版本号低字节
                             RemoteVerH = BleRecBuff[5];    // 遥控器版本号高字节
-                            L.i("Remote version:" + String.format("%02x%02x,", RemoteVerH, RemoteVerL));
-                            L.i("Remote VID PID:" + String.format("%02x%02x,", RemoteVid, RemotePid));
+                            L.i("eRemote version:" + String.format("%02x%02x,", RemoteVerH, RemoteVerL));
+                            L.i("eRemote VID PID:" + String.format("%02x%02x,", RemoteVid, RemotePid));
+
+                            BroadcastAction.sendBroadcast(mThis,BroadcastAction.BROADCAST_SERVICE_SEND_ACTION_BLUETOOTH,
+                                    BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_DEV_VIDPID,
+                                    String.format("%02x%02x", RemoteVid, RemotePid));
+
                             int itmp = (int) RemoteVerH;
                             itmp &= 0xff;
                             itmp *= 0x100;
@@ -1038,6 +1041,11 @@ public class BluetoothLeService extends Service {
                         RemoteVerH = BleRecBuff[5];    // 遥控器版本号高字节
                         L.i("Remote version:" + String.format("%02x%02x,", RemoteVerH, RemoteVerL));
                         L.i("Remote VID PID:" + String.format("%02x%02x,", RemoteVid, RemotePid));
+
+                        BroadcastAction.sendBroadcast(mThis,BroadcastAction.BROADCAST_SERVICE_SEND_ACTION_BLUETOOTH,
+                                BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_DEV_VIDPID,
+                                String.format("%02x%02x", RemoteVid, RemotePid));
+
                         int itmp = (int) RemoteVerH;
                         itmp &= 0xff;
                         itmp *= 0x100;

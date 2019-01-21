@@ -75,8 +75,9 @@
     <string name="Text_view_remote_vp">RC Power and version: </string>
     <string name="Text_view_remote_ver">RC Version: </string>
     <string name="Text_view_remote_power">RC Power: </string>
-    <string name="Text_view_operation_permission">Permissions: </string>
+    <string name="Text_view_remote_protocol">OTA Protocol: </string>
 
+    <string name="Text_view_operation_permission">Permissions: </string>
 
     <string name="Text_view_error_code_title">Error: </string>
     <string name="Text_view_info_code_F0">请求下一个数据包</string>

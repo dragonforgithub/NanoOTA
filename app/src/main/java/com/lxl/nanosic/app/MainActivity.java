@@ -341,7 +341,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         IntentFilter activityFilter = new IntentFilter(BroadcastAction.MAIN_UPDATE_APK_SELECT);
         activityFilter.addAction(BroadcastAction.MAIN_UPDATE_APK_DOWNLOADING);
         activityFilter.addAction(BroadcastAction.MAIN_UPDATE_APK_DOWNLOADFAILED);
-        activityFilter.addAction(BroadcastAction.BROADCAST_CONTENT_DEV_INFO);
+        activityFilter.addAction(BroadcastAction.BROADCAST_SERVICE_SEND_ACTION_BLUETOOTH);
         registerReceiver(MainActivityReceiver, activityFilter);
         L.i("Register MainActivityReceiver");
     }
@@ -415,9 +415,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 */
                 L.e("安装包下载失败！");
                 isDownloading = false;
-            }else if(action.equals(BroadcastAction.BROADCAST_CONTENT_DEV_INFO)){
-                mDevInfo.setText(sbroad_value);
-                L.w("Update BLE device info : "+sbroad_value+"-"+sbroad_value);
+            }else if(action.equals(BroadcastAction.BROADCAST_SERVICE_SEND_ACTION_BLUETOOTH)){
+                L.w("Update BLE device info : "+sbroad_value+"---"+sbroad_aux_val);
+                if (sbroad_value.equals(BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_GATT_CONNECTED)) {
+
+                } else if (sbroad_value.equals(BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_GATT_DISCOVERED)) {
+                    mDevInfo.setText(sbroad_aux_val);
+                } else if (sbroad_value.equals(BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_DEV_PROTOCOL)) {
+
+                } else if (sbroad_value.equals(BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_DEV_VIDPID)) {
+
+                }
             }
         }
     };
