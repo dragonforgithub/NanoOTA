@@ -29,12 +29,12 @@ android {
         abortOnError false
     }
 
-    compileSdkVersion 26
+    compileSdkVersion 28
     buildToolsVersion '28.0.3'
     defaultConfig {
         applicationId "com.lxl.nanosic.app"
         minSdkVersion 19
-        targetSdkVersion 26
+        targetSdkVersion 28
         versionCode 7
         versionName "1.0.7"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -90,6 +90,13 @@ android {
 
     //自定义apk名称含版本号信息
     android.applicationVariants.all { variant ->
+        // 更新至Android Studio 3.3 gradle 4.10.1
+        variant.outputs.all {
+            outputFileName = "Nanosic_OTA_${variant.versionCode}-${variant.versionName}-${releaseTime()}.apk"
+        }
+
+        //更新前
+        /*
         variant.outputs.all { output ->
             def fileName = "Nanosic_OTA_${defaultConfig.versionCode}-${defaultConfig.versionName}-${releaseTime()}.apk"
             //def fileName = outputFile.name.replace("app", "${rootProject.ext.appName}-${releaseTime()}-${defaultConfig.versionCode}-${defaultConfig.versionName}")
@@ -99,11 +106,12 @@ android {
                 outputFileName = fileName
             }
         }
+        */
     }
 }
 
 //获取编译时间
-def releaseTime() {
+static def releaseTime() {
     return new Date().format("yyyy-MM-dd", TimeZone.getTimeZone("UTC"))
 }
 
@@ -113,13 +121,13 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     androidTestImplementation 'junit:junit:4.12'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     //annotationProcessor 'com.google.dagger:dagger-compiler:2.12'
 
-    implementation 'com.android.support:appcompat-v7:26.1.0'
-    implementation 'com.jakewharton:butterknife:8.4.0'
-    implementation 'com.squareup.okhttp3:okhttp:3.4.1'
-    implementation 'com.squareup.okio:okio:1.9.0'
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.jakewharton:butterknife:8.8.1'
+    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
+    implementation 'com.squareup.okio:okio:1.14.0'
     implementation "com.google.code.gson:gson:2.8.2"
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
 }
