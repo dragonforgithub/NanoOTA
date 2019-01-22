@@ -73,13 +73,13 @@ public class BroadcastAction {
 
     //==================================================================================================
     // BROADCAST_SERVICE_SEND_ACTION_BLUETOOTH
-    public final static String ROADCAST_CONTENT_BLUETOOTH_INFO = "com.nanosic.wnf1x0upgrade.ROADCAST_CONTENT_BLUETOOTH_INFO";
-    public final static String ROADCAST_CONTENT_BLUETOOTH_GATT_CONNECTED = "com.nanosic.wnf1x0upgrade.ROADCAST_CONTENT_BLUETOOTH_GATT_CONNECTED";
-    public final static String ROADCAST_CONTENT_BLUETOOTH_GATT_DISCONNECTED = "com.nanosic.wnf1x0upgrade.ROADCAST_CONTENT_BLUETOOTH_GATT_DISCONNECTED";
-    public final static String ROADCAST_CONTENT_BLUETOOTH_GATT_DISCOVERED = "com.nanosic.wnf1x0upgrade.ROADCAST_CONTENT_BLUETOOTH_GATT_DISCOVERED";
-    public final static String ROADCAST_CONTENT_BLUETOOTH_GATT_INIT = "com.nanosic.wnf1x0upgrade.ROADCAST_CONTENT_BLUETOOTH_GATT_INIT";
-    public final static String ROADCAST_CONTENT_BLUETOOTH_DEV_VIDPID = "com.nanosic.wnf1x0upgrade.ROADCAST_CONTENT_BLUETOOTH_DEV_VIDPID";
-    public final static String ROADCAST_CONTENT_BLUETOOTH_DEV_PROTOCOL = "com.nanosic.wnf1x0upgrade.ROADCAST_CONTENT_BLUETOOTH_DEV_PROTOCOL";
+    public final static String BROADCAST_CONTENT_BLUETOOTH_INFO = "com.nanosic.wnf1x0upgrade.BROADCAST_CONTENT_BLUETOOTH_INFO";
+    public final static String BROADCAST_CONTENT_BLUETOOTH_GATT_CONNECTED = "com.nanosic.wnf1x0upgrade.BROADCAST_CONTENT_BLUETOOTH_GATT_CONNECTED";
+    public final static String BROADCAST_CONTENT_BLUETOOTH_GATT_DISCONNECTED = "com.nanosic.wnf1x0upgrade.BROADCAST_CONTENT_BLUETOOTH_GATT_DISCONNECTED";
+    public final static String BROADCAST_CONTENT_BLUETOOTH_GATT_DISCOVERED = "com.nanosic.wnf1x0upgrade.BROADCAST_CONTENT_BLUETOOTH_GATT_DISCOVERED";
+    public final static String BROADCAST_CONTENT_BLUETOOTH_GATT_INIT = "com.nanosic.wnf1x0upgrade.BROADCAST_CONTENT_BLUETOOTH_GATT_INIT";
+    public final static String BROADCAST_CONTENT_BLUETOOTH_DEV_VIDPID = "com.nanosic.wnf1x0upgrade.BROADCAST_CONTENT_BLUETOOTH_DEV_VIDPID";
+    public final static String BROADCAST_CONTENT_BLUETOOTH_DEV_PROTOCOL = "com.nanosic.wnf1x0upgrade.BROADCAST_CONTENT_BLUETOOTH_DEV_PROTOCOL";
 
     //==================================================================================================
     //  BROADCAST_SERVICE_SEND_ACTION_FILE_OPERATION 相关广播项
@@ -100,9 +100,9 @@ public class BroadcastAction {
     public final static String BROADCAST_CONTENT_USB_SUCCESS = "com.nanosic.usbupdate.BROADCAST_CONTENT_USB_SUCCESS";
     public final static String BROADCAST_CONTENT_USB_ERR = "com.nanosic.usbupdate.BROADCAST_CONTENT_USB_ERR";
 
-    //  Service相关的广播描述
+    // Service相关的广播描述
     public final static String BLUETOOTH_SERVICE_BROADCAST = "nanoic.bluetoothle.service.BLUETOOTH_SERVICE_BROADCAST";
-    //  Bluetooth相关的广播描述
+    // Bluetooth相关的广播描述
     public final static String BLUETOOTH_OPERATION_BROADCAST = "nanoic.bluetoothle.service.BLUETOOTH_OPERATION_BROADCAST";
     // Remote OAD相关的广播描述
     public final static String REMOTE_OAD_OPERATION_BROADCAST = "nanoic.bluetoothle.service.REMOTE_OAD_OPERATION_BROADCAST";
@@ -148,6 +148,7 @@ public class BroadcastAction {
     public final static String ACTION_CONNECTION_STATE_CHANGED = "android.bluetooth.adapter.action.CONNECTION_STATE_CHANGED";
     public final static String ACL_CONNECTED = "android.bluetooth.device.action.ACL_CONNECTED";
     public final static String ACL_DISCONNECTED = "android.bluetooth.device.action.ACL_DISCONNECTED";
+
     // Service停止原因
     public final static String BLUETOOTH_LE_SERVICE_STOP_READ_VER_TOUT = "Read program version timeout";
     public final static String BLUETOOTH_LE_SERVICE_STOP_READ_BATTERY_TOUT = "Read battery timeout";
@@ -160,7 +161,6 @@ public class BroadcastAction {
     public final static String MAIN_UPDATE_APK_DOWNLOAD = "nanosic.ota.app.MAIN_UPDATE_APK_DOWNLOAD";
     public final static String MAIN_UPDATE_APK_DOWNLOADING = "nanosic.ota.app.MAIN_UPDATE_APK_DOWNLOADING";
     public final static String MAIN_UPDATE_APK_DOWNLOADFAILED = "nanosic.ota.app.MAIN_UPDATE_APK_DOWNLOADFAILED";
-
 
     public static void enableBroadcast(boolean loggable) {
         BroadcastAction.isEnable = loggable;

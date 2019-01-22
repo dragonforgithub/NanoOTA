@@ -195,7 +195,7 @@ public class DrawableSwitch extends View {
                 height = width / 20;
                 break;
         }
-        L.d("onMeasure(),width=" + width + ",height=" + height);
+        //L.d("onMeasure(),width=" + width + ",height=" + height);
         setMeasuredDimension(width, height);
     }
 

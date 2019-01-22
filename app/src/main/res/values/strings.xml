@@ -4,7 +4,7 @@
     <string name="app_name">遥控器升级</string>
     <string name="ota_Local">本地升级</string>
     <string name="ota_Online">在线升级</string>
-    <string name="dev_Information">获取信息</string>
+    <string name="dev_Information">设备信息</string>
     <string name="copyright_info">版权所有 ©2019 Nanosic Technology Corp</string>
     <string name="app_version">版本：</string>
     <string name="app_update_select">检测到新版本，是否更新？</string>
@@ -13,6 +13,7 @@
     <string name="app_update">版本更新</string>
     <string name="app_download_failed">下载失败！</string>
     <string name="app_download_progress">下载进度：</string>
+    <string name="app_swiperefresh_tv">请确认遥控器绑定过并进入了配对模式！</string>
 
     <string name="encryption_text">加密</string>
     <string name="encryption_open">打开</string>
@@ -21,7 +22,6 @@
     <string name="permission_guide">请到 “应用信息 -> 权限” 中授予！</string>
     <string name="permission_manual">去手动授权</string>
     <string name="permission_cancel">取消</string>
-
 
 
     <!-- 本地升级UI -->

@@ -13,6 +13,7 @@
     <string name="app_update">Application Update</string>
     <string name="app_download_failed">Download failed!</string>
     <string name="app_download_progress">Download progress: </string>
+    <string name="app_swiperefresh_tv">Please put the bounded RC into pairing mode!</string>
 
     <string name="encryption_text">Encrypt</string>
     <string name="encryption_open">Open</string>

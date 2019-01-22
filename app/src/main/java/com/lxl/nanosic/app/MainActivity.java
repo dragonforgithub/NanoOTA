@@ -18,6 +18,7 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -37,6 +38,8 @@ import com.lxl.nanosic.app.ui.UpgradeOnlineFragment;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private SwipeRefreshLayout mSwipeRefresh;
+    private TextView mSwipeRefreshText;
     private Button mBtnLocal;
     private Button mBtnOnline;
     private Button mBtnDevInfo;
@@ -153,6 +156,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
+        /** 下拉刷新控件 */
+        mSwipeRefreshText = findViewById(R.id.swipeRefreshText);
+        mSwipeRefresh = findViewById(R.id.swipeRefreshLayoutV4);
+        mSwipeRefresh.setColorSchemeResources(android.R.color.holo_blue_light,
+                android.R.color.holo_green_light, android.R.color.darker_gray);
+        //给SwipeRefreshLayout绑定刷新监听
+        mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mSwipeRefreshText.setVisibility(View.VISIBLE);
+                L.d("===sendBroadcast BROADCAST_CONTENT_BLUETOOTH_GATT_INIT");
+                // 发送初始化广播
+                BroadcastAction.sendBroadcast(getApplicationContext(), BroadcastAction.BROADCAST_SERVICE_REC_ACTION_BLUETOOTH,
+                        BroadcastAction.BROADCAST_CONTENT_BLUETOOTH_GATT_INIT,
+                        "FORCE");
+
+                /** 5s超时停止刷新 */
+                new Handler().postDelayed(new Runnable(){
+                    public void run() {
+                        mSwipeRefreshText.setVisibility(View.GONE);
+                        mSwipeRefresh.setRefreshing(false);
+                    }
+                }, 5000);
+            }
+        });
+
         /** 文本显示版权和应用版本信息 */
         String copyRightStr = getResources().getString(R.string.copyright_info);
         String versionText = getResources().getString(R.string.app_version);
@@ -164,9 +193,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         new Handler().postDelayed(new Runnable(){
                 public void run() {
                 if(!isDownloading){
-                    L.d("===sendBroadcast init ble devices");
+                    L.d("===sendBroadcast BROADCAST_CONTENT_BLUETOOTH_GATT_INIT");
                     BroadcastAction.sendBroadcast(getApplicationContext(), BroadcastAction.BROADCAST_SERVICE_REC_ACTION_BLUETOOTH,
-                            BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_GATT_INIT);
+                            BroadcastAction.BROADCAST_CONTENT_BLUETOOTH_GATT_INIT);
                 }
             }
         }, 100);
@@ -417,13 +446,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 isDownloading = false;
             }else if(action.equals(BroadcastAction.BROADCAST_SERVICE_SEND_ACTION_BLUETOOTH)){
                 L.w("Update BLE device info : "+sbroad_value+"---"+sbroad_aux_val);
-                if (sbroad_value.equals(BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_GATT_CONNECTED)) {
+                if (sbroad_value.equals(BroadcastAction.BROADCAST_CONTENT_BLUETOOTH_GATT_CONNECTED)) {
 
-                } else if (sbroad_value.equals(BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_GATT_DISCOVERED)) {
+                } else if (sbroad_value.equals(BroadcastAction.BROADCAST_CONTENT_BLUETOOTH_GATT_DISCOVERED)) {
+                    mSwipeRefreshText.setVisibility(View.GONE);
+                    mSwipeRefresh.setRefreshing(false);
                     mDevInfo.setText(sbroad_aux_val);
-                } else if (sbroad_value.equals(BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_DEV_PROTOCOL)) {
+                } else if (sbroad_value.equals(BroadcastAction.BROADCAST_CONTENT_BLUETOOTH_GATT_DISCONNECTED)) {
+                    mSwipeRefreshText.setVisibility(View.GONE);
+                    mSwipeRefresh.setRefreshing(false);
+                    mDevInfo.setText("");
+                } else if (sbroad_value.equals(BroadcastAction.BROADCAST_CONTENT_BLUETOOTH_DEV_PROTOCOL)) {
 
-                } else if (sbroad_value.equals(BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_DEV_VIDPID)) {
+                } else if (sbroad_value.equals(BroadcastAction.BROADCAST_CONTENT_BLUETOOTH_DEV_VIDPID)) {
 
                 }
             }

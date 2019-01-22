@@ -200,7 +200,7 @@ public class BluetoothLeService extends Service {
     private String mCurProtocol = null;
     public BluetoothGattCharacteristic VendorOut_Characteristic = null;
     public BluetoothGattCharacteristic VendorIn_Characteristic = null;
-    public BluetoothGattCharacteristic Buzzer_Characteristic = null;
+    //public BluetoothGattCharacteristic Buzzer_Characteristic = null;
     public BluetoothGattCharacteristic OtaIn_Characteristic = null;
 
     // 重置蓝牙设备状态
@@ -212,7 +212,7 @@ public class BluetoothLeService extends Service {
         VendorOut_Characteristic = null;
         VendorIn_Characteristic = null;
         OtaIn_Characteristic = null;
-        Buzzer_Characteristic = null;
+        //Buzzer_Characteristic = null;
         BleIsBusy = false;
         fCanAutoUpgrade = false;
     }
@@ -223,15 +223,15 @@ public class BluetoothLeService extends Service {
 
             L.d("===Send BLE information broadcast");
             BroadcastAction.sendBroadcast(mThis, BroadcastAction.BROADCAST_SERVICE_SEND_ACTION_BLUETOOTH,
-                    BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_GATT_CONNECTED,
+                    BroadcastAction.BROADCAST_CONTENT_BLUETOOTH_GATT_CONNECTED,
                     mBluetoothDevice.getAddress());
 
             BroadcastAction.sendBroadcast(mThis, BroadcastAction.BROADCAST_SERVICE_SEND_ACTION_BLUETOOTH,
-                    BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_GATT_DISCOVERED,
+                    BroadcastAction.BROADCAST_CONTENT_BLUETOOTH_GATT_DISCOVERED,
                     mBluetoothDevice.getName());
 
             BroadcastAction.sendBroadcast(mThis,BroadcastAction.BROADCAST_SERVICE_SEND_ACTION_BLUETOOTH,
-                    BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_DEV_PROTOCOL,
+                    BroadcastAction.BROADCAST_CONTENT_BLUETOOTH_DEV_PROTOCOL,
                     mCurProtocol);
         }
 
@@ -329,7 +329,7 @@ public class BluetoothLeService extends Service {
 
                                 // 发送连接广播
                                 BroadcastAction.sendBroadcast(mThis,BroadcastAction.BROADCAST_SERVICE_SEND_ACTION_BLUETOOTH,
-                                        BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_GATT_CONNECTED,
+                                        BroadcastAction.BROADCAST_CONTENT_BLUETOOTH_GATT_CONNECTED,
                                         gatt.getDevice().getAddress());
                             }
                             L.w("onConnectionStateChange (" + gatt.getDevice().getAddress() + ") "
@@ -351,7 +351,7 @@ public class BluetoothLeService extends Service {
                             ResetBluetoothValue();
                             // 发送断开广播
                             BroadcastAction.sendBroadcast(mThis,BroadcastAction.BROADCAST_SERVICE_SEND_ACTION_BLUETOOTH,
-                                    BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_GATT_DISCONNECTED,
+                                    BroadcastAction.BROADCAST_CONTENT_BLUETOOTH_GATT_DISCONNECTED,
                                     gatt.getDevice().getAddress());
                         }
 
@@ -385,7 +385,7 @@ public class BluetoothLeService extends Service {
                     }
 
                     BroadcastAction.sendBroadcast(mThis,BroadcastAction.BROADCAST_SERVICE_SEND_ACTION_BLUETOOTH,
-                            BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_DEV_PROTOCOL,
+                            BroadcastAction.BROADCAST_CONTENT_BLUETOOTH_DEV_PROTOCOL,
                             mCurProtocol);
                 }
 
@@ -400,7 +400,7 @@ public class BluetoothLeService extends Service {
                         if(HidService.getCharacteristics().size() >=  6)
                         {
                             BroadcastAction.sendBroadcast(mThis,BroadcastAction.BROADCAST_SERVICE_SEND_ACTION_BLUETOOTH,
-                                    BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_GATT_DISCOVERED,
+                                    BroadcastAction.BROADCAST_CONTENT_BLUETOOTH_GATT_DISCOVERED,
                                     mBluetoothDevice.getName());
                             List<BluetoothGattCharacteristic> HidCharList = HidService.getCharacteristics();
 
@@ -448,11 +448,13 @@ public class BluetoothLeService extends Service {
                         L.i("BluetoothGattService is null");
                     }
 
-                    // TODO:蜂鸣器服务？要不要？
+                    // TODO:蜂鸣器服务？
+                    /*
                     BluetoothGattService BuzzerService = gatt.getService(UUID_BUZZER_SERVICE);
                     if (BuzzerService != null) {
                         Buzzer_Characteristic = BuzzerService.getCharacteristic(UUID_BUZZER_CHARACTER);
                     }
+                    */
                 }
                 /** GATT 协议 */
                 else if (mCurProtocol.equals("GATT"))
@@ -465,7 +467,7 @@ public class BluetoothLeService extends Service {
                         if(CharacterSize >= 2)
                         {
                             BroadcastAction.sendBroadcast(mThis,BroadcastAction.BROADCAST_SERVICE_SEND_ACTION_BLUETOOTH,
-                                    BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_GATT_DISCOVERED,
+                                    BroadcastAction.BROADCAST_CONTENT_BLUETOOTH_GATT_DISCOVERED,
                                     mBluetoothDevice.getName());
 
                             List<BluetoothGattCharacteristic> GattCharList = GattService.getCharacteristics();
@@ -794,10 +796,17 @@ public class BluetoothLeService extends Service {
                 }
 
             }else if (BroadcastAction.BROADCAST_SERVICE_REC_ACTION_BLUETOOTH.equals(action)) {
-                if(sbroad_value.equals(BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_INFO)) {
+                if(sbroad_value.equals(BroadcastAction.BROADCAST_CONTENT_BLUETOOTH_INFO)) {
 
-                } else  if(sbroad_value.equals(BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_GATT_INIT)) {
+                } else if(sbroad_value.equals(BroadcastAction.BROADCAST_CONTENT_BLUETOOTH_GATT_INIT)) {
                     L.i("BluetoothLeService receive a broadcast, initialize ble.");
+
+                    if(sbroad_aux_val!=null && sbroad_aux_val.equals("FORCE")){
+                        L.w("Force update bonded devices...");
+                        // 重置蓝牙相关变量
+                        ResetBluetoothValue(); //close();
+                    }
+
                     if (initialize(null, null)) {
                         L.d("Broadcast Init : find device.");
                     } else {
@@ -956,7 +965,7 @@ public class BluetoothLeService extends Service {
                             L.i("eRemote VID PID:" + String.format("%02x%02x,", RemoteVid, RemotePid));
 
                             BroadcastAction.sendBroadcast(mThis,BroadcastAction.BROADCAST_SERVICE_SEND_ACTION_BLUETOOTH,
-                                    BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_DEV_VIDPID,
+                                    BroadcastAction.BROADCAST_CONTENT_BLUETOOTH_DEV_VIDPID,
                                     String.format("%02x%02x", RemoteVid, RemotePid));
 
                             int itmp = (int) RemoteVerH;
@@ -1043,7 +1052,7 @@ public class BluetoothLeService extends Service {
                         L.i("Remote VID PID:" + String.format("%02x%02x,", RemoteVid, RemotePid));
 
                         BroadcastAction.sendBroadcast(mThis,BroadcastAction.BROADCAST_SERVICE_SEND_ACTION_BLUETOOTH,
-                                BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_DEV_VIDPID,
+                                BroadcastAction.BROADCAST_CONTENT_BLUETOOTH_DEV_VIDPID,
                                 String.format("%02x%02x", RemoteVid, RemotePid));
 
                         int itmp = (int) RemoteVerH;

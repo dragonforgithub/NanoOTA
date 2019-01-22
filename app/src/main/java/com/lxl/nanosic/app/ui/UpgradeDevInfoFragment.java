@@ -75,7 +75,7 @@ public class UpgradeDevInfoFragment extends DialogFragment implements View.OnCli
 
 		// 发送初始化广播
 		BroadcastAction.sendBroadcast(mContext, BroadcastAction.BROADCAST_SERVICE_REC_ACTION_BLUETOOTH,
-				BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_GATT_INIT);
+				BroadcastAction.BROADCAST_CONTENT_BLUETOOTH_GATT_INIT);
 
 		builder.setView(view);
 
@@ -232,15 +232,15 @@ public class UpgradeDevInfoFragment extends DialogFragment implements View.OnCli
 
 			if (BroadcastAction.BROADCAST_SERVICE_SEND_ACTION_BLUETOOTH.equals(action))
 			{
-				if (sbroad_value.equals(BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_INFO)) {
+				if (sbroad_value.equals(BroadcastAction.BROADCAST_CONTENT_BLUETOOTH_INFO)) {
 
-				} else if (sbroad_value.equals(BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_GATT_CONNECTED)) {
+				} else if (sbroad_value.equals(BroadcastAction.BROADCAST_CONTENT_BLUETOOTH_GATT_CONNECTED)) {
 					// Gatt connected
 					RemoteMac = sbroad_aux_val;
 					L.i("Receive broadcast,Ble Address :" + RemoteMac);
 					updateTextView();
 
-				} else if (sbroad_value.equals(BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_GATT_DISCOVERED)) {
+				} else if (sbroad_value.equals(BroadcastAction.BROADCAST_CONTENT_BLUETOOTH_GATT_DISCOVERED)) {
 					// Gatt discovered
 					RemoteName = sbroad_aux_val;
 					L.i("Receive broadcast,the device is connected successfully.The name is:" + RemoteName);
@@ -250,19 +250,19 @@ public class UpgradeDevInfoFragment extends DialogFragment implements View.OnCli
 					BroadcastAction.sendBroadcast(mContext, BroadcastAction.BROADCAST_SERVICE_REC_ACTION_REMOTE_UPGRADE,
 							BroadcastAction.BROADCAST_CONTENT_REMOTE_INFO);
 
-				} else  if (sbroad_value.equals(BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_GATT_DISCONNECTED)) {
+				} else  if (sbroad_value.equals(BroadcastAction.BROADCAST_CONTENT_BLUETOOTH_GATT_DISCONNECTED)) {
 					// Gatt dis connected
 					String BleAddress = sbroad_aux_val;
 					L.i("Receive broadcast,Ble disconnected :" + BleAddress);
 					updateTextView();
 
-				} else if (sbroad_value.equals(BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_DEV_PROTOCOL)) {
+				} else if (sbroad_value.equals(BroadcastAction.BROADCAST_CONTENT_BLUETOOTH_DEV_PROTOCOL)) {
 					// 遥控器OTA协议
 					RemoteProtocol = sbroad_aux_val;
 					L.i("Receive broadcast,the device ota protocol:" + RemoteProtocol);
 					updateTextView();
 
-				} else if (sbroad_value.equals(BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_DEV_VIDPID)) {
+				} else if (sbroad_value.equals(BroadcastAction.BROADCAST_CONTENT_BLUETOOTH_DEV_VIDPID)) {
 					// 遥控器VID PID
 					RemoteVidPid = "0x"+sbroad_aux_val;
 					L.i("Receive broadcast,the device ota vid pid:" + RemoteVidPid);

@@ -17,7 +17,8 @@
         android:gravity="right|bottom"
         android:scaleType="fitXY"
         android:background="@mipmap/remote_control"
-        android:textSize="8sp" />
+        android:textSize="8sp"
+        tools:ignore="RtlHardcoded" />
 
     <com.lxl.nanosic.app.ui.DrawableSwitch
         android:id="@+id/drawableSwitch"
@@ -85,6 +86,7 @@
         </LinearLayout>
 
     </ScrollView>
+
     <TextView
         android:id="@+id/copyrightVer"
         android:layout_width="match_parent"
@@ -95,5 +97,24 @@
         android:text="@string/copyright_info"
         android:textColor="@color/white"
         android:textSize="15sp" />
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayoutV4"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_alignParentTop="true">
+
+        <TextView
+            android:id="@+id/swipeRefreshText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="top|center_horizontal"
+            android:text="@string/app_swiperefresh_tv"
+            android:textColor="#fff025"
+            android:textSize="13sp"
+            android:visibility="gone" />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 </RelativeLayout>

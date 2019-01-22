@@ -290,20 +290,20 @@ public class UpgradeActivity extends AppCompatActivity {
                 }
 
             }else if (BroadcastAction.BROADCAST_SERVICE_SEND_ACTION_BLUETOOTH.equals(action)) {
-                if (sbroad_value.equals(BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_INFO)) {
+                if (sbroad_value.equals(BroadcastAction.BROADCAST_CONTENT_BLUETOOTH_INFO)) {
 
-                } else  if (sbroad_value.equals(BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_GATT_CONNECTED)) {
+                } else  if (sbroad_value.equals(BroadcastAction.BROADCAST_CONTENT_BLUETOOTH_GATT_CONNECTED)) {
                     // Gatt connected
                     RemoteMac = sbroad_aux_val;
                     L.i("Receive broadcast,Ble Address :" + RemoteMac);
-                }else  if (sbroad_value.equals(BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_GATT_DISCONNECTED)) {
+                }else  if (sbroad_value.equals(BroadcastAction.BROADCAST_CONTENT_BLUETOOTH_GATT_DISCONNECTED)) {
                     // Gatt dis connected
                     String BleAddress = sbroad_aux_val;
                     L.i("Receive broadcast,Ble disconnected :" + BleAddress);
                     if(isUpgrading)
                         FinishUpgrade(false,getResources().getString(R.string.upgrade_RC_disconnected),null);
 
-                }else  if (sbroad_value.equals(BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_GATT_DISCOVERED)) {
+                }else  if (sbroad_value.equals(BroadcastAction.BROADCAST_CONTENT_BLUETOOTH_GATT_DISCOVERED)) {
                     // Gatt discovered
                     RemoteName = sbroad_aux_val;
                     L.i("Receive broadcast,the device is connected successfully.The name is:" + RemoteName);
@@ -524,7 +524,7 @@ public class UpgradeActivity extends AppCompatActivity {
     private void CheckConnectState(){
         L.i("search and connect remote...");
         BroadcastAction.sendBroadcast(mThis, BroadcastAction.BROADCAST_SERVICE_REC_ACTION_BLUETOOTH,
-                BroadcastAction.ROADCAST_CONTENT_BLUETOOTH_GATT_INIT);
+                BroadcastAction.BROADCAST_CONTENT_BLUETOOTH_GATT_INIT);
     }
 
     // 读取版本、电量
