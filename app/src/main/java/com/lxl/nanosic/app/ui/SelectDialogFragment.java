@@ -69,6 +69,8 @@ public class SelectDialogFragment extends DialogFragment implements View.OnClick
 
 		switch (view.getId()){
 			case R.id.btn_yes:
+				mBtnYes.setEnabled(false);
+				mBtnNo.setEnabled(false);
 				String prjName = getArguments().getString("name");
 				String verStr = getArguments().getString("version");
 
@@ -80,6 +82,8 @@ public class SelectDialogFragment extends DialogFragment implements View.OnClick
 				dismiss();
 				break;
 			case R.id.btn_no:
+				mBtnNo.setEnabled(false);
+				mBtnYes.setEnabled(false);
 				dismiss();
 				break;
 		}

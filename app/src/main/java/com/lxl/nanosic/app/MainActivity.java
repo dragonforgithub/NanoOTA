@@ -76,11 +76,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mApplication = this;
         setContentView(R.layout.activity_main);
 
-        /** 判断SDK版本，确认是否动态申请权限 **/
+        /* 判断SDK版本，确认是否动态申请权限 **/
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            /** 第 1 步: 检查是否有相应的权限 **/
-            if(checkPermissionAllGranted(strPermissions)==false) {
-                /** 第 2 步: 请求权限,一次请求多个权限, 如果其他有权限是已经授予的将会自动忽略掉 **/
+            /* 第 1 步: 检查是否有相应的权限 **/
+            if(!checkPermissionAllGranted(strPermissions)) {
+                /* 第 2 步: 请求权限,一次请求多个权限, 如果其他有权限是已经授予的将会自动忽略掉 **/
                 ActivityCompat.requestPermissions(
                         this,
                         strPermissions,
@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }, 3000);
             }
 
-            /** 第 3 步: 判断权限申请结果，如用户未同意则引导至设置界面打开权限 **/
+            /* 第 3 步: 判断权限申请结果，如用户未同意则引导至设置界面打开权限 **/
             int[] grantResults={0};
             onRequestPermissionsResult(OTA_PERMISSION_REQUEST_CODE,strPermissions,grantResults);
 
@@ -108,12 +108,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             // TODO:3s等待,检测是否已经在下载新版的安装包，没有则发送版本检测广播包
             new Handler().postDelayed(new Runnable(){
                 public void run() {
-                    if(!isDownloading){
-                        L.d("===sendBroadcast MAIN_UPDATE_APK_CHECK");
-                        BroadcastAction.sendBroadcast(getApplicationContext(),
-                                BroadcastAction.MAIN_UPDATE_APK_CHECK,
-                                "check version");
-                    }
+                if(!isDownloading){
+                    L.d("===sendBroadcast MAIN_UPDATE_APK_CHECK");
+                    BroadcastAction.sendBroadcast(getApplicationContext(),
+                            BroadcastAction.MAIN_UPDATE_APK_CHECK,
+                            "check version");
+                }
                 }
             }, 3000);
         }
@@ -125,16 +125,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         fragment_Online = new UpgradeOnlineFragment(); //在线升级界面
         fragment_ShowOtaInfo = UpgradeDevInfoFragment.newInstance(); //设备信息界面
 
-        /** 创建和服务器的SSL连接 */
+        /* 创建和服务器的SSL连接 */
         //sslClient = new SSLClient(getApplicationContext());
 
-        /** 绑定服务 */
+        /* 绑定服务 */
         BinderService();
 
-        /** 注册广播 */
+        /* 注册广播 */
         RegisterBroadcastReceiver();
 
-        /** 添加监听 */
+        /* 添加监听 */
         mBtnLocal = findViewById(R.id.otaLocal);
         mBtnLocal.setOnClickListener(this);
 
@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         mDevInfo = findViewById(R.id.DeviceInfo);
 
-        /** 设置加密开关 */
+        /* 设置加密开关 */
         mDrawableSwitch = findViewById(R.id.drawableSwitch);
         mDrawableSwitch.setListener(new DrawableSwitch.MySwitchStateChangeListener() {
             @Override
@@ -156,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-        /** 下拉刷新控件 */
+        /* 下拉刷新控件 */
         mSwipeRefreshText = findViewById(R.id.swipeRefreshText);
         mSwipeRefresh = findViewById(R.id.swipeRefreshLayoutV4);
         mSwipeRefresh.setColorSchemeResources(android.R.color.holo_blue_light,
@@ -172,7 +172,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         BroadcastAction.BROADCAST_CONTENT_BLUETOOTH_GATT_INIT,
                         "FORCE");
 
-                /** 5s超时停止刷新 */
+                /* 5s超时停止刷新 */
                 new Handler().postDelayed(new Runnable(){
                     public void run() {
                         mSwipeRefreshText.setVisibility(View.GONE);
@@ -182,14 +182,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-        /** 文本显示版权和应用版本信息 */
+        /* 文本显示版权和应用版本信息 */
         String copyRightStr = getResources().getString(R.string.copyright_info);
         String versionText = getResources().getString(R.string.app_version);
         String appVersion = Utils.getAppVersionName(getApplicationContext());
         mTvCopyrightVer = findViewById(R.id.copyrightVer);
         mTvCopyrightVer.setText(copyRightStr+"\n"+versionText + appVersion);
 
-        /** 发送广播,获得遥控器名字和MAC地址 */
+        /* 发送广播,获得遥控器名字和MAC地址 */
         new Handler().postDelayed(new Runnable(){
                 public void run() {
                 if(!isDownloading){
