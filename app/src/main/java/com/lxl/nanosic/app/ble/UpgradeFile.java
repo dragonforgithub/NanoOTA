@@ -197,7 +197,7 @@ public class UpgradeFile {
             return null;
         }
         if(UpgradeAppLen > 64) {
-            fileToSendLen = UpgradeAppLen ;
+            fileToSendLen = UpgradeAppLen;
         }else {
             fileToSendLen = 0x00;
         }

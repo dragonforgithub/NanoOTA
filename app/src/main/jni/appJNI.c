@@ -310,7 +310,7 @@ JNIEXPORT jint JNICALL Java_com_lxl_login_demo_JniApiCall_NanoRegister
 {
 	jboolean is_copy;
 
-	unsigned char* buf = (unsigned char*)(*env)->GetByteArrayElements(env,appbuf, &is_copy);
+	unsigned char* buf = (unsigned char*)(*env)->GetByteArrayElements(env, appbuf, &is_copy);
 	if(!buf){
 		OS_ERROR("invalid buff\n");
 		return 0;

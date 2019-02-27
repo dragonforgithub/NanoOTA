@@ -45,10 +45,10 @@ import java.util.UUID;
 public class BluetoothLeService extends Service {
     private static BluetoothLeService mThis = null;
     //HID协议
-    private static String BUZZER_SERVICE = "00001802-0000-1000-8000-00805f9b34fb";
-    private static String BUZZER_CHARACTER = "00002a06-0000-1000-8000-00805f9b34fb";
-    private final static UUID UUID_BUZZER_SERVICE = UUID.fromString(BUZZER_SERVICE);
-    private final static UUID UUID_BUZZER_CHARACTER = UUID.fromString(BUZZER_CHARACTER);
+    //private static String BUZZER_SERVICE = "00001802-0000-1000-8000-00805f9b34fb";
+    //private static String BUZZER_CHARACTER = "00002a06-0000-1000-8000-00805f9b34fb";
+    //private final static UUID UUID_BUZZER_SERVICE = UUID.fromString(BUZZER_SERVICE);
+    //private final static UUID UUID_BUZZER_CHARACTER = UUID.fromString(BUZZER_CHARACTER);
     private static String HID_SERVICE = "00001812-0000-1000-8000-00805f9b34fb";
     private final static UUID UUID_HID_SERVICE = UUID.fromString(HID_SERVICE);
 
@@ -397,12 +397,25 @@ public class BluetoothLeService extends Service {
                     if (HidService != null) {
                         int CharacterSize = HidService.getCharacteristics().size();
                         L.i("Characteristic size:" + CharacterSize);
+
+
                         if(HidService.getCharacteristics().size() >=  6)
                         {
                             BroadcastAction.sendBroadcast(mThis,BroadcastAction.BROADCAST_SERVICE_SEND_ACTION_BLUETOOTH,
                                     BroadcastAction.BROADCAST_CONTENT_BLUETOOTH_GATT_DISCOVERED,
                                     mBluetoothDevice.getName());
                             List<BluetoothGattCharacteristic> HidCharList = HidService.getCharacteristics();
+
+                            /*
+                            //打印描述符信息
+                            for(int i=0;i<CharacterSize;i++){
+                                int instance = HidCharList.get(i).getInstanceId();
+                                String uuidStr = HidCharList.get(i).getUuid().toString();
+                                L.w("Characteristic uuid "+i+" :"+uuidStr+", getInstanceId :"+instance);
+                            }
+                            // 添加描述符通知按键上报:第7个是键值上报
+                            setCharacteristicNotification(HidCharList.get(6), null, true);
+                            */
 
                             // default hid characteristic
                             OtaIn_Characteristic = HidCharList.get(CharacterSize - 1);
@@ -540,6 +553,9 @@ public class BluetoothLeService extends Service {
                 }
                 L.i("R:" + GetByteString(characteristic.getValue(),5));
             }
+
+            L.d("onCharacteristicChanged : "+characteristic.getUuid().toString());
+
             super.onCharacteristicChanged(gatt, characteristic);
         }
 
