@@ -64,6 +64,19 @@
 
 -keep class **$$ViewBinder { *; }
 
+#okhttp
+-keep class okhttp3.** { *; }
+-keep interface okhttp3.** { *; }
+-dontwarn okhttp3.**
+
+-keep class okio.** { *; }
+-keep interface okio.** { *; }
+-dontwarn okio.**
+
+-keep class com.hitomi.** { *; }
+-keep interface com.hitomi.** { *; }
+-dontwarn com.hitomi.**
+
 #-------------------------3.与js互相调用的类------------------------
 
 
